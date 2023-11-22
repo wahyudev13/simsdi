@@ -5,16 +5,11 @@
             minimumResultsForSearch: -1,
             ajax: {
                 type: "GET",
-                url: '/karyawan/str/get/' + idpegawai,
+                url: '{{ route('file.str.get') }}',
+                data: {
+                    'id': idpegawai,
+                },
                 dataType: 'json',
-                // data: function(params) {
-                //     var query = {
-                //         search: params.term,
-                //     }
-
-                //     // Query parameters will be ?search=[term]&type=public
-                //     return query;
-                // },
                 processResults: function(response) {
                     return {
                         results: response
@@ -47,10 +42,10 @@
             searching: false,
             // processing: true,
             serverSide: true,
-            ajax:  {
-                url: '{{route('berkas.getSIP')}}',
-                data:{
-                    'id' : idpegawai,
+            ajax: {
+                url: '{{ route('berkas.getSIP') }}',
+                data: {
+                    'id': idpegawai,
                 },
             },
             columns: [{
@@ -107,8 +102,8 @@
         $(document).on('click', '#view-sip', function(e) {
             e.preventDefault();
             var fileSIP = $(this).data('id');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Dokumen/SIP/' + fileSIP, "#view-sip-modal");
+            var url = '{{ route('login.index') }}';
+            PDFObject.embed(url + '/File/Pegawai/Dokumen/SIP/' + fileSIP, "#view-sip-modal");
         });
 
         $('#form-tambah-sip').on('submit', function(e) {
@@ -191,7 +186,7 @@
                     minimumResultsForSearch: -1,
                     ajax: {
                         type: "GET",
-                        url: '/karyawan/str/selected/get/'+response.data.id,
+                        url: '/karyawan/str/selected/get/' + response.data.id,
                         dataType: 'json',
                         processResults: function(response) {
                             return {

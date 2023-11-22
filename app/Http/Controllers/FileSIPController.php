@@ -241,8 +241,8 @@ class FileSIPController extends Controller
         }
     }
 
-    public function strget($id) {
-        $str = FileSTR::where('id_pegawai', $id)
+    public function strget(Request $request) {
+        $str = FileSTR::where('id_pegawai', $request->id)
         ->where(function($query){
             $query->where('status', 'active');
             $query->orWhere('status', 'proses');
@@ -260,6 +260,25 @@ class FileSIPController extends Controller
 
         return response()->json($response); 
     }
+    // public function strget($id) {
+    //     $str = FileSTR::where('id_pegawai', $id)
+    //     ->where(function($query){
+    //         $query->where('status', 'active');
+    //         $query->orWhere('status', 'proses');
+    //     })
+    //     ->select('file_str.id','file_str.no_reg_str')
+    //     ->get();
+
+    //     $response = array();
+    //     foreach($str as $item){
+    //         $response[] = array(
+    //             "id"=>$item->id,
+    //             "text"=>$item->no_reg_str
+    //         );
+    //     }
+
+    //     return response()->json($response); 
+    // }
 
     public function str_selected($idsip)  {
         $nostr = FileSIP::where('id',$idsip)->first();

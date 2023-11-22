@@ -183,7 +183,8 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::post('/karyawan/str/verif/destroy', [VerifStrController::class, 'destroy'])->name('verif.str.destroy');
         
         //JSON STR
-        Route::get('/karyawan/str/get/{id}', [FileSIPController::class, 'strget'])->name('file.str.get');
+        // Route::get('/karyawan/str/get/{id}', [FileSIPController::class, 'strget'])->name('file.str.get');
+        Route::get('/karyawan/str/get', [FileSIPController::class, 'strget'])->name('file.str.get');
         Route::get('/karyawan/str/selected/get/{idsip}', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
 
         //Berkas SIP
