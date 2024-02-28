@@ -185,7 +185,8 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         //JSON STR
         // Route::get('/karyawan/str/get/{id}', [FileSIPController::class, 'strget'])->name('file.str.get');
         Route::get('/karyawan/str/get', [FileSIPController::class, 'strget'])->name('file.str.get');
-        Route::get('/karyawan/str/selected/get/{idsip}', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
+        // Route::get('/karyawan/str/selected/get/{idsip}', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
+        Route::get('/karyawan/str/selected/get', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
 
         //Berkas SIP
         // Route::get('/karyawan/berkas/sip/get/{id}', [FileSIPController::class, 'getSIP'])->name('berkas.getSIP');

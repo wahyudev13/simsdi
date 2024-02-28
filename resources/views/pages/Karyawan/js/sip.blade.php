@@ -180,13 +180,40 @@
                 $('#no_sip_edit').val(response.data.no_sip);
                 $('#no_reg_sip_edit').val(response.data.no_reg);
 
+                // $('.select-str-edit').select2({
+                //     //minimumInputLength: 3,
+                //     tags: true,
+                //     minimumResultsForSearch: -1,
+                //     ajax: {
+                //         type: "GET",
+                //         url: '/karyawan/str/selected/get/' + response.data.id,
+                //         dataType: 'json',
+                //         processResults: function(response) {
+                //             return {
+                //                 results: response
+                //             };
+                //         },
+                //     },
+                //     theme: "bootstrap-5",
+                //     dropdownParent: "#modaleditSIP",
+                //     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass(
+                //         'w-100') ? '100%' : 'style',
+                //     //placeholder: $(this).data('placeholder'),
+
+                // });
+
                 $('.select-str-edit').select2({
                     //minimumInputLength: 3,
                     tags: true,
                     minimumResultsForSearch: -1,
                     ajax: {
                         type: "GET",
-                        url: '/karyawan/str/selected/get/' + response.data.id,
+                        url: "{{route('selected.str.get')}}",
+                        data: function (params) {
+                            return {
+                                id: response.data.id
+                            };
+                        },
                         dataType: 'json',
                         processResults: function(response) {
                             return {
