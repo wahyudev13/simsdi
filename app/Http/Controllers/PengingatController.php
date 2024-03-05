@@ -10,6 +10,7 @@ use App\Models\FileTranskrip;
 use App\Models\FileSTR;
 use App\Models\FileSIP;
 use App\Models\MasterBerkas;
+use App\Models\MasaBerlakuSIP;
 use Validator;
 use Yajra\DataTables\Facades\DataTables;
 use File;
@@ -92,6 +93,26 @@ class PengingatController extends Controller
         ->addIndexColumn()
         ->make(true);
     }
+
+    public function pengingatSip(){
+        return view('pages.Pengingat.pengingat-sip');
+    }
+
+    public function getSip(){
+        $database_2 = config('database.connections.mysql2.database');
+        $data = MasaBerlakuSIP::where('status','nonactive')->orWhere('status','proses')
+        ->join('file_sip','masa_berlaku_sip.sip_id','=','file_sip.id')
+        ->join( "$database_2.pegawai as tbsik_pegawai",'file_sip.id_pegawai','=','tbsik_pegawai.id')//join database simrs
+        ->join('master_berkas_pegawai', 'file_sip.nama_file_sip_id', '=', 'master_berkas_pegawai.id')
+        ->select('tbsik_pegawai.nama','master_berkas_pegawai.nama_berkas','file_sip.id_pegawai','tbsik_pegawai.nik','file_sip.no_sip','masa_berlaku_sip.tgl_ed','masa_berlaku_sip.status','tbsik_pegawai.jbtn')
+        ->get();
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->make(true);
+    }
+
+
 
 
 

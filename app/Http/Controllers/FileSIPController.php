@@ -10,9 +10,11 @@ use App\Models\FileTranskrip;
 use App\Models\FileSTR;
 use App\Models\FileSIP;
 use App\Models\MasterBerkas;
+use App\Models\MasaBerlakuSIP;
 use Validator;
 use Yajra\DataTables\Facades\DataTables;
 use File;
+use Carbon\Carbon;
 
 
 class FileSIPController extends Controller
@@ -32,8 +34,10 @@ class FileSIPController extends Controller
         $getsip = FileSIP::where('file_sip.id_pegawai', $request->id)
         ->join('master_berkas_pegawai', 'file_sip.nama_file_sip_id', '=', 'master_berkas_pegawai.id')
         ->join('file_str','file_sip.no_reg','=','file_str.id')
+        ->leftjoin('masa_berlaku_sip','file_sip.id','=','masa_berlaku_sip.sip_id')
         ->select('file_sip.id','file_sip.id_pegawai','file_sip.no_sip','file_sip.file','master_berkas_pegawai.nama_berkas',
-        'file_str.no_reg_str','file_str.kompetensi','file_str.tgl_ed','file_sip.updated_at')
+        'file_str.no_reg_str','file_str.kompetensi','file_str.tgl_ed','file_sip.updated_at','masa_berlaku_sip.id AS id_masa_berlaku',
+        'masa_berlaku_sip.tgl_ed AS tgl_ed_sip','masa_berlaku_sip.pengingat','masa_berlaku_sip.status AS status_sip')
         ->orderBy('file_sip.created_at','desc')
         ->get();
 
@@ -245,6 +249,7 @@ class FileSIPController extends Controller
         $str = FileSTR::where('id_pegawai', $request->id)
         ->where(function($query){
             $query->where('status', 'active');
+            $query->orWhere('status', 'lifetime');
             $query->orWhere('status', 'proses');
         })
         ->select('file_str.id','file_str.no_reg_str')
@@ -307,6 +312,7 @@ class FileSIPController extends Controller
         $str = FileSTR::where('id_pegawai', $nostr->id_pegawai)
         ->where(function($query){
             $query->where('status', 'active');
+            $query->orWhere('status', 'lifetime');
             $query->orWhere('status', 'proses');
         })
         ->select('file_str.id','file_str.no_reg_str')
@@ -321,5 +327,93 @@ class FileSIPController extends Controller
         }
 
         return response()->json($response); 
+    }
+
+    public function exp(Request $request) {
+        $validated = Validator::make($request->all(),[
+            'tgl_ed_sip' => 'required',
+            'pengingat_sip' => 'required',
+            
+        ],[
+            'tgl_ed_sip.required' => 'Tgl Masa Berlaku Wajib diisi',
+            'pengingat_sip.required' => 'Tgl Pengingat Wajib diisi',
+        ]);
+
+        if ($validated->passes()) {
+            $date = Carbon::today()->toDateString();
+            if ($request->tgl_ed_sip != $date && $request->pengingat_sip != $date) {
+                $upload = MasaBerlakuSIP::create([
+                    'sip_id' => $request->sip_id_masa_berlaku,
+                    'tgl_ed' => $request->tgl_ed_sip,
+                    'pengingat' => $request->pengingat_sip,
+                    'status' => 'active'
+                   
+                ]);
+            }elseif ($request->tgl_ed_sip != $date && $request->pengingat_sip == $date) {
+                $upload = MasaBerlakuSIP::create([
+                    'sip_id' => $request->sip_id_masa_berlaku,
+                    'tgl_ed' => $request->tgl_ed_sip,
+                    'pengingat' => $request->pengingat_sip,
+                    'status' => 'proses'
+                   
+                ]);
+            }elseif ($request->tgl_ed_sip == $date && $request->pengingat_sip != $date) {
+                $upload = MasaBerlakuSIP::create([
+                    'sip_id' => $request->sip_id_masa_berlaku,
+                    'tgl_ed' => $request->tgl_ed_sip,
+                    'pengingat' => $request->pengingat_sip,
+                    'status' => 'nonactive'
+                   
+                ]);
+            }elseif ($request->tgl_ed_sip == $date && $request->pengingat_sip == $date) {
+                $upload = MasaBerlakuSIP::create([
+                    'sip_id' => $request->sip_id_masa_berlaku,
+                    'tgl_ed' => $request->tgl_ed_sip,
+                    'pengingat' => $request->pengingat_sip,
+                    'status' => 'nonactive'
+                ]);
+            }
+
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Masa Berlaku SIP Berhasil Disimpan',
+                'data' => $upload
+            ]);
+           
+        }else {
+            return response()->json([
+                'status' => 400,
+                'error' => $validated->messages()
+            ]);
+        }
+    }
+
+
+    public function desexp(Request $request) {
+        $delete = MasaBerlakuSIP::where('id', $request->id)->delete();
+        if ($delete) {
+            return response()->json([
+                'message' => 'Masa berlaku SIP Berhasil Dihapus',
+                'code' => 200,
+            ]);
+        }else {
+            return response()->json([
+                'message' => 'Gagal Hapus data',
+                'code' => 500,
+            ]);
+        }
+    }
+
+    public function status(Request $request) {
+        $upload = MasaBerlakuSIP::where('id', $request->id)->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Status Masa Berlaku SIP '.$request->nosip.' Berhasil Diubah',
+            'data' => $upload
+        ]);
     }
 }

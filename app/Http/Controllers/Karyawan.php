@@ -13,6 +13,7 @@ use App\Models\FileTranskrip;
 use App\Models\FileSTR;
 use App\Models\FileSIP;
 use App\Models\MasterBerkas;
+use App\Models\MasaBerlakuSIP;
 use Yajra\DataTables\Facades\DataTables;
 use Auth;
 
@@ -35,12 +36,16 @@ class Karyawan extends Controller
         $alert_exp = FileSTR::where('status','nonactive')->count();
         $peringatan_kontrak_kerja = FileRiwayatKerja::where('status','proses')->count();
         $peringatan_nonaktif_kontrak_kerja = FileRiwayatKerja::where('status','nonactive')->count();
+        $peringatan_sip = MasaBerlakuSIP::where('status','proses')->count();
+        $peringatan_nonaktif_sip = MasaBerlakuSIP::where('status','nonactive')->count();
 
         $data = [
             'alert_pengingat' => $alert_pengingat,
             'alert_exp' => $alert_exp,
             'peringatan_kontrak_kerja' => $peringatan_kontrak_kerja,
             'peringatan_nonaktif_kontrak_kerja' => $peringatan_nonaktif_kontrak_kerja,
+            'peringatan_sip' => $peringatan_sip,
+            'peringatan_nonaktif_sip' => $peringatan_nonaktif_sip,
             'deparetemen' => $deparetemen,
             'pegawai' => $pegawai
         ];

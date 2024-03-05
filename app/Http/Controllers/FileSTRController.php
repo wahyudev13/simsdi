@@ -64,23 +64,40 @@ class FileSTRController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = Validator::make($request->all(),[
-            'nama_file_str_id' => 'required',
-            'no_reg_str' => 'required',
-            'kompetensi' => 'required',
-            'tgl_ed' => 'required',
-            'pengingat' => 'required',
-            'file' => 'required|mimes:pdf|max:2048',
-        ],[
-            'nama_file_str_id.required' => 'Nama File Wajib diisi',
-            'no_reg_str.required' => 'Nomor reg Wajib diisi',
-            'kompetensi.required' => 'Kompetensi Wajib diisi',
-            'tgl_ed.required' => 'Tanggal Berkahir Wajib diisi',
-            'pengingat.required' => 'Pengingat Wajib diisi',
-            'file.required' => 'File Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan: jpg,png,pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
+        if ($request->enable_exp_str == true) {
+            $validated = Validator::make($request->all(),[
+                'nama_file_str_id' => 'required',
+                'no_reg_str' => 'required',
+                'kompetensi' => 'required',
+                'tgl_ed' => 'required',
+                'pengingat' => 'required',
+                'file' => 'required|mimes:pdf|max:2048',
+            ],[
+                'nama_file_str_id.required' => 'Nama File Wajib diisi',
+                'no_reg_str.required' => 'Nomor reg Wajib diisi',
+                'kompetensi.required' => 'Kompetensi Wajib diisi',
+                'tgl_ed.required' => 'Tanggal Berkahir Wajib diisi',
+                'pengingat.required' => 'Pengingat Wajib diisi',
+                'file.required' => 'File Wajib diisi',
+                'file.mimes' => 'Format File yang diizinkan: jpg,png,pdf',
+                'file.max' => 'File Maksimal 2MB'
+            ]);
+        }else {
+            $validated = Validator::make($request->all(),[
+                'nama_file_str_id' => 'required',
+                'no_reg_str' => 'required',
+                'kompetensi' => 'required',
+                'file' => 'required|mimes:pdf|max:2048',
+            ],[
+                'nama_file_str_id.required' => 'Nama File Wajib diisi',
+                'no_reg_str.required' => 'Nomor reg Wajib diisi',
+                'kompetensi.required' => 'Kompetensi Wajib diisi',
+                'file.required' => 'File Wajib diisi',
+                'file.mimes' => 'Format File yang diizinkan: jpg,png,pdf',
+                'file.max' => 'File Maksimal 2MB'
+            ]);  
+        }
+        
 
         if ($validated->passes()) {
             if ($request->hasFile('file')) {
@@ -94,55 +111,71 @@ class FileSTRController extends Controller
 
                 $date = Carbon::today()->toDateString();
 
-                if ($request->tgl_ed != $date && $request->pengingat != $date) {
+                if ($request->enable_exp_str == true) {
+                    if ($request->tgl_ed != $date && $request->pengingat != $date) {
+                        $upload = FileSTR::create([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'active',
+                            'file' => $filenameSimpan
+                        ]);
+                    }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
+                        $upload = FileSTR::create([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'proses',
+                            'file' => $filenameSimpan
+                        ]);
+                    }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
+                        $upload = FileSTR::create([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'nonactive',
+                            'file' => $filenameSimpan
+                        ]);
+                    }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
+                        $upload = FileSTR::create([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'nonactive',
+                            'file' => $filenameSimpan
+                        ]);
+                    }
+                }else {
+                    //STR SEUMUR HIDUP
                     $upload = FileSTR::create([
                         'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
                         'nama_file_str_id' => $request->nama_file_str_id,
                         'no_reg_str' => $request->no_reg_str,
                         'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'active',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
-                    $upload = FileSTR::create([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'proses',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
-                    $upload = FileSTR::create([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
-                    $upload = FileSTR::create([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
+                        'tgl_ed' => NULL,
+                        'pengingat' => NULL,
+                        'status' => 'lifetime',
                         'file' => $filenameSimpan
                     ]);
                 }
+
+               
                 
                 return response()->json([
                     'status' => 200,
@@ -202,23 +235,39 @@ class FileSTRController extends Controller
      */
     public function update(Request $request)
     {
-        $validated = Validator::make($request->all(),[
-            'nama_file_str_id' => 'required',
-            'no_reg_str' => 'required',
-            'kompetensi' => 'required',
-            'tgl_ed' => 'required',
-            'pengingat' => 'required',
-            'file' => 'mimes:pdf|max:2048',
-        ],[
-            'nama_file_str_id.required' => 'Nama File Wajib diisi',
-            'no_reg_str.required' => 'Nomor reg Wajib diisi',
-            'kompetensi.required' => 'Kompetensi Wajib diisi',
-            'tgl_ed.required' => 'Tanggal Berkahir Wajib diisi',
-            'pengingat.required' => 'Pengingat Wajib diisi',
-            // 'file.required' => 'File Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan:pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
+        if ($request->enable_exp_str_edit == true) {
+            $validated = Validator::make($request->all(),[
+                'nama_file_str_id' => 'required',
+                'no_reg_str' => 'required',
+                'kompetensi' => 'required',
+                'tgl_ed' => 'required',
+                'pengingat' => 'required',
+                'file' => 'mimes:pdf|max:2048',
+            ],[
+                'nama_file_str_id.required' => 'Nama File Wajib diisi',
+                'no_reg_str.required' => 'Nomor reg Wajib diisi',
+                'kompetensi.required' => 'Kompetensi Wajib diisi',
+                'tgl_ed.required' => 'Tanggal Berkahir Wajib diisi',
+                'pengingat.required' => 'Pengingat Wajib diisi',
+                // 'file.required' => 'File Wajib diisi',
+                'file.mimes' => 'Format File yang diizinkan:pdf',
+                'file.max' => 'File Maksimal 2MB'
+            ]);
+        }else {
+            $validated = Validator::make($request->all(),[
+                'nama_file_str_id' => 'required',
+                'no_reg_str' => 'required',
+                'kompetensi' => 'required',
+                'file' => 'mimes:pdf|max:2048',
+            ],[
+                'nama_file_str_id.required' => 'Nama File Wajib diisi',
+                'no_reg_str.required' => 'Nomor reg Wajib diisi',
+                'kompetensi.required' => 'Kompetensi Wajib diisi',
+                'file.mimes' => 'Format File yang diizinkan:pdf',
+                'file.max' => 'File Maksimal 2MB'
+            ]);
+        }
+        
 
         if ($validated->passes()) {
             if ($request->hasFile('file')) {
@@ -234,148 +283,147 @@ class FileSTRController extends Controller
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/STR'), $filenameSimpan);
 
                 $date = Carbon::today()->toDateString();
-                if ($request->tgl_ed != $date && $request->pengingat != $date) {
+
+                if ($request->enable_exp_str_edit == true) {
+                    if ($request->tgl_ed != $date && $request->pengingat != $date) {
+                        $upload = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'active',
+                            'file' => $filenameSimpan
+                        ]);
+                    }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
+                        $upload = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'proses',
+                            'file' => $filenameSimpan
+                        ]);
+                    }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
+                        $upload = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'nonactive',
+                            'file' => $filenameSimpan
+                        ]);
+                    }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
+                        $upload = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'nonactive',
+                            'file' => $filenameSimpan
+                        ]);
+                    }
+                }else {
                     $upload = FileSTR::where('id', $request->id)->update([
                         'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
                         'nama_file_str_id' => $request->nama_file_str_id,
                         'no_reg_str' => $request->no_reg_str,
                         'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'active',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
-                    $upload = FileSTR::where('id', $request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'proses',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
-                    $upload = FileSTR::where('id', $request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
-                    $upload = FileSTR::where('id', $request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
+                        'tgl_ed' => NULL,
+                        'pengingat' => NULL,
+                        'status' => 'lifetime',
                         'file' => $filenameSimpan
                     ]);
                 }
+               
                 
                 return response()->json([
                     'status' => 200,
                     'message' => 'STR Berhasil Diubah',
                     'data' => $upload
                 ]);
-    
-                // $upload = FileSTR::where('id', $request->id)->update([
-                //     'id_pegawai' => $request->id_pegawai,
-                //     //'nik_pegawai' => $request->nik_pegawai,
-                //     'nama_file_str_id' => $request->nama_file_str_id,
-                //     'no_reg_str' => $request->no_reg_str,
-                //     'kompetensi' => $request->kompetensi,
-                //     'tgl_ed' => $request->tgl_ed,
-                //     'pengingat' => $request->pengingat,
-                //     'file' => $filenameSimpan
-                // ]);
-                // return response()->json([
-                //     'status' => 200,
-                //     'message' => 'STR Berhasil Diubah',
-                //     'data' => $upload
-                // ]);
             }else {
                 $date = Carbon::today()->toDateString();
-                if ($request->tgl_ed != $date && $request->pengingat != $date) {
+                if ($request->enable_exp_str_edit == true){
+                    if ($request->tgl_ed != $date && $request->pengingat != $date) {
+                        $upload2 = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'active',
+                        
+                        ]);
+                    }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
+                        $upload2 = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'proses',
+                        
+                        ]);
+                    }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
+                        $upload2 = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'nonactive',
+                        ]);
+                    }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
+                        $upload2 = FileSTR::where('id', $request->id)->update([
+                            'id_pegawai' => $request->id_pegawai,
+                            //'nik_pegawai' => $request->nik_pegawai,
+                            'nama_file_str_id' => $request->nama_file_str_id,
+                            'no_reg_str' => $request->no_reg_str,
+                            'kompetensi' => $request->kompetensi,
+                            'tgl_ed' => $request->tgl_ed,
+                            'pengingat' => $request->pengingat,
+                            'status' => 'nonactive',
+                        
+                        ]);
+                    }
+                }else {
                     $upload2 = FileSTR::where('id', $request->id)->update([
                         'id_pegawai' => $request->id_pegawai,
                         //'nik_pegawai' => $request->nik_pegawai,
                         'nama_file_str_id' => $request->nama_file_str_id,
                         'no_reg_str' => $request->no_reg_str,
                         'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'active',
-                       
-                    ]);
-                }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
-                    $upload2 = FileSTR::where('id', $request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'proses',
-                     
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
-                    $upload2 = FileSTR::where('id', $request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
-                    $upload2 = FileSTR::where('id', $request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                        //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_str_id' => $request->nama_file_str_id,
-                        'no_reg_str' => $request->no_reg_str,
-                        'kompetensi' => $request->kompetensi,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                      
+                        'tgl_ed' => NULL,
+                        'pengingat' => NULL,
+                        'status' => 'lifetime',
+                    
                     ]);
                 }
+               
                 
                 return response()->json([
                     'status' => 200,
                     'message' => 'STR Berhasil Diubah',
                     'data' => $upload2
                 ]);
-                // $upload = FileSTR::where('id', $request->id)->update([
-                //     'id_pegawai' => $request->id_pegawai,
-                //     //'nik_pegawai' => $request->nik_pegawai,
-                //     'nama_file_str_id' => $request->nama_file_str_id,
-                //     'no_reg_str' => $request->no_reg_str,
-                //     'kompetensi' => $request->kompetensi,
-                //     'tgl_ed' => $request->tgl_ed,
-                //     'pengingat' => $request->pengingat,
-                    
-                // ]);
-                // return response()->json([
-                //     'status' => 200,
-                //     'message' => 'STR Berhasil Diubah',
-                //     'data' => $upload
-                // ]);
             }
            
         }else {

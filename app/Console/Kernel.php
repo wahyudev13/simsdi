@@ -16,12 +16,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
        
-
+        $schedule->command('notifikasi:sip')->everyMinute();
         $schedule->command('notifikasi:str')->everyMinute();
         $schedule->command('nonaktif:str')->everyMinute();
         $schedule->command('notifikasi:kontrak')->everyMinute();
         $schedule->command('nonaktif:kontrak')->everyMinute();
-
+    
 
     }
 

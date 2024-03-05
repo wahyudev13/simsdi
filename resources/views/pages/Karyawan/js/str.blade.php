@@ -52,7 +52,11 @@
                                 <span class="badge badge-secondary"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span><br>
                                 <small><i class="fas fa-info-circle"></i> Dokumen Sudah ada Yang Baru (Diperbaharui)</small>
                                 `;
-                        } else {
+                        } else if (data.status === 'lifetime'){
+                            return `
+                            <span class="badge badge-success">STR Seumur Hidup</span>
+                                `;
+                        }else {
                             return `
                                 <span class="badge badge-success"><i class="fas fa-bell"></i> ${data.pengingat}</span>
                                 <span class="badge badge-info"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span>
@@ -90,7 +94,8 @@
                     // {{ asset('/File/Pegawai/Dokumen/STR/${data.file}') }}
                     data: null,
                     render: function(data, row, type) {
-                        return `
+                        if (data.status !== 'lifetime') {
+                            return `
                                 <div class="btn-group">
                                     <button class="btn btn-info btn-sm dropdown-toggle" title="Set Status Dokumen" type="button" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-exclamation-circle"></i>
@@ -116,9 +121,24 @@
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_str"  title="Hapus Dokumen">Hapus</a>
                                     </div>
                                 </div>
-
-                                
                                 `;
+                        }else{
+                            return `
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" title="Aksi Dokumen" type="button" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-solid fa-bars"></i>
+                                       
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Dokumen" id="view-str"  data-toggle="modal" data-target="#modalSTR">Lihat Dokumen</a>
+                                        <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditSTR" id="edit_str">Edit Dokumen</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_str"  title="Hapus Dokumen">Hapus</a>
+                                    </div>
+                                </div>
+                                `;
+                        }
+                       
                     }
                 },
 
@@ -224,7 +244,8 @@
         $('#modaladdSTR').on('hidden.bs.modal', function() {
             $('#modaladdSTR').find('.form-control').val("");
             $('#modaladdSTR').find('.custom-file-input').val("");
-
+            $('#enable_exp_str').prop('checked', false);
+            document.getElementById('masa-berlaku').innerHTML=``;
             $('.alert-danger').addClass('d-none');
         });
 
@@ -241,12 +262,32 @@
                 success: function(response) {
                     $('#id-str-edit').val(response.data.id);
                     $('#id-str-pegawai-edit').val(response.data.id_pegawai);
-                    // $('#nik-str-edit').val(response.data.nik_pegawai);
                     $('#nama_file_str_id_edit').val(response.data.nama_file_str_id);
                     $('#no_reg_str_edit').val(response.data.no_reg_str);
                     $('#kompetensi_edit').val(response.data.kompetensi);
-                    $('#tgl_ed_edit').val(response.data.tgl_ed);
-                    $('#pengingat_edit').val(response.data.pengingat);
+                    if (response.data.tgl_ed == null || response.data.pengingat == null) {
+                        $('#enable_exp_str_edit').prop('checked', false);
+                        document.getElementById('masa-berlaku-edit').innerHTML=``;
+                    }else{
+                        $('#enable_exp_str_edit').prop('checked', true);
+                        document.getElementById('masa-berlaku-edit').innerHTML=`
+                            <div class="form-group">
+                                <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
+                                        class="text-danger">*</label></label>
+                                <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
+                            </div>
+                            <div class="form-group">
+                                <label for="pengingat_edit" class="col-form-label">Pengingat <label
+                                        class="text-danger">*</label></label>
+                                <input type="date" class="form-control pengingat_edit" id="pengingat_edit"
+                                    name="pengingat">
+                            </div>
+                        `;
+                        $('#tgl_ed_edit').val(response.data.tgl_ed);
+                        $('#pengingat_edit').val(response.data.pengingat);
+                    }
+                    
+                    // console.log(response.data.tgl_ed);
                 }
             });
         });
@@ -423,8 +464,8 @@
             });
         });
 
-         //HAPUS Bukti Verifikasi STR
-         $(document).on('click', '#hapus-bukti-str', function() {
+        //HAPUS Bukti Verifikasi STR
+        $(document).on('click', '#hapus-bukti-str', function() {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

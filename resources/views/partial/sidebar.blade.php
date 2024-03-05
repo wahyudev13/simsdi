@@ -53,6 +53,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     {{-- <h6 class="collapse-header">Custom Components:</h6> --}}
                     <a class="collapse-item @yield('pengingat-str')" href="{{ route('pengingat.str.index') }}">STR </a>
+                    <a class="collapse-item @yield('pengingat-sip')" href="{{ route('pengingat.sip.pengingatSip') }}">SIP </a>
                     {{-- @if ($countstr > 0)
                     <span class="badge badge-danger">{{$countstr}}</span></a>  
                     @endif  --}}

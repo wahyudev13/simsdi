@@ -71,6 +71,68 @@
                     name: 'kompetensi'
                 },
                 {
+                    data: function(data, row, type) {
+                        if (data.id_masa_berlaku === null) {
+                            return `
+                            <a class="badge badge-danger" href="#" data-id="${data.id}" title="Tambah Masa Berlaku SIP" data-toggle="modal" data-target="#modal-add-masa-berlaku" id="add-masa-berlaku">
+                               <i class="fas fa-times"></i> Belum ada masa berlaku
+                            </a>
+                            `
+                        } else {
+                            if (data.status_sip === 'nonactive') {
+                                return `
+                                <span class="badge badge-danger"><i class="fas fa-bell"></i> ${data.pengingat}</span>
+                                <span class="badge badge-danger"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed_sip}</span><br>
+                                <small><i class="fas fa-info-circle"></i> Masa Dokumen Berakhir</small>
+
+                                <br>
+                                <br>
+                                <a class="badge badge-danger" href="#" data-id="${data.id_masa_berlaku}" title="Hapus" id="hapus-masa-berlaku">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </a>
+                                `;
+                            } else if (data.status_sip === 'proses') {
+                                return `
+                                <span class="badge badge-danger"><i class="fas fa-bell"></i> ${data.pengingat}</span>
+                                <span class="badge badge-info"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed_sip}</span><br>
+                                <small><i class="fas fa-info-circle"></i> Masa Dokumen Akan Berakhir (Ingatkan)</small>
+                                <br>
+                                <br>
+                                <a class="badge badge-danger" href="#" data-id="${data.id_masa_berlaku}" title="Hapus" id="hapus-masa-berlaku">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </a>
+                                `;
+                            } else if (data.status_sip === 'changed') {
+                                return `
+                                <span class="badge badge-secondary"><i class="fas fa-bell"></i> ${data.pengingat}</span>
+                                <span class="badge badge-secondary"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed_sip}</span><br>
+                                <small><i class="fas fa-info-circle"></i> Dokumen Sudah ada Yang Baru (Diperbaharui)</small>
+                                <br>
+                                <br>
+                                <a class="badge badge-danger" href="#" data-id="${data.id_masa_berlaku}" title="Hapus" id="hapus-masa-berlaku">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </a>
+                                
+                                `;
+                            } else if (data.status_sip === 'lifetime') {
+                                return `
+                            <span class="badge badge-success">SIP Seumur Hidup</span>
+                                `;
+                            } else {
+                                return `
+                                <span class="badge badge-success"><i class="fas fa-bell"></i> ${data.pengingat}</span>
+                                <span class="badge badge-info"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed_sip}</span>
+                                <br>
+                                <br>
+                                <a class="badge badge-danger" href="#" data-id="${data.id_masa_berlaku}" title="Hapus" id="hapus-masa-berlaku">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </a>
+                                `;
+                            }
+                        }
+                    }
+                },
+                {
                     data: 'updated_at',
                     name: 'updated_at'
                 },
@@ -78,7 +140,9 @@
                     // {{ asset('/Pegawai/Dokumen/STR/${data.file}') }}
                     data: null,
                     render: function(data, row, type) {
-                        return `
+
+                        if (data.id_masa_berlaku == null) {
+                            return `
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-solid fa-bars"></i>
@@ -92,10 +156,100 @@
                                 </div>
 
                                 `;
+                        } else {
+                            return `
+                                <div class="btn-group">
+                                    <button class="btn btn-info btn-sm dropdown-toggle" title="Set Status Dokumen" type="button" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item set-status-sip" href="#"  data-id="${data.id_masa_berlaku}" data-status="active" data-nosip="${data.no_sip}" id="activesip"  title="Aktif">Aktif</a>
+                                        <a class="dropdown-item set-status-sip" href="#"  data-id="${data.id_masa_berlaku}" data-status="proses" data-nosip="${data.no_sip}" id="prosessip"  title="Ingatkan">Ingatkan</a>
+                                        <a class="dropdown-item set-status-sip" href="#"  data-id="${data.id_masa_berlaku}" data-status="nonactive" data-nosip="${data.no_sip}" id="nonactivesip"  title="Berakhir">Berakhir</a>
+                                        <a class="dropdown-item set-status-sip" href="#"  data-id="${data.id_masa_berlaku}" data-status="changed" data-nosip="${data.no_sip}" id="changedsip"  title="Diperbaharui">Diperbaharui</a>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-solid fa-bars"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" data-id="${data.file}"   title="Lihat Dokumen" id="view-sip"  data-toggle="modal" data-target="#modalSIP">Lihat Dokumen</a>
+                                        <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditSIP" id="edit_sip">Edit Dokumen</a>
+                                        <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_sip"  title="Hapus Dokumen">Hapus</a>
+                                    </div>
+                                </div>
+
+                                `;
+                        }
+
                     }
                 },
 
             ]
+        });
+
+        $('table').on('click', '#add-masa-berlaku', function(e) {
+            e.preventDefault();
+            var sip = $(this).data('id');
+            $('#sip_id_masa_berlaku').val(sip);
+
+        });
+
+        $('#form-masa-berlaku-sip').on('submit', function(e) {
+            e.preventDefault();
+            // var file = $('.file').val();
+            // var rename = file.replace("C:\\fakepath\\", "");
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            var form = $('#form-masa-berlaku-sip')[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: "POST",
+                enctype: "multipart/form-data",
+                url: "{{ route('berkas.sip.exp') }}",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(response) {
+                    if (response.status == 400) {
+                        $('#error_list_berlaku_sip').html("")
+                        $('#error_list_berlaku_sip').addClass("alert alert-danger")
+                        $('#error_list_berlaku_sip').removeClass("d-none")
+
+                        $.each(response.error, function(key, error_value) {
+                            $('#error_list_berlaku_sip').append('<li>' +
+                                error_value +
+                                '</li>');
+                        });
+                    } else {
+                        $('#success_message').html("")
+                        $('#success_message').removeClass("alert-primary")
+                        $('#success_message').removeClass("alert-warning")
+                        $('#success_message').addClass("alert alert-success")
+                        // $('#success_message').removeClass("d-none")
+                        $('#success_message').text(response.message)
+                        $('#modal-add-masa-berlaku').modal('hide')
+                        $('#modal-add-masa-berlaku').find('.form-control').val("");
+
+                        var tbSIP = $('#tbSIP').DataTable();
+                        tbSIP.ajax.reload();
+                    }
+                }
+            });
+        });
+
+        $('#modal-add-masa-berlaku').on('hidden.bs.modal', function() {
+            $('#modal-add-masa-berlaku').find('.form-control').val("");
+            $('#modal-add-masa-berlaku').find('.custom-file-input').val("");
+            $('.alert-danger').addClass('d-none');
         });
 
         //VIEW Berkas SIP
@@ -208,8 +362,8 @@
                     minimumResultsForSearch: -1,
                     ajax: {
                         type: "GET",
-                        url: "{{route('selected.str.get')}}",
-                        data: function (params) {
+                        url: "{{ route('selected.str.get') }}",
+                        data: function(params) {
                             return {
                                 id: response.data.id
                             };
@@ -320,5 +474,67 @@
                 }
             });
         }
+    });
+
+    //HAPUS MASA BERLAKU SIP
+    $(document).on('click', '#hapus-masa-berlaku', function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        if (confirm('Yakin Ingin Menghapus Bukti Verifikasi STR ?')) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('berkas.sip.desexp') }}",
+                data: {
+                    'id': $(this).data('id'),
+                },
+                dataType: "json",
+                success: function(response) {
+                    $('#success_message').html("")
+                    $('#success_message').removeClass("alert-primary")
+                    $('#success_message').removeClass("alert-success")
+                    $('#success_message').addClass("alert alert-warning")
+                    $('#success_message').text(response.message)
+                    var tbSIP = $('#tbSIP').DataTable();
+                    tbSIP.ajax.reload();
+
+                }
+            });
+        }
+    });
+
+    //UPDATE STATUS SIP
+    $(document).on('click', '.set-status-sip', function(e) {
+        e.preventDefault();
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "{{ route('berkas.sip.status') }}",
+            data: {
+                'id': $(this).data('id'),
+                'status': $(this).data('status'),
+                'nosip': $(this).data('nosip'),
+            },
+            dataType: "json",
+            success: function(response) {
+                $('#success_message').html("")
+                $('#success_message').removeClass("alert-warning")
+                $('#success_message').removeClass("alert-success")
+                $('#success_message').addClass("alert alert-primary")
+                $('#success_message').text(response.message)
+
+                var tbSIP = $('#tbSIP').DataTable();
+                tbSIP.ajax.reload();
+            }
+        });
+
     });
 </script>

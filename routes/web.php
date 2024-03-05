@@ -194,6 +194,9 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::post('/karyawan/berkas/sip/destroy', [FileSIPController::class, 'destroy'])->name('berkas.sip.destroy');
         Route::get('/karyawan/berkas/sip/edit', [FileSIPController::class, 'edit'])->name('berkas.sip.edit');
         Route::post('/karyawan/berkas/sip/update', [FileSIPController::class, 'update'])->name('berkas.sip.update');
+        Route::post('/karyawan/berkas/sip/exp', [FileSIPController::class, 'exp'])->name('berkas.sip.exp');
+        Route::post('/karyawan/berkas/sip/desexp', [FileSIPController::class, 'desexp'])->name('berkas.sip.desexp');
+        Route::post('/karyawan/berkas/sip/status', [FileSIPController::class, 'status'])->name('berkas.sip.status');
 
         //Berkas Riwayat kerja
         // Route::get('/karyawan/berkas/riwayat/get/{id}', [FileRiwayatKerjaController::class, 'getRiwayat'])->name('berkas.riwayat.getRiwayat');
@@ -214,6 +217,8 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('/pengingat/str/get', [PengingatController::class, 'get'])->name('pengingat.str.get');
         Route::get('/pengingat/kontrak', [PengingatController::class, 'pengingatKontrak'])->name('pengingat.kontrak.pengingatKontrak');
         Route::get('/pengingat/kontrak/get', [PengingatController::class, 'getkontrak'])->name('pengingat.kontrak.get');
+        Route::get('/pengingat/sip', [PengingatController::class, 'pengingatSip'])->name('pengingat.sip.pengingatSip');
+        Route::get('/pengingat/sip/get', [PengingatController::class, 'getSip'])->name('pengingat.sip.get');
 
         Route::get('karyawan/berkas/orientasi', [FileOrientasiController::class, 'getOrientasi'])->name('berkas.orientasi.get');
         Route::post('karyawan/berkas/orientasi/store', [FileOrientasiController::class, 'store'])->name('berkas.orientasi.store');

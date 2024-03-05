@@ -19,7 +19,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {{ $pegawai->jbtn }} /  {{ $pegawai->nama_dep }}
+                                {{ $pegawai->jbtn }} / {{ $pegawai->nama_dep }}
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pegawai->nama }} ({{ $pegawai->nik }})
                             </div>
@@ -84,7 +84,8 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered berkas-pendidikan" id="tbJenjang" width="100%" cellspacing="0">
+                        <table class="table table-bordered berkas-pendidikan" id="tbJenjang" width="100%"
+                            cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -148,7 +149,7 @@
                                     <th>Nama File</th>
                                     <th>Nomor REG</th>
                                     <th>Bidang Kesehatan</th>
-                                    <th>Berlaku Sampai</th>
+                                    <th>Masa Berlaku</th>
                                     <th>Verifikasi</th>
                                     <th>Update</th>
                                     <th>Aksi</th>
@@ -180,6 +181,7 @@
                                     <th>Nomor SIP</th>
                                     <th>Nomor Reg STR</th>
                                     <th>Bidang Kesehatan</th>
+                                    <th>Masa Berlaku</th>
                                     <th>Update</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -209,7 +211,7 @@
                                     <th>No</th>
                                     <th>Nama File</th>
                                     <th>Nomor</th>
-                                    <th>Berlaku Sampai</th>
+                                    <th>Masa Berlaku</th>
                                     <th>Update</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -322,7 +324,7 @@
                             </thead>
                         </table>
                     </div>
-                </div>                  
+                </div>
                 <div class="tab-pane fade" id="lain" role="tabpanel" aria-labelledby="lain-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-secondary btn-icon-split btn-sm" data-toggle="modal"
@@ -629,16 +631,20 @@
                                     class="text-danger">*</label></label>
                             <input type="text" class="form-control kompetensi" id="kompetensi" name="kompetensi">
                         </div>
+
+
                         <div class="form-group">
-                            <label for="tgl_ed" class="col-form-label">Berkalu Sampai <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed" id="tgl_ed" name="tgl_ed">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="enable_exp_str"
+                                    name="enable_exp_str">
+                                <label class="custom-control-label" for="enable_exp_str"><strong>Aktifkan Masa Berlaku
+                                        STR</strong></label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="pengingat" class="col-form-label">Pengingat <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat" id="pengingat" name="pengingat">
-                        </div>
+                        <div id="masa-berlaku"></div>
+
+
+
                         <div class="form-group">
                             <label for="file" class="col-form-label">File <span
                                     class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
@@ -701,16 +707,15 @@
                                 name="kompetensi">
                         </div>
                         <div class="form-group">
-                            <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="enable_exp_str_edit"
+                                    name="enable_exp_str_edit">
+                                <label class="custom-control-label" for="enable_exp_str_edit"><strong>Aktifkan Masa
+                                        Berlaku STR</strong></label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="pengingat_edit" class="col-form-label">Pengingat <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat_edit" id="pengingat_edit"
-                                name="pengingat">
-                        </div>
+                        <div id="masa-berlaku-edit"></div>
+
                         <div class="form-group">
                             <label for="file_edit" class="col-form-label">File <span
                                     class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
@@ -1110,12 +1115,12 @@
                     <div id="error_list_ori"></div>
                     <form method="POST" id="form-tambah-orientasi" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" class="id_pegawai" id="id_pegawai_orientasi" value="{{ $pegawai->id }}" name="id_pegawai">
+                        <input type="hidden" class="id_pegawai" id="id_pegawai_orientasi"
+                            value="{{ $pegawai->id }}" name="id_pegawai">
                         <div class="form-group">
                             <label for="nama_file_ori" class="col-form-label">Nama Dokumen<label
                                     class="text-danger">*</label></label>
-                            <select class="custom-select" id="nama_file_ori"
-                                name="nama_file_ori">
+                            <select class="custom-select" id="nama_file_ori" name="nama_file_ori">
                                 <option value="" selected>Choose...</option>
                                 @foreach ($master_berkas_orientasi as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
@@ -1129,12 +1134,12 @@
                         </div>
                         <div class="form-group">
                             <label for="tgl_mulai" class="col-form-label">Tanggal Mulai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_mulai" name="tgl_mulai">
                         </div>
                         <div class="form-group">
                             <label for="tgl_selesai" class="col-form-label">Tanggal Selesai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_selesai" name="tgl_selesai">
                         </div>
                         <div class="form-group">
@@ -1177,8 +1182,7 @@
                         <div class="form-group">
                             <label for="nama_file_ori_edit" class="col-form-label">Nama Dokumen<label
                                     class="text-danger">*</label></label>
-                            <select class="custom-select" id="nama_file_ori_edit"
-                                name="nama_file_ori">
+                            <select class="custom-select" id="nama_file_ori_edit" name="nama_file_ori">
                                 <option value="" selected>Choose...</option>
                                 @foreach ($master_berkas_orientasi as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
@@ -1188,16 +1192,17 @@
                         <div class="form-group">
                             <label for="nomor_orientasi_edit" class="col-form-label">Nomor<label
                                     class="text-danger">*</label></label>
-                            <input type="text" class="form-control" id="nomor_orientasi_edit" name="nomor_orientasi">
+                            <input type="text" class="form-control" id="nomor_orientasi_edit"
+                                name="nomor_orientasi">
                         </div>
                         <div class="form-group">
                             <label for="tgl_mulai_edit" class="col-form-label">Tanggal Mulai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_mulai_edit" name="tgl_mulai">
                         </div>
                         <div class="form-group">
                             <label for="tgl_selesai_edit" class="col-form-label">Tanggal Selesai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_selesai_edit" name="tgl_selesai">
                         </div>
                         <div class="form-group">
@@ -1235,13 +1240,11 @@
                     <div id="error_list_lainlain"></div>
                     <form method="POST" id="form-tambah-lainlain" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" id="id_pegawai_lain" value="{{ $pegawai->id }}"
-                            name="id_pegawai">
+                        <input type="hidden" id="id_pegawai_lain" value="{{ $pegawai->id }}" name="id_pegawai">
                         <div class="form-group">
                             <label for="nama_file_id_lainlain" class="col-form-label">Nama Dokumen<label
                                     class="text-danger">*</label></label>
-                            <select class="custom-select" id="nama_file_id_lainlain"
-                                name="nama_file_id_lainlain">
+                            <select class="custom-select" id="nama_file_id_lainlain" name="nama_file_id_lainlain">
                                 <option value="" selected>Choose...</option>
                                 @foreach ($master_berkas_lain as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
@@ -1287,7 +1290,8 @@
                         <div class="form-group">
                             <label for="nama_file_id_lainlain_edit" class="col-form-label">Nama Dokumen<label
                                     class="text-danger">*</label></label>
-                            <select class="custom-select" id="nama_file_id_lainlain_edit" name="nama_file_id_lainlain">
+                            <select class="custom-select" id="nama_file_id_lainlain_edit"
+                                name="nama_file_id_lainlain">
                                 <option value="" selected>Choose...</option>
                                 @foreach ($master_berkas_lain as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
@@ -1354,263 +1358,271 @@
     </div>
     <!-- ./ end Modal -->
 
-     <!-- Modal Tambah Verifikasi STR -->
+    <!-- Modal Tambah Verifikasi STR -->
     <div class="modal fade" id="modal-add-bukti-str" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Tambah Bukti Verifikasi STR</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="error_list_bukti_str"></div>
-                 <form method="POST" id="form-tambah-bukti-str" enctype="multipart/form-data">
-                     @csrf
-                     <input type="hidden" id="id-str-bukti" name="str_id">
-                     <div class="form-group">
-                         <label for="file-bukti-str" class="col-form-label">File <span
-                                 class="badge badge-secondary">.pdf</span><label
-                                 class="text-danger">*</label></label>
-                         <input type="file" class="form-control" id="file-bukti-str" name="file">
-                         <small>Ukuran maksimal 2MB</small>
-                     </div>
-                     <div class="form-group">
-                         <label for="ket-bukti-str" class="col-form-label">Keterangan</label>
-                         <input type="text" class="form-control" id="ket-bukti-str" name="ket_bukti">
-                     </div>
-                     <p class="text-danger">*Wajib Diisi</p>
-                     <div class="modal-footer">
-                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                         <button type="submit" class="btn btn-success" id="add_bukti_str">Simpan</button>
-                     </div>
-                 </form>
-             </div>
+        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Bukti Verifikasi STR</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_bukti_str"></div>
+                    <form method="POST" id="form-tambah-bukti-str" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="id-str-bukti" name="str_id">
+                        <div class="form-group">
+                            <label for="file-bukti-str" class="col-form-label">File <span
+                                    class="badge badge-secondary">.pdf</span><label
+                                    class="text-danger">*</label></label>
+                            <input type="file" class="form-control" id="file-bukti-str" name="file">
+                            <small>Ukuran maksimal 2MB</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="ket-bukti-str" class="col-form-label">Keterangan</label>
+                            <input type="text" class="form-control" id="ket-bukti-str" name="ket_bukti">
+                        </div>
+                        <p class="text-danger">*Wajib Diisi</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="add_bukti_str">Simpan</button>
+                        </div>
+                    </form>
+                </div>
 
-         </div>
-     </div>
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
     <!-- Modal Tambah SPK RKK -->
     <div class="modal fade" id="modal-add-spk" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Tambah SPK & RKK</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="error_list_spk"></div>
-                 <form method="POST" id="form-tambah-spk" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="id_pegawai_spk" value="{{ $pegawai->id }}" name="id_pegawai">
-                    <div class="form-group">
-                        <label for="no-spk" class="col-form-label">Nomor SPK <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="no-spk" name="no_spk">
-                    </div>
-                    <div class="form-group">
-                        <label for="dep-spk" class="col-form-label">Unit Kerja <label
-                                class="text-danger">*</label></label>
-                        {{-- <select class="custom-select" id="dep-spk" name="dep_spk">
+        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah SPK & RKK</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_spk"></div>
+                    <form method="POST" id="form-tambah-spk" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="id_pegawai_spk" value="{{ $pegawai->id }}" name="id_pegawai">
+                        <div class="form-group">
+                            <label for="no-spk" class="col-form-label">Nomor SPK <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="no-spk" name="no_spk">
+                        </div>
+                        <div class="form-group">
+                            <label for="dep-spk" class="col-form-label">Unit Kerja <label
+                                    class="text-danger">*</label></label>
+                            {{-- <select class="custom-select" id="dep-spk" name="dep_spk">
                             <option value="" selected>Choose...</option>
                             @foreach ($deparetemen as $item)
                                 <option value="{{ $item->dep_id }}">{{ $item->nama }}</option>
                             @endforeach
                         </select> --}}
-                        <select class="form-select select2 select-unit-kerja" id="dep-spk" name="dep_spk" data-placeholder="Pilih Unit Kerja">
-                            <option value="">-- Pilih --</option>
-                            @foreach ($deparetemen as $item)
-                                <option value="{{ $item->dep_id }}">{{ $item->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="kualifikasi" class="col-form-label">Kualifikasi <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="kualifikasi" name="kualifikasi">
-                    </div>
-                    <div class="form-group">
-                        <label for="file-spk" class="col-form-label">File <span
-                                class="badge badge-secondary">.pdf</span><label
-                                class="text-danger">*</label></label>
-                        <input type="file" class="form-control" id="file-spk" name="file">
-                        <small>Ukuran maksimal 2MB</small>
-                    </div>
-                    
-                    <p class="text-danger">*Wajib Diisi</p>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
-                    </div>
-                 </form>
-             </div>
+                            <select class="form-select select2 select-unit-kerja" id="dep-spk" name="dep_spk"
+                                data-placeholder="Pilih Unit Kerja">
+                                <option value="">-- Pilih --</option>
+                                @foreach ($deparetemen as $item)
+                                    <option value="{{ $item->dep_id }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="kualifikasi" class="col-form-label">Kualifikasi <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="kualifikasi" name="kualifikasi">
+                        </div>
+                        <div class="form-group">
+                            <label for="file-spk" class="col-form-label">File <span
+                                    class="badge badge-secondary">.pdf</span><label
+                                    class="text-danger">*</label></label>
+                            <input type="file" class="form-control" id="file-spk" name="file">
+                            <small>Ukuran maksimal 2MB</small>
+                        </div>
 
-         </div>
-     </div>
+                        <p class="text-danger">*Wajib Diisi</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
     <!-- Modal Edit SPK RKK -->
     <div class="modal fade" id="modal-edit-spk" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Edit SPK & RKK</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="error_list_spk_edit"></div>
-                 <form method="POST" id="form-edit-spk" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="id_pegawai_spk_edit" name="id_pegawai">
-                    <input type="hidden" id="id_spk_edit" name="id">
-                    
-                    <div class="form-group">
-                        <label for="no-spk-edit" class="col-form-label">Nomor SPK <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="no-spk-edit" name="no_spk">
-                    </div>
-                    <div class="form-group">
-                        <label for="dep-spk-edit" class="col-form-label">Unit Kerja <label
-                                class="text-danger">*</label></label>
-                        <select class="form-select select2 select-unit-kerja-edit" id="dep-spk-edit" name="dep_spk" data-placeholder="Pilih Unit Kerja">
-                            @foreach ($deparetemen as $item)
-                                <option value="{{ $item->dep_id }}">{{ $item->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="kualifikasi-edit" class="col-form-label">Kualifikasi <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="kualifikasi-edit" name="kualifikasi">
-                    </div>
-                    <div class="form-group">
-                        <label for="file-spk-edit" class="col-form-label">File <span
-                                class="badge badge-secondary">.pdf</span><label
-                                class="text-danger">*</label></label>
-                        <input type="file" class="form-control" id="file-spk-edit" name="file">
-                        <small>Ukuran maksimal 2MB</small>
-                    </div>
-                    
-                    <p class="text-danger">*Wajib Diisi</p>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success" id="add-spk-edit">Update</button>
-                    </div>
-                 </form>
-             </div>
+        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit SPK & RKK</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_spk_edit"></div>
+                    <form method="POST" id="form-edit-spk" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="id_pegawai_spk_edit" name="id_pegawai">
+                        <input type="hidden" id="id_spk_edit" name="id">
 
-         </div>
-     </div>
+                        <div class="form-group">
+                            <label for="no-spk-edit" class="col-form-label">Nomor SPK <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="no-spk-edit" name="no_spk">
+                        </div>
+                        <div class="form-group">
+                            <label for="dep-spk-edit" class="col-form-label">Unit Kerja <label
+                                    class="text-danger">*</label></label>
+                            <select class="form-select select2 select-unit-kerja-edit" id="dep-spk-edit"
+                                name="dep_spk" data-placeholder="Pilih Unit Kerja">
+                                @foreach ($deparetemen as $item)
+                                    <option value="{{ $item->dep_id }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="kualifikasi-edit" class="col-form-label">Kualifikasi <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="kualifikasi-edit" name="kualifikasi">
+                        </div>
+                        <div class="form-group">
+                            <label for="file-spk-edit" class="col-form-label">File <span
+                                    class="badge badge-secondary">.pdf</span><label
+                                    class="text-danger">*</label></label>
+                            <input type="file" class="form-control" id="file-spk-edit" name="file">
+                            <small>Ukuran maksimal 2MB</small>
+                        </div>
+
+                        <p class="text-danger">*Wajib Diisi</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="add-spk-edit">Update</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
     <!-- Modal Tambah Uraian -->
     <div class="modal fade" id="modal-add-uraian" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Tambah Uraian Tugas</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="error_list_uraian"></div>
-                 <form method="POST" id="form-tambah-uraian" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="id_pegawai_uraian" value="{{ $pegawai->id }}" name="id_pegawai">
-                    <div class="form-group">
-                        <label for="dep-uraian">Unit Kerja <label class="text-danger">*</label></label>
-                        <select class="form-select select2 select-departemen" id="dep-uraian"
-                            data-placeholder="Pilih Unit Kerja" name="dep_uraian">
+        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Uraian Tugas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_uraian"></div>
+                    <form method="POST" id="form-tambah-uraian" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="id_pegawai_uraian" value="{{ $pegawai->id }}" name="id_pegawai">
+                        <div class="form-group">
+                            <label for="dep-uraian">Unit Kerja <label class="text-danger">*</label></label>
+                            <select class="form-select select2 select-departemen" id="dep-uraian"
+                                data-placeholder="Pilih Unit Kerja" name="dep_uraian">
 
-                            @foreach ($deparetemen as $item)
-                                <option value="{{ $item->dep_id }}">{{ $item->nama }} </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="jabatan" class="col-form-label">Jabatan <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="jabatan" name="jabatan">
-                    </div>
-                    <div class="form-group">
-                        <label for="file-uraian" class="col-form-label">File <span
-                                class="badge badge-secondary">.pdf</span> <label
-                                class="text-danger">*</label></label>
-                        <input type="file" class="form-control" id="file-uraian" name="file">
-                        <small>Ukuran maksimal 2MB</small>
-                    </div>
-                    
-                    <p class="text-danger">*Wajib Diisi</p>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
-                    </div>
-                 </form>
-             </div>
+                                @foreach ($deparetemen as $item)
+                                    <option value="{{ $item->dep_id }}">{{ $item->nama }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jabatan" class="col-form-label">Jabatan <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="jabatan" name="jabatan">
+                        </div>
+                        <div class="form-group">
+                            <label for="file-uraian" class="col-form-label">File <span
+                                    class="badge badge-secondary">.pdf</span> <label
+                                    class="text-danger">*</label></label>
+                            <input type="file" class="form-control" id="file-uraian" name="file">
+                            <small>Ukuran maksimal 2MB</small>
+                        </div>
 
-         </div>
-     </div>
+                        <p class="text-danger">*Wajib Diisi</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
     <!-- Modal Edit Uraian -->
     <div class="modal fade" id="modal-edit-uraian" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Edit Uraian Tugas</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="error_list_uraian_edit"></div>
-                 <form method="POST" id="form-edit-uraian" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="id_uraian" name="id">
-                    <input type="hidden" id="id_pegawai_uraian_edit" name="id_pegawai">
-                    <div class="form-group">
-                        <label for="dep-uraian-edit">Unit Kerja <label class="text-danger">*</label></label>
-                        <select class="form-select select2 select-departemen-edit" id="dep-uraian-edit"
-                            data-placeholder="Pilih Unit Kerja" name="dep_uraian">
+        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Uraian Tugas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_uraian_edit"></div>
+                    <form method="POST" id="form-edit-uraian" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="id_uraian" name="id">
+                        <input type="hidden" id="id_pegawai_uraian_edit" name="id_pegawai">
+                        <div class="form-group">
+                            <label for="dep-uraian-edit">Unit Kerja <label class="text-danger">*</label></label>
+                            <select class="form-select select2 select-departemen-edit" id="dep-uraian-edit"
+                                data-placeholder="Pilih Unit Kerja" name="dep_uraian">
 
-                            @foreach ($deparetemen as $item)
-                                <option value="{{ $item->dep_id }}">{{ $item->nama }} </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="jabatan-edit" class="col-form-label">Jabatan <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="jabatan-edit" name="jabatan">
-                    </div>
-                    <div class="form-group">
-                        <label for="file-uraian-edit" class="col-form-label">File <span
-                                class="badge badge-secondary">.pdf</span> <label
-                                class="text-danger">*</label></label>
-                        <input type="file" class="form-control" id="file-uraian-edit" name="file">
-                        <small>Ukuran maksimal 2MB</small>
-                    </div>
-                    
-                    <p class="text-danger">*Wajib Diisi</p>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success" id="add-uraian">Update</button>
-                    </div>
-                 </form>
-             </div>
+                                @foreach ($deparetemen as $item)
+                                    <option value="{{ $item->dep_id }}">{{ $item->nama }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jabatan-edit" class="col-form-label">Jabatan <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="jabatan-edit" name="jabatan">
+                        </div>
+                        <div class="form-group">
+                            <label for="file-uraian-edit" class="col-form-label">File <span
+                                    class="badge badge-secondary">.pdf</span> <label
+                                    class="text-danger">*</label></label>
+                            <input type="file" class="form-control" id="file-uraian-edit" name="file">
+                            <small>Ukuran maksimal 2MB</small>
+                        </div>
 
-         </div>
-     </div>
+                        <p class="text-danger">*Wajib Diisi</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="add-uraian">Update</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
@@ -1731,21 +1743,21 @@
     <!-- ./ end Modal -->
 
     <!-- Modal View orinetasi PDF -->
-    <div class="modal fade " id="modal-orientasi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-     <div class="modal-dialog modal-xl" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Sertifikat Orientasi</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="view-ori-modal"></div>
-             </div>
-         </div>
-     </div>
+    <div class="modal fade " id="modal-orientasi" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sertifikat Orientasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="view-ori-modal"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
@@ -1769,8 +1781,8 @@
     <!-- ./ end Modal -->
 
     <!-- Modal View Bukti Verifikasi Ijazah PDF -->
-    <div class="modal fade " id="modal-verijazah" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade " id="modal-verijazah" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1782,36 +1794,42 @@
                 <div class="modal-body">
                     <div class="accordion" id="accordionExample">
                         <div class="card">
-                          <div class="card-header" id="headingOne">
-                            <h2 class="mb-0">
-                              <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapsepdf" aria-expanded="true" aria-controls="collapseOne">
-                                File Bukti Verifikasi
-                              </button>
-                            </h2>
-                          </div>
-                      
-                          <div id="collapsepdf" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <div id="view-verijazah-modal"></div>
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button"
+                                        data-toggle="collapse" data-target="#collapsepdf" aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                        File Bukti Verifikasi
+                                    </button>
+                                </h2>
                             </div>
-                          </div>
+
+                            <div id="collapsepdf" class="collapse show" aria-labelledby="headingOne"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div id="view-verijazah-modal"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="card">
-                          <div class="card-header" id="headingTwo">
-                            <h2 class="mb-0">
-                              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseKet" aria-expanded="false" aria-controls="collapseTwo">
-                                Keteranagan / Catatatan
-                              </button>
-                            </h2>
-                          </div>
-                          <div id="collapseKet" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p id="ket-verif-ijazah"></p>
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                        data-toggle="collapse" data-target="#collapseKet" aria-expanded="false"
+                                        aria-controls="collapseTwo">
+                                        Keteranagan / Catatatan
+                                    </button>
+                                </h2>
                             </div>
-                          </div>
+                            <div id="collapseKet" class="collapse" aria-labelledby="headingTwo"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <p id="ket-verif-ijazah"></p>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1832,36 +1850,42 @@
                 <div class="modal-body">
                     <div class="accordion" id="accordionExample">
                         <div class="card">
-                          <div class="card-header" id="headingOne">
-                            <h2 class="mb-0">
-                              <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapsepdfstr" aria-expanded="true" aria-controls="collapseOne">
-                                File Bukti Verifikasi
-                              </button>
-                            </h2>
-                          </div>
-                      
-                          <div id="collapsepdfstr" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <div id="view-verstr-modal"></div>
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button"
+                                        data-toggle="collapse" data-target="#collapsepdfstr" aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                        File Bukti Verifikasi
+                                    </button>
+                                </h2>
                             </div>
-                          </div>
+
+                            <div id="collapsepdfstr" class="collapse show" aria-labelledby="headingOne"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div id="view-verstr-modal"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="card">
-                          <div class="card-header" id="headingTwo">
-                            <h2 class="mb-0">
-                              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseKetstr" aria-expanded="false" aria-controls="collapseTwo">
-                                Keteranagan / Catatatan
-                              </button>
-                            </h2>
-                          </div>
-                          <div id="collapseKetstr" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p id="ket-verif-str"></p>
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                        data-toggle="collapse" data-target="#collapseKetstr" aria-expanded="false"
+                                        aria-controls="collapseTwo">
+                                        Keteranagan / Catatatan
+                                    </button>
+                                </h2>
                             </div>
-                          </div>
+                            <div id="collapseKetstr" class="collapse" aria-labelledby="headingTwo"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <p id="ket-verif-str"></p>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1874,7 +1898,8 @@
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Berkas Surat Penugsan Klinik & RINCIAN KEWENANGAN KLINIS</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Berkas Surat Penugsan Klinik & RINCIAN KEWENANGAN
+                        KLINIS</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1888,8 +1913,8 @@
     <!-- ./ end Modal -->
 
     <!-- Modal View Uraian Tugas PDF -->
-    <div class="modal fade " id="modal-view-uraian" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade " id="modal-view-uraian" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1906,7 +1931,48 @@
     </div>
     <!-- ./ end Modal -->
 
-    
+    <!-- Modal Tambah Verifikasi SIP -->
+    <div class="modal fade" id="modal-add-masa-berlaku" data-backdrop="static" data-keyboard="false"
+        tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Masa Berlaku SIP</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_berlaku_sip"></div>
+                    <form method="POST" id="form-masa-berlaku-sip" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="sip_id_masa_berlaku" name="sip_id_masa_berlaku">
+                        <div class="form-group">
+                            <label for="tgl_ed_sip" class="col-form-label">Berkalu Sampai <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control tgl_ed_sip" id="tgl_ed_sip" name="tgl_ed_sip"
+                                >
+                        </div>
+                        <div class="form-group">
+                            <label for="pengingat_sip" class="col-form-label">Tgl Pengingat <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control pengingat_sip" id="pengingat_sip" name="pengingat_sip"
+                                >
+                        </div>
+                        <p class="text-danger">*Wajib Diisi</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="add_masa_berlaku">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ./ end Modal -->
+
+
 
 @endsection
 @push('custom-scripts')
@@ -1916,6 +1982,54 @@
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        document.getElementById('enable_exp_str').onchange = function() {
+            if (this.checked) {
+                document.getElementById('masa-berlaku').innerHTML = `
+                        <div class="form-group">
+                            <label for="tgl_ed" class="col-form-label">Berkalu Sampai <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control tgl_ed" id="tgl_ed" name="tgl_ed" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="pengingat" class="col-form-label">Tgl Pengingat <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control pengingat" id="pengingat" name="pengingat" disabled>
+                        </div>
+                `
+            } else {
+                document.getElementById('masa-berlaku').innerHTML = ``
+            }
+            document.getElementById('tgl_ed').disabled = !this.checked;
+            //document.getElementById("tgl_ed").required = this.checked;
+            document.getElementById('pengingat').disabled = !this.checked;
+            //document.getElementById("pengingat").required = this.checked;
+        };
+        document.getElementById('enable_exp_str_edit').onchange = function() {
+            if (this.checked) {
+                document.getElementById('masa-berlaku-edit').innerHTML = `
+                        <div class="form-group">
+                            <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
+                        </div>
+                        <div class="form-group">
+                            <label for="pengingat_edit" class="col-form-label">Pengingat <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control pengingat_edit" id="pengingat_edit"
+                                name="pengingat">
+                        </div>
+                `
+            } else {
+                document.getElementById('masa-berlaku-edit').innerHTML = ``
+            }
+            document.getElementById('tgl_ed_edit').disabled = !this.checked;
+            //document.getElementById("tgl_ed").required = this.checked;
+            document.getElementById('pengingat_edit').disabled = !this.checked;
+            //document.getElementById("pengingat").required = this.checked;
+        };
+    </script>
     <!-- Page level custom scripts -->
     <!--Ijazah------------------->
     @include('pages.Karyawan.js.ijazah')
