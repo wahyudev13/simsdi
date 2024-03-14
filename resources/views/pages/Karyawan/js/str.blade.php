@@ -212,16 +212,22 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add_str').addClass("d-none");
+                       $('#add_str_disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_str').html("")
                         $('#error_list_str').addClass("alert alert-danger")
                         $('#error_list_str').removeClass("d-none")
-
+                        
                         $.each(response.error, function(key, error_value) {
                             $('#error_list_str').append('<li>' + error_value +
                                 '</li>');
                         });
+                        $('#add_str').removeClass("d-none");
+                        $('#add_str_disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -231,7 +237,8 @@
                         $('#success_message').text(response.message)
                         $('#modaladdSTR').modal('hide')
                         $('#modaladdSTR').find('.form-control').val("");
-
+                        $('#add_str').removeClass("d-none");
+                        $('#add_str_disabled').addClass("d-none");
                         var tbSTR = $('#tbSTR').DataTable();
                         tbSTR.ajax.reload();
                         

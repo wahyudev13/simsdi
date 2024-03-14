@@ -304,6 +304,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" id="add_transkrip">Simpan</button>
+                            <button type="submit" class="btn btn-primary d-none" id="add_transkrip_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -746,6 +750,10 @@
                     contentType: false,
                     processData: false,
                     cache: false,
+                    beforeSend:function(){
+                       $('#add_transkrip').addClass("d-none");
+                       $('#add_transkrip_disabled').removeClass("d-none");
+                    },
                     success: function(response) {
                         if (response.status == 400) {
                             $('#error_list_trans').html("")
@@ -756,6 +764,8 @@
                                 $('#error_list_trans').append('<li>' + error_value +
                                     '</li>');
                             });
+                            $('#add_transkrip').removeClass("d-none");
+                            $('#add_transkrip_disabled').addClass("d-none");
                         } else {
                             $('#success_message').html("")
                             $('#success_message').removeClass("alert-primary")
@@ -765,15 +775,17 @@
                             $('#success_message').text(response.message)
                             $('#modal-add-trans').modal('hide')
                             $('#modal-add-trans').find('.form-control').val("");
+                            $('#add_transkrip').removeClass("d-none");
+                            $('#add_transkrip_disabled').addClass("d-none");
                             $('#tb-trans').DataTable().ajax.reload();
                         }
                     }
                 });
             });
 
-            $('#modaladdTrans').on('hidden.bs.modal', function() {
-                $('#modaladdTrans').find('.form-control').val("");
-                $('#modaladdTrans').find('.custom-file-input').val("");
+            $('#modal-add-trans').on('hidden.bs.modal', function() {
+                $('#modal-add-trans').find('.form-control').val("");
+                $('#modal-add-trans').find('.custom-file-input').val("");
 
                 $('.alert-danger').addClass('d-none');
             });

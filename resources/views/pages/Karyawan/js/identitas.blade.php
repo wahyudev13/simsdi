@@ -77,6 +77,10 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add_lain').addClass("d-none");
+                       $('#add_lain_disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_lain').html("")
@@ -87,6 +91,8 @@
                             $('#error_list_lain').append('<li>' + error_value +
                                 '</li>');
                         });
+                        $('#add_lain').removeClass("d-none");
+                        $('#add_lain_disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -95,7 +101,8 @@
                         $('#success_message').text(response.message)
                         $('#modaladd_Identitas').modal('hide')
                         $('#modaladd_Identitas').find('.form-control').val("");
-
+                        $('#add_lain').removeClass("d-none");
+                        $('#add_lain_disabled').addClass("d-none");
                         var tbLain = $('#tbLain').DataTable();
                         tbLain.ajax.reload();
                     }

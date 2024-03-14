@@ -89,6 +89,10 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add_ori').addClass("d-none");
+                       $('#add_ori_disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_ori').html("")
@@ -99,6 +103,8 @@
                             $('#error_list_ori').append('<li>' + error_value +
                                 '</li>');
                         });
+                        $('#add_ori').removeClass("d-none");
+                        $('#add_ori_disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -107,7 +113,8 @@
                         $('#success_message').text(response.message)
                         $('#modal-add-orientasi').modal('hide')
                         $('#modal-add-orientasi').find('.form-control').val("");
-
+                        $('#add_ori').removeClass("d-none");
+                        $('#add_ori_disabled').addClass("d-none");
                         $('#tb-orientasi').DataTable().ajax.reload();
 
                     }

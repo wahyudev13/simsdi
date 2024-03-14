@@ -76,6 +76,10 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add_lainlain').addClass("d-none");
+                       $('#add_lainlain_disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_lainlain').html("")
@@ -86,6 +90,8 @@
                             $('#error_list_lainlain').append('<li>' + error_value +
                                 '</li>');
                         });
+                        $('#add_lainlain').removeClass("d-none");
+                        $('#add_lainlain_disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -94,6 +100,8 @@
                         $('#success_message').text(response.message)
                         $('#modal-add-lain').modal('hide')
                         $('#modal-add-lain').find('.form-control').val("");
+                        $('#add_lainlain').removeClass("d-none");
+                        $('#add_lainlain_disabled').addClass("d-none");
                         $('#tb-lainlain').DataTable().ajax.reload();
 
                     }

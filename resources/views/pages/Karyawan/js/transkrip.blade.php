@@ -64,7 +64,7 @@
             PDFObject.embed(url+'/File/Pegawai/Dokumen/Transkrip/' + transkripfile, "#view-transkrip-modal");
         });
 
-        //show Modal
+        //TAMBAH TRANSKRIP
         $('#form-tambah-trans').on('submit', function(e) {
             e.preventDefault();
             var file = $('.file').val();
@@ -87,6 +87,10 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add_transkrip').addClass("d-none");
+                       $('#add_transkrip_disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_trans').html("")
@@ -97,6 +101,8 @@
                             $('#error_list_trans').append('<li>' + error_value +
                                 '</li>');
                         });
+                        $('#add_transkrip').removeClass("d-none");
+                        $('#add_transkrip_disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -106,7 +112,8 @@
                         $('#success_message').text(response.message)
                         $('#modaladdTrans').modal('hide')
                         $('#modaladdTrans').find('.form-control').val("");
-
+                        $('#add_transkrip').removeClass("d-none");
+                        $('#add_transkrip_disabled').addClass("d-none");
                         var tableTrans = $('#tableTrans').DataTable();
                         tableTrans.ajax.reload();
                         //fetchData();

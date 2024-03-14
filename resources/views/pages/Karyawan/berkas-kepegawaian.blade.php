@@ -530,6 +530,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" id="add_transkrip">Simpan</button>
+                            <button type="submit" class="btn btn-primary d-none" id="add_transkrip_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -655,6 +659,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-warning" id="add_str">Simpan</button>
+                            <button type="submit" class="btn btn-warning d-none" id="add_str_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -792,6 +800,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-warning" id="add_sip">Simpan</button>
+                            <button type="submit" class="btn btn-warning d-none" id="add_sip_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -911,6 +923,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success" id="add_lain">Simpan</button>
+                            <button type="submit" class="btn btn-success d-none" id="add_lain_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1023,6 +1039,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-info" id="add_lain">Simpan</button>
+                            <button type="submit" class="btn btn-info d-none" id="add_lain_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1153,6 +1173,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" id="add_ori">Simpan</button>
+                            <button type="submit" class="btn btn-primary d-none" id="add_ori_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1262,6 +1286,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success" id="add_lainlain">Simpan</button>
+                            <button type="submit" class="btn btn-success d-none" id="add_lainlain_disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1453,6 +1481,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
+                            <button type="submit" class="btn btn-success d-none" id="add-spk-disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1563,7 +1595,11 @@
                         <p class="text-danger">*Wajib Diisi</p>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
+                            <button type="submit" class="btn btn-success" id="add-uraian">Simpan</button>
+                            <button type="submit" class="btn btn-success d-none" id="add-uraian-disabled" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
                     </form>
                 </div>

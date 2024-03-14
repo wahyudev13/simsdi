@@ -114,6 +114,10 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add-spk').addClass("d-none");
+                       $('#add-spk-disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_spk').html("")
@@ -123,6 +127,8 @@
                         $.each(response.error, function(key, error_value) {
                             $('#error_list_spk').append('<li>' + error_value + '</li>');
                         });
+                        $('#add-spk').removeClass("d-none");
+                        $('#add-spk-disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -131,7 +137,8 @@
                         $('#success_message').text(response.message)
                         $('#modal-add-spk').modal('hide')
                         $('#modal-add-spk').find('.form-control').val("");
-
+                        $('#add-spk').removeClass("d-none");
+                        $('#add-spk-disabled').addClass("d-none");
                         $('#tb-spk').DataTable().ajax.reload();
                     }
                 }

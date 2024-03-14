@@ -260,6 +260,7 @@
             PDFObject.embed(url + '/File/Pegawai/Dokumen/SIP/' + fileSIP, "#view-sip-modal");
         });
 
+        //SIMPAN SIP
         $('#form-tambah-sip').on('submit', function(e) {
             e.preventDefault();
             var file = $('.file').val();
@@ -282,6 +283,10 @@
                 contentType: false,
                 processData: false,
                 cache: false,
+                beforeSend:function(){
+                       $('#add_sip').addClass("d-none");
+                       $('#add_sip_disabled').removeClass("d-none");
+                },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_sip').html("")
@@ -292,6 +297,9 @@
                             $('#error_list_sip').append('<li>' + error_value +
                                 '</li>');
                         });
+
+                        $('#add_sip').removeClass("d-none");
+                        $('#add_sip_disabled').addClass("d-none");
                     } else {
                         $('#success_message').html("")
                         $('#success_message').removeClass("alert-primary")
@@ -301,7 +309,9 @@
                         $('#success_message').text(response.message)
                         $('#modaladdSIP').modal('hide')
                         $('#modaladdSIP').find('.form-control').val("");
-
+                        
+                        $('#add_sip').removeClass("d-none");
+                        $('#add_sip_disabled').addClass("d-none");
                         var tbSIP = $('#tbSIP').DataTable();
                         tbSIP.ajax.reload();
                     }
