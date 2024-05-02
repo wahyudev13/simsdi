@@ -15,21 +15,22 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="row">
-               
+
                 <div class="col-lg-6">
                     <select class="form-select select2 selectdep" id="single-select-field" data-placeholder="Pilih Departemen">
                         @foreach ($deparetemen as $item)
-                            <option value="{{$item->nama}}">{{$item->nama}}</option>
-                        @endforeach    
+                            <option value="{{ $item->nama }}">{{ $item->nama }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-lg-6">
-                    <button type="button" class="btn btn-outline-primary reset-dep" id="reset-dep"><i class="fas fa-window-close"></i></button>
+                    <button type="button" class="btn btn-outline-primary reset-dep" id="reset-dep"><i
+                            class="fas fa-window-close"></i></button>
                 </div>
             </div>
-           
-           
-            
+
+
+
         </div>
         <div class="card-body">
             @hasanyrole('superadmin|sdi')
@@ -52,14 +53,16 @@
                         @if ($peringatan_sip > 0)
                             <li style="list-style-type:none;">
                                 <i class="fa fa-spin fa-cog"></i>
-                                <a href="{{ route('pengingat.sip.pengingatSip') }}" class="alert-link">{{ $peringatan_sip }} Karyawan
+                                <a href="{{ route('pengingat.sip.pengingatSip') }}" class="alert-link">{{ $peringatan_sip }}
+                                    Karyawan
                                     yang Dokumen SIP Dalam Masa Ingatkan.</a>
                             </li>
                         @endif
                         @if ($peringatan_nonaktif_sip > 0)
                             <li style="list-style-type:none;">
                                 <i class="fa fa-spin fa-cog"></i>
-                                <a href="{{ route('pengingat.sip.pengingatSip') }}" class="alert-link">{{ $peringatan_nonaktif_sip }} Karyawan
+                                <a href="{{ route('pengingat.sip.pengingatSip') }}"
+                                    class="alert-link">{{ $peringatan_nonaktif_sip }} Karyawan
                                     yang Dokumen SIP Berakhir.</a>
                             </li>
                         @endif
@@ -113,7 +116,7 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <!-- Page level custom scripts -->
     <script>
         $('#single-select-field').select2({
@@ -156,33 +159,33 @@
                         name: 'jbtn'
                     },
                     // {
-                        //     data: function(data, row, type) {
-                        //         if (data.nama_berkas === null || data.nama_berkas_kontrak === null) {
-                        //             return `<span class="badge badge-info">Tidak ada Dokumen</span>`;
-                        //         } else {
+                    //     data: function(data, row, type) {
+                    //         if (data.nama_berkas === null || data.nama_berkas_kontrak === null) {
+                    //             return `<span class="badge badge-info">Tidak ada Dokumen</span>`;
+                    //         } else {
 
-                        //             // if (data.status === 'active' && data.status_kontrak === 'active') {
-                        //             //     return `
-                        //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas}</a>
-                        //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>
-                        //             //     `;
-                            //             // }else if (data.status === 'active' && data.status_kontrak === 'proses' || data.status_kontrak === 'nonactive') {
-                            //             //     return `
-                        //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas}</a>
-                        //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-danger btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>
-                        //             //     `;
-                        //             // }
+                    //             // if (data.status === 'active' && data.status_kontrak === 'active') {
+                    //             //     return `
+                //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas}</a>
+                //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>
+                //             //     `;
+                    //             // }else if (data.status === 'active' && data.status_kontrak === 'proses' || data.status_kontrak === 'nonactive') {
+                    //             //     return `
+                //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas}</a>
+                //             //         <a href="/karyawan/berkas/${data.id}" class="btn btn-outline-danger btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>
+                //             //     `;
+                    //             // }
 
-                        //             // else if(data.status === 'proses' || data.status === 'nonactive') {
-                        //             //     return `<a  href="/karyawan/berkas/${data.id}" class="btn btn-outline-danger btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas}</a>`;
-                        //             // }else if(data.status_kontrak === 'active'){
-                        //             //     return `<a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>`;
-                        //             // }else if(data.status_kontrak === 'proses' || data.status_kontrak === 'nonactive') {
-                        //             //     return `<a  href="/karyawan/berkas/${data.id}" class="btn btn-outline-danger btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>`;
-                        //             // }
-                        //         }
+                    //             // else if(data.status === 'proses' || data.status === 'nonactive') {
+                    //             //     return `<a  href="/karyawan/berkas/${data.id}" class="btn btn-outline-danger btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas}</a>`;
+                    //             // }else if(data.status_kontrak === 'active'){
+                    //             //     return `<a href="/karyawan/berkas/${data.id}" class="btn btn-outline-secondary btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>`;
+                    //             // }else if(data.status_kontrak === 'proses' || data.status_kontrak === 'nonactive') {
+                    //             //     return `<a  href="/karyawan/berkas/${data.id}" class="btn btn-outline-danger btn-sm"> <i class="fas fa-solid fa-file-word"></i> ${data.nama_berkas_kontrak}</a>`;
+                    //             // }
+                    //         }
 
-                        //     }
+                    //     }
                     // },
                     {
                         'data': null,
@@ -220,7 +223,7 @@
                 ]
             });
 
-            $('.selectdep').change(function (e) { 
+            $('.selectdep').change(function(e) {
                 e.preventDefault();
                 tbpegawai
                     .columns(4)
@@ -228,7 +231,7 @@
                     .draw();
             });
 
-            $('.reset-dep').click(function (e) { 
+            $('.reset-dep').click(function(e) {
                 e.preventDefault();
                 $('#tbJenjang').DataTable().search('').columns().search('').draw();
                 $('.selectdep').val(null).trigger('change');
@@ -242,17 +245,14 @@
             $('[data-toggle="tooltip"]').tooltip()
         })
     </script>
-    
 @endpush
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}">
     {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}

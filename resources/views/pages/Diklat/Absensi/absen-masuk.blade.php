@@ -14,11 +14,11 @@
     <div id="success_message"></div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-           
+
             <div style="width: 600px" id="reader"></div>
-            <input type="hidden" class="id-kegiatan" id="id-kegiatan" value="{{$kegiatan2->id}}">
+            <input type="hidden" class="id-kegiatan" id="id-kegiatan" value="{{ $kegiatan2->id }}">
             {{-- <input type="hidden" class="form-control nik-pegawai" id="nik-pegawai"> --}}
-          
+
             {{-- <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal" data-target="#modaladdKegiatan">
                 <span class="icon text-white-50">
                     <i class="fas fa-plus"></i>
@@ -54,12 +54,12 @@
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Page level custom scripts -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script> --}}
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
         $(document).ready(function() {
-            
+
             function onScanSuccess(decodedText, decodedResult) {
                 // Handle on success condition with the decoded text or result.
                 console.log(`Scan result: ${decodedText}`, decodedResult);
@@ -100,20 +100,20 @@
                             $('#success_message').text(response.message)
 
                             $('#tb-absen-masuk').DataTable().ajax.reload();
-                        }else if (response.status == 401){
+                        } else if (response.status == 401) {
                             $('#success_message').html("")
                             $('#success_message').removeClass("alert-success")
                             $('#success_message').removeClass("alert-warning")
                             $('#success_message').addClass("alert alert-danger")
                             $('#success_message').text(response.message)
-                        }else if (response.status == 402) {
+                        } else if (response.status == 402) {
                             $('#success_message').html("")
                             $('#success_message').removeClass("alert-success")
                             $('#success_message').removeClass("alert-danger")
                             $('#success_message').addClass("alert alert-warning")
                             $('#success_message').text(response.message)
                         }
-                            
+
                         //}
                     }
                 });
@@ -134,8 +134,8 @@
                 processing: false,
                 serverSide: true,
                 ajax: {
-                    url :'{{ route('absensi.diklat.masuk.get') }}',
-                    data : {
+                    url: '{{ route('absensi.diklat.masuk.get') }}',
+                    data: {
                         'kegiatan_id': $('#id-kegiatan').val(),
                     }
                 },
@@ -175,7 +175,7 @@
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

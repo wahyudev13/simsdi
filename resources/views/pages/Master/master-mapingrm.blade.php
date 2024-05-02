@@ -218,16 +218,18 @@
                                         placeholder="Cari Alamat">
                                 </div>
                                 <div class="col-sm-10 col-lg-2">
-                                    <input type="text" class="form-control form-control-sm" id="cari-nama2" placeholder="Cari Nama">
+                                    <input type="text" class="form-control form-control-sm" id="cari-nama2"
+                                        placeholder="Cari Nama">
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="btn-group" role="group" aria-label="Basic example">
                                         <button type="button" class="btn btn-primary btn-sm" id="filter-nama">
                                             Filter Nama</button>
-                                        <button type="button" class="btn btn-danger btn-sm" id="refresh">Reset</button>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            id="refresh">Reset</button>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </form>
@@ -267,7 +269,7 @@
     <!-- Scripts Select 2-->
     {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script> --}}
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -756,7 +758,7 @@
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

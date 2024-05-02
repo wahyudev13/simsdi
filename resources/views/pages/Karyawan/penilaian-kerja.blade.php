@@ -243,7 +243,7 @@
     {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.select-departemen').select2({
@@ -340,7 +340,7 @@
                 e.preventDefault();
                 var penilaian = $(this).data('file');
                 var url = '{{ route('login.index') }}';
-                PDFObject.embed(url + '/File/Pegawai/Penilaian/'+penilaian, "#view-nilai");
+                PDFObject.embed(url + '/File/Pegawai/Penilaian/' + penilaian, "#view-nilai");
             });
 
             //Store Berkas Penilaian
@@ -504,7 +504,7 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

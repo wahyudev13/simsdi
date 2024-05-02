@@ -39,8 +39,7 @@
     <!-- /.container-fluid -->
 
     <!-- Modal Tambah Admin -->
-    <div class="modal fade"id="modaladdAdmin" data-backdrop="static" tabindex="-1" role="dialog"
-       aria-hidden="true">
+    <div class="modal fade"id="modaladdAdmin" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -83,51 +82,50 @@
     </div>
     <!-- ./ end Modal -->
 
-     <!-- Modal Edit Admin -->
-     <div class="modal fade"id="modaleditAdmin" data-backdrop="static" tabindex="-1" role="dialog"
-     aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Tambah Administrator</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <div id="error_list_edit"></div>
-                  <form id="form-edit-admin">
-                      {{-- <div class="form-group">
+    <!-- Modal Edit Admin -->
+    <div class="modal fade"id="modaleditAdmin" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Administrator</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error_list_edit"></div>
+                    <form id="form-edit-admin">
+                        {{-- <div class="form-group">
                           <label for="namaadmin" class="col-form-label">Nama Administrator<label
                                   class="text-danger">*</label></label>
                           <input type="text" class="form-control namaadmin" id="namaadmin" name="namaadmin"
                               placeholder="Nama Administrator">
                       </div> --}}
-                      <input type="hidden" class="id-admin" id="id-admin">
-                      <div class="form-group">
-                          <label for="username-edit" class="col-form-label">Username<label
-                                  class="text-danger">*</label></label>
-                          <input type="text" class="form-control username-edit" id="username-edit" placeholder="Username"
-                              name="username">
-                      </div>
-                      <div class="form-group">
-                          <label for="password-edit" class="col-form-label">Password<label
-                                  class="text-danger">*</label></label>
-                          <input type="text" class="form-control password-edit" id="password-edit"
-                              placeholder="Password Pengguna" name="password">
-                      </div>
-                  </form>
-                  <p class="text-danger">*Wajib Diisi</p>
-              </div>
+                        <input type="hidden" class="id-admin" id="id-admin">
+                        <div class="form-group">
+                            <label for="username-edit" class="col-form-label">Username<label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control username-edit" id="username-edit"
+                                placeholder="Username" name="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password-edit" class="col-form-label">Password<label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control password-edit" id="password-edit"
+                                placeholder="Password Pengguna" name="password">
+                        </div>
+                    </form>
+                    <p class="text-danger">*Wajib Diisi</p>
+                </div>
 
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" id="edit-admin">Update</button>
-              </div>
-          </div>
-      </div>
-  </div>
-  <!-- ./ end Modal -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="edit-admin">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ./ end Modal -->
 
     <!-- Modal Setting Role-->
     <div class="modal fade" id="setting-role-admin" data-backdrop="static" tabindex="-1" role="dialog"
@@ -186,7 +184,7 @@
     <!-- Scripts Select 2-->
     {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script> --}}
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script>
         $('#select-role-setting').select2({
             theme: "bootstrap-5",
@@ -286,7 +284,7 @@
 
                             $('#modaladdAdmin').modal('hide');
                             $('#modaladdAdmin').find('.form-control').val("")
-        
+
                             var tbAdmin = $('#tbAdmin').DataTable();
                             tbAdmin.ajax.reload();
                         }
@@ -410,7 +408,7 @@
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">

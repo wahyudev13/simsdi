@@ -37,8 +37,8 @@
                                 <th>Bidang Kesehatan</th>
                                 <th>Berlaku Sampai</th>
                                 <th>Update</th>
-                                @if(auth()->user()->can('View STR') || auth()->user()->can('Edit STR') || auth()->user()->can('Hapus STR'))
-                                <th>Aksi</th>
+                                @if (auth()->user()->can('View STR') || auth()->user()->can('Edit STR') || auth()->user()->can('Hapus STR'))
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
@@ -79,8 +79,8 @@
                                 <th>Nomor Reg STR</th>
                                 <th>Bidang Kesehatan</th>
                                 <th>Update</th>
-                                @if(auth()->user()->can('View SIP') || auth()->user()->can('Edit SIP') || auth()->user()->can('Hapus SIP'))
-                                <th>Aksi</th>
+                                @if (auth()->user()->can('View SIP') || auth()->user()->can('Edit SIP') || auth()->user()->can('Hapus SIP'))
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
@@ -410,7 +410,7 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
@@ -430,9 +430,9 @@
                     //     // Query parameters will be ?search=[term]&type=public
                     //     return query;
                     // },
-                    processResults: function (response) {
+                    processResults: function(response) {
                         return {
-                        results: response
+                            results: response
                         };
                     },
                 },
@@ -459,9 +459,9 @@
                     //     // Query parameters will be ?search=[term]&type=public
                     //     return query;
                     // },
-                    processResults: function (response) {
+                    processResults: function(response) {
                         return {
-                        results: response
+                            results: response
                         };
                     },
                 },
@@ -486,7 +486,7 @@
                 searching: true,
                 // processing: true,
                 serverSide: true,
-                ajax: '{{route('pengguna.getSTR')}}',
+                ajax: '{{ route('pengguna.getSTR') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -538,12 +538,12 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if(auth()->user()->can('View STR') || auth()->user()->can('Edit STR') || auth()->user()->can('Hapus STR'))
-                    {
-                        // {{ asset('/File/Pegawai/Dokumen/STR/${data.file}') }}
-                        data: null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View STR') || auth()->user()->can('Edit STR') || auth()->user()->can('Hapus STR'))
+                        {
+                            // {{ asset('/File/Pegawai/Dokumen/STR/${data.file}') }}
+                            data: null,
+                            render: function(data, row, type) {
+                                return `
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" title="Aksi Dokumen" type="button" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-solid fa-bars"></i>
@@ -562,8 +562,8 @@
                                     </div>
                                 </div>
                         `;
-                        }
-                    },
+                            }
+                        },
                     @endif
                 ]
             });
@@ -573,8 +573,8 @@
             $(document).on('click', '#view-str', function(e) {
                 e.preventDefault();
                 var namafile = $(this).data('id');
-                var url = '{{route('login.index')}}';
-                PDFObject.embed(url+'/File/Pegawai/Dokumen/STR/' + namafile, "#view-str-modal");
+                var url = '{{ route('login.index') }}';
+                PDFObject.embed(url + '/File/Pegawai/Dokumen/STR/' + namafile, "#view-str-modal");
             });
 
             $('#form-tambah-str').on('submit', function(e) {
@@ -764,7 +764,7 @@
                 searching: true,
                 // processing: true,
                 serverSide: true,
-                ajax: '{{route('pengguna.getSIP')}}',
+                ajax: '{{ route('pengguna.getSIP') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -791,12 +791,12 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if(auth()->user()->can('View SIP') || auth()->user()->can('Edit SIP') || auth()->user()->can('Hapus SIP'))
-                    {
-                        // {{ asset('/Pegawai/Dokumen/STR/${data.file}') }}
-                        data: null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View SIP') || auth()->user()->can('Edit SIP') || auth()->user()->can('Hapus SIP'))
+                        {
+                            // {{ asset('/Pegawai/Dokumen/STR/${data.file}') }}
+                            data: null,
+                            render: function(data, row, type) {
+                                return `
                            
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -817,8 +817,8 @@
                                 </div>
                            
                                 `;
-                        }
-                    },
+                            }
+                        },
                     @endif
                 ]
             });
@@ -827,8 +827,8 @@
             $(document).on('click', '#view-sip', function(e) {
                 e.preventDefault();
                 var fileSIP = $(this).data('id');
-                var url = '{{route('login.index')}}';
-                PDFObject.embed(url+'/File/Pegawai/Dokumen/SIP/' + fileSIP, "#view-sip-modal");
+                var url = '{{ route('login.index') }}';
+                PDFObject.embed(url + '/File/Pegawai/Dokumen/SIP/' + fileSIP, "#view-sip-modal");
             });
 
             $('#form-tambah-sip').on('submit', function(e) {
@@ -874,7 +874,7 @@
                             $('#modaladdSIP').find('.form-control').val("");
 
                             var tbSIP = $('#tbSIP').DataTable();
-                            tbSIP.ajax.reload(); 
+                            tbSIP.ajax.reload();
                         }
                     }
                 });
@@ -1001,7 +1001,7 @@
 @push('custom-css')
     <!-- Custom styles for this page -->
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

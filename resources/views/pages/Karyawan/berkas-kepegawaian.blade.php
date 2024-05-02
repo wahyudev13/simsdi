@@ -1040,7 +1040,8 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-info" id="add_lain">Simpan</button>
                             <button type="submit" class="btn btn-info d-none" id="add_lain_disabled" disabled>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
                                 Loading...
                             </button>
                         </div>
@@ -1174,7 +1175,8 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" id="add_ori">Simpan</button>
                             <button type="submit" class="btn btn-primary d-none" id="add_ori_disabled" disabled>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
                                 Loading...
                             </button>
                         </div>
@@ -1287,7 +1289,8 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success" id="add_lainlain">Simpan</button>
                             <button type="submit" class="btn btn-success d-none" id="add_lainlain_disabled" disabled>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
                                 Loading...
                             </button>
                         </div>
@@ -1482,7 +1485,8 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success" id="add-spk">Simpan</button>
                             <button type="submit" class="btn btn-success d-none" id="add-spk-disabled" disabled>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
                                 Loading...
                             </button>
                         </div>
@@ -1597,7 +1601,8 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success" id="add-uraian">Simpan</button>
                             <button type="submit" class="btn btn-success d-none" id="add-uraian-disabled" disabled>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
                                 Loading...
                             </button>
                         </div>
@@ -1986,14 +1991,13 @@
                         <div class="form-group">
                             <label for="tgl_ed_sip" class="col-form-label">Berkalu Sampai <label
                                     class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed_sip" id="tgl_ed_sip" name="tgl_ed_sip"
-                                >
+                            <input type="date" class="form-control tgl_ed_sip" id="tgl_ed_sip" name="tgl_ed_sip">
                         </div>
                         <div class="form-group">
                             <label for="pengingat_sip" class="col-form-label">Tgl Pengingat <label
                                     class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat_sip" id="pengingat_sip" name="pengingat_sip"
-                                >
+                            <input type="date" class="form-control pengingat_sip" id="pengingat_sip"
+                                name="pengingat_sip">
                         </div>
                         <p class="text-danger">*Wajib Diisi</p>
                         <div class="modal-footer">
@@ -2017,7 +2021,7 @@
     {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 
     <script>
         document.getElementById('enable_exp_str').onchange = function() {
@@ -2098,7 +2102,7 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

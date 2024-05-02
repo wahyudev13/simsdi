@@ -14,7 +14,7 @@
     <div id="success_message"></div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-           
+
             <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal" data-target="#modaladdKegiatan">
                 <span class="icon text-white-50">
                     <i class="fas fa-plus"></i>
@@ -125,7 +125,9 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mr-2" id="exampleModalLabel">Edit Kegiatan<h5 class="modal-title" id="title-nm-kegiatab"></h5></h5>
+                    <h5 class="modal-title mr-2" id="exampleModalLabel">Edit Kegiatan<h5 class="modal-title"
+                            id="title-nm-kegiatab"></h5>
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -203,7 +205,7 @@
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Page level custom scripts -->
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
@@ -226,7 +228,7 @@
                             results: response
                         };
                     },
-                  
+
                 },
                 theme: "bootstrap-5",
                 dropdownParent: "#modaladdKegiatan",
@@ -253,7 +255,7 @@
                             results: response
                         };
                     },
-                    
+
                 },
                 theme: "bootstrap-5",
                 dropdownParent: "#modaladdKegiatan",
@@ -367,10 +369,10 @@
                                             <i class="fas fa-fingerprint"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" id="masuk" href="{{url('diklat/absensi/masuk/${data.id}')}}" target="_blank" >Masuk</a>
-                                            <a class="dropdown-item" href="{{url('diklat/absensi/selesai/${data.id}')}}" target="_blank" id="selesai">Selesai</a>
-                                            <a class="dropdown-item" href="{{url('diklat/absensi/manual/${data.id}')}}" target="_blank"  id="manual">Manual</a>
-                                            <a class="dropdown-item text-primary" href="{{url('diklat/absensi/rekab/${data.id}')}}" target="_blank"  id="rekab">Rekab Absen</a>
+                                            <a class="dropdown-item" id="masuk" href="{{ url('diklat/absensi/masuk/${data.id}') }}" target="_blank" >Masuk</a>
+                                            <a class="dropdown-item" href="{{ url('diklat/absensi/selesai/${data.id}') }}" target="_blank" id="selesai">Selesai</a>
+                                            <a class="dropdown-item" href="{{ url('diklat/absensi/manual/${data.id}') }}" target="_blank"  id="manual">Manual</a>
+                                            <a class="dropdown-item text-primary" href="{{ url('diklat/absensi/rekab/${data.id}') }}" target="_blank"  id="rekab">Rekab Absen</a>
                                         </div>
                                     </div>
 
@@ -473,7 +475,7 @@
                 e.preventDefault();
 
                 var data = {
-                    'id' :  $('#id-kegiatan').val(),
+                    'id': $('#id-kegiatan').val(),
                     'departemen': $('#unit-edit').val(),
                     'nama': $('#nama-kegiatan-edit').val(),
                     'jenis_kegiatan': $('#jenis-kegiatan-edit').val(),
@@ -559,7 +561,7 @@
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

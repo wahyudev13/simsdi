@@ -269,11 +269,12 @@
                         </tbody>
                     </table>
 
-                    
+
 
                 </div>
                 <div class="modal-footer">
-                    <input type="text" class="form-control form-control-sm mt-4" id="cari-permis" placeholder="Cari Permission">
+                    <input type="text" class="form-control form-control-sm mt-4" id="cari-permis"
+                        placeholder="Cari Permission">
                 </div>
             </div>
         </div>
@@ -286,7 +287,7 @@
     <!-- Scripts Select 2-->
     {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script> --}}
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script>
         $('#single-select-field').select2({
             theme: "bootstrap-5",
@@ -512,7 +513,7 @@
 
             var data = {
                 'id': $('#id-pengguna').val(),
-                'pengguna' : $('#namapegawai_edit').val(),
+                'pengguna': $('#namapegawai_edit').val(),
                 'username': $('#username_edit').val(),
                 'password': $('#password_edit').val(),
                 // 'email': $('#email_edit').val(),
@@ -711,10 +712,10 @@
                 }
             });
         });
-       
+
         //DELETE ROLE USER
-        $(document).ready(function () {
-            $('table').on('click','#hapus-role-user', function(){
+        $(document).ready(function() {
+            $('table').on('click', '#hapus-role-user', function() {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
@@ -759,8 +760,8 @@
     </script>
 
     <script>
-         //SIMPAN PERMISSION USER
-         $(document).on('click', '#simpan-permis', function(e) {
+        //SIMPAN PERMISSION USER
+        $(document).on('click', '#simpan-permis', function(e) {
             e.preventDefault();
 
             var data = {
@@ -808,7 +809,7 @@
                         // $('.alert-danger').addClass('d-none');
 
                         var tbpermis = $('#tb-permis').DataTable().ajax.reload();
-                        
+
                     }
                 }
             });
@@ -874,14 +875,14 @@
 
         $('#cari-permis').on('keyup', function() {
             $('#tb-permis').DataTable()
-                    .columns(0)
-                    .search(this.value)
-                    .draw();
+                .columns(0)
+                .search(this.value)
+                .draw();
         });
 
-         //DELETE PERMISSION USER
-         $(document).ready(function () {
-            $('table').on('click','#hapus-permis-user', function(){
+        //DELETE PERMISSION USER
+        $(document).ready(function() {
+            $('table').on('click', '#hapus-permis-user', function() {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
@@ -927,7 +928,7 @@
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
