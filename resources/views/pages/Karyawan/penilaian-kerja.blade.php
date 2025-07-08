@@ -504,7 +504,10 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link href="{{ asset('/vendor/select2/select2.min.css') }}" rel="stylesheet" />
+    <<<<<<< HEAD <link href="{{ asset('/vendor/select2/select2.min.css') }}" rel="stylesheet" />
+    =======
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
+    >>>>>>> 45cadeb52b1c52222b2ce0a7ea4ac6c53377f75d
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">

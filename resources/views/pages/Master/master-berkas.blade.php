@@ -249,113 +249,115 @@
                     }
                 });
             });
-        });
-        //END DOCUMENT READY FUNCTION
-        $('#modalBerkas').on('hidden.bs.modal', function() {
-            $('#modalBerkas').find('.form-control').val("");
 
-            $('.alert-danger').addClass('d-none');
-        });
+            $('#modalBerkas').on('hidden.bs.modal', function() {
+                $('#modalBerkas').find('.form-control').val("");
 
-        //EDIT DEVISI
-        $(document).on('click', '#edit', function() {
-            $.ajax({
-                type: "GET",
-                url: "{{ route('master.berkas.show') }}",
-                data: {
-                    'id': $(this).data('id'),
-                },
-                dataType: "json",
-                success: function(response) {
-                    // $('input[name="kd-devisi"]').val(response.data.kd_devisi);
-                    $('#id-berkas-edit').val(response.data.id);
-                    $('#kd-berkas-edit').val(response.data.kode);
-                    $('#kategori-edit').val(response.data.kategori);
-                    $('#nama-berkas-edit').val(response.data.nama_berkas);
-                }
-            });
-        });
-        //UPDATE DEVISI
-        $(document).on('click', '#edit_berkas', function(e) {
-            e.preventDefault();
-
-            var data = {
-                'id': $('#id-berkas-edit').val(),
-                'kode': $('#kd-berkas-edit').val(),
-                'kategori': $('#kategori-edit').val(),
-                'nama_berkas': $('#nama-berkas-edit').val(),
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+                $('.alert-danger').addClass('d-none');
             });
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('master.berkas.update') }}",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.status == 400) {
-                        $('#error_list_edit').html("")
-                        $('#error_list_edit').addClass("alert alert-danger")
-                        $('#error_list_edit').removeClass("d-none")
-
-                        $.each(response.error, function(key, error_value) {
-                            $('#error_list_edit').append('<li>' + error_value + '</li>');
-                        });
-                    } else {
-                        $('#success_message').html("")
-                        $('#success_message').removeClass("alert-success")
-                        $('#success_message').removeClass("alert-warning")
-                        $('#success_message').addClass("alert alert-primary")
-                        // $('#success_message').removeClass("d-none")
-                        $('#success_message').text(response.message)
-                        $('#editmodalBerkas').modal('hide')
-                        $('#editmodalBerkas').find('.form-control').val("");
-                        var oTable = $('#tbJenjang').DataTable();
-                        oTable.ajax.reload();
-                        //fetchData();
-
-
-                    }
-                }
-            });
-
-        });
-
-        $('#editmodalBerkas').on('hidden.bs.modal', function() {
-            $('.alert-danger').addClass('d-none');
-        });
-
-        //HAPUS
-        $(document).on('click', '#hapus', function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            if (confirm('Yakin Ingin Menghapus data ?')) {
+            //EDIT DEVISI
+            $(document).on('click', '#edit', function() {
                 $.ajax({
-                    type: "POST",
-                    url: "{{ route('master.berkas.destroy') }}",
+                    type: "GET",
+                    url: "{{ route('master.berkas.show') }}",
                     data: {
                         'id': $(this).data('id'),
                     },
                     dataType: "json",
                     success: function(response) {
-                        $('#success_message').html("")
-                        $('#success_message').removeClass("alert-primary")
-                        $('#success_message').removeClass("alert-success")
-                        $('#success_message').addClass("alert alert-warning")
-                        $('#success_message').text(response.message)
-                        var oTable = $('#tbJenjang').DataTable();
-                        oTable.ajax.reload();
+                        // $('input[name="kd-devisi"]').val(response.data.kd_devisi);
+                        $('#id-berkas-edit').val(response.data.id);
+                        $('#kd-berkas-edit').val(response.data.kode);
+                        $('#kategori-edit').val(response.data.kategori);
+                        $('#nama-berkas-edit').val(response.data.nama_berkas);
                     }
                 });
-            }
+            });
+            //UPDATE DEVISI
+            $(document).on('click', '#edit_berkas', function(e) {
+                e.preventDefault();
+
+                var data = {
+                    'id': $('#id-berkas-edit').val(),
+                    'kode': $('#kd-berkas-edit').val(),
+                    'kategori': $('#kategori-edit').val(),
+                    'nama_berkas': $('#nama-berkas-edit').val(),
+                }
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('master.berkas.update') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 400) {
+                            $('#error_list_edit').html("")
+                            $('#error_list_edit').addClass("alert alert-danger")
+                            $('#error_list_edit').removeClass("d-none")
+
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_list_edit').append('<li>' + error_value + '</li>');
+                            });
+                        } else {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').removeClass("alert-warning")
+                            $('#success_message').addClass("alert alert-primary")
+                            // $('#success_message').removeClass("d-none")
+                            $('#success_message').text(response.message)
+                            $('#editmodalBerkas').modal('hide')
+                            $('#editmodalBerkas').find('.form-control').val("");
+                            var oTable = $('#tbJenjang').DataTable();
+                            oTable.ajax.reload();
+                            //fetchData();
+
+
+                        }
+                    }
+                });
+
+            });
+
+            $('#editmodalBerkas').on('hidden.bs.modal', function() {
+                $('.alert-danger').addClass('d-none');
+            });
+
+            //HAPUS
+            $(document).on('click', '#hapus', function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                if (confirm('Yakin Ingin Menghapus data ?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('master.berkas.destroy') }}",
+                        data: {
+                            'id': $(this).data('id'),
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-primary")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').addClass("alert alert-warning")
+                            $('#success_message').text(response.message)
+                            var oTable = $('#tbJenjang').DataTable();
+                            oTable.ajax.reload();
+                        }
+                    });
+                }
+            });
         });
+        //END DOCUMENT READY FUNCTION
+ 
     </script>
 @endpush

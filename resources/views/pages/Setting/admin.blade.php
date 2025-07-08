@@ -192,8 +192,6 @@
             closeOnSelect: false,
         });
     </script>
-
-    <!-- Page level custom scripts -->
     <!-- Script Table Pengguna -->
     <script>
         $(document).ready(function() {
@@ -284,119 +282,119 @@
                     }
                 });
             });
-        });
-        //END DOCUMENT READY FUNCTION
-
-        $('#modaladdAdmin').on('hidden.bs.modal', function() {
-            $('#modaladdAdmin').find('.form-control').val("");
-            $('.alert-danger').addClass('d-none');
-        });
 
 
-        //EDIT ADMIN
-        $(document).on('click', '#edit', function() {
-            $.ajax({
-                type: "GET",
-                url: "{{ route('setting.admin.show') }}",
-                data: {
-                    'id': $(this).data('id'),
-                },
-                dataType: "json",
-                success: function(response) {
-                    $('#id-admin').val(response.data.id);
-                    $('#username-edit').val(response.data.username);
-                }
-            });
-        });
-
-        //UPDATE ADMIN
-        $(document).on('click', '#edit-admin', function(e) {
-            e.preventDefault();
-
-            var data = {
-                'id': $('#id-admin').val(),
-                'username': $('#username-edit').val(),
-                'password': $('#password-edit').val(),
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+            $('#modaladdAdmin').on('hidden.bs.modal', function() {
+                $('#modaladdAdmin').find('.form-control').val("");
+                $('.alert-danger').addClass('d-none');
             });
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('setting.admin.update') }}",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.status == 400) {
-                        $('#error_list_edit').html("")
-                        $('#error_list_edit').addClass("alert alert-danger")
-                        $('#error_list_edit').removeClass("d-none")
 
-                        $.each(response.error, function(key, error_value) {
-                            $('#error_list_edit').append('<li>' + error_value + '</li>');
-                        });
-                    } else {
-                        $('#success_message').html("")
-                        $('#success_message').removeClass("alert-success")
-                        $('#success_message').removeClass("alert-warning")
-                        $('#success_message').addClass("alert alert-primary")
-                        // $('#success_message').removeClass("d-none")
-                        $('#success_message').text(response.message)
-
-                        $('#modaleditAdmin').modal('hide')
-                        $('#modaleditAdmin').find('.form-control').val("");
-
-                        var tbAdmin = $('#tbAdmin').DataTable();
-                        tbAdmin.ajax.reload();
-
-
-                    }
-                }
-            });
-
-        });
-
-        $('#modaleditPengguna').on('hidden.bs.modal', function() {
-            $('.alert-danger').addClass('d-none');
-            $('#modaleditPengguna').find('.form-control').val("");
-        });
-
-        //HAPUS PENGGUNA & Role User
-        $(document).on('click', '#hapus', function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            if (confirm('Yakin Ingin Menghapus data ?')) {
+            //EDIT ADMIN
+            $(document).on('click', '#edit', function() {
                 $.ajax({
-                    type: "POST",
-                    url: "{{ route('setting.admin.destroy') }}",
+                    type: "GET",
+                    url: "{{ route('setting.admin.show') }}",
                     data: {
                         'id': $(this).data('id'),
                     },
                     dataType: "json",
                     success: function(response) {
-                        $('#success_message').html("")
-                        $('#success_message').removeClass("alert-primary")
-                        $('#success_message').removeClass("alert-success")
-                        $('#success_message').addClass("alert alert-warning")
-                        $('#success_message').text(response.message)
-
-                        var tbAdmin = $('#tbAdmin').DataTable();
-                        tbAdmin.ajax.reload();
+                        $('#id-admin').val(response.data.id);
+                        $('#username-edit').val(response.data.username);
                     }
                 });
-            }
-        });
-    </script>
-    <!-- END Script Table Pengguna -->
+            });
 
-    <!--  Script Role Akses -->
+            //UPDATE ADMIN
+            $(document).on('click', '#edit-admin', function(e) {
+                e.preventDefault();
+
+                var data = {
+                    'id': $('#id-admin').val(),
+                    'username': $('#username-edit').val(),
+                    'password': $('#password-edit').val(),
+                }
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('setting.admin.update') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 400) {
+                            $('#error_list_edit').html("")
+                            $('#error_list_edit').addClass("alert alert-danger")
+                            $('#error_list_edit').removeClass("d-none")
+
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_list_edit').append('<li>' + error_value +
+                                    '</li>');
+                            });
+                        } else {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').removeClass("alert-warning")
+                            $('#success_message').addClass("alert alert-primary")
+                            // $('#success_message').removeClass("d-none")
+                            $('#success_message').text(response.message)
+
+                            $('#modaleditAdmin').modal('hide')
+                            $('#modaleditAdmin').find('.form-control').val("");
+
+                            var tbAdmin = $('#tbAdmin').DataTable();
+                            tbAdmin.ajax.reload();
+
+
+                        }
+                    }
+                });
+
+            });
+
+            $('#modaleditPengguna').on('hidden.bs.modal', function() {
+                $('.alert-danger').addClass('d-none');
+                $('#modaleditPengguna').find('.form-control').val("");
+            });
+
+            //HAPUS PENGGUNA & Role User
+            $(document).on('click', '#hapus', function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                if (confirm('Yakin Ingin Menghapus data ?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('setting.admin.destroy') }}",
+                        data: {
+                            'id': $(this).data('id'),
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-primary")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').addClass("alert alert-warning")
+                            $('#success_message').text(response.message)
+
+                            var tbAdmin = $('#tbAdmin').DataTable();
+                            tbAdmin.ajax.reload();
+                        }
+                    });
+                }
+            });
+
+        });
+        //END DOCUMENT READY FUNCTION
+    </script>
 @endpush
 
 @push('custom-css')
