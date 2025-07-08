@@ -108,10 +108,6 @@
 
 @endsection
 @push('custom-scripts')
-    <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Page level custom scripts -->
     <script>
         $(document).ready(function() {
@@ -294,17 +290,11 @@
                             $('#success_message').removeClass("alert-danger")
                             $('#success_message').addClass("alert alert-warning")
                             $('#success_message').text(response.message)
-                            $('#tb-jenis-kegiatan').DataTable().ajax.reload(); 
+                            $('#tb-jenis-kegiatan').DataTable().ajax.reload();
                         }
                     });
                 }
             });
         });
     </script>
-@endpush
-
-@push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush

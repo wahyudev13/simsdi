@@ -56,7 +56,7 @@
                     <form>
                         <div class="form-group">
                             <label for="kd_berkas" class="col-form-label">Kode Berkas</label>
-                            <input type="text" class="form-control kd_berkas "  id="kd_berkas">
+                            <input type="text" class="form-control kd_berkas " id="kd_berkas">
                         </div>
                         <div class="form-group">
                             <label for="kategori">Kategori</label>
@@ -70,8 +70,8 @@
                                 <option value="orientasi">Berkas Orientasi</option>
                                 <option value="lain">Berkas Lain-Lain</option>
                             </select>
-                          </div>
-                          <div class="form-group">
+                        </div>
+                        <div class="form-group">
                             <label for="nama_berkas" class="col-form-label">Nama Berkas</label>
                             <input type="text" class="form-control nama_berkas" id="nama_berkas">
                         </div>
@@ -104,23 +104,23 @@
                         <input type="hidden" id="id-berkas-edit">
                         <div class="form-group">
                             <label for="kd-berkas-edit" class="col-form-label">Kode Berkas</label>
-                            <input type="text" class="form-control kd-berkas-edit "  id="kd-berkas-edit" readonly>
+                            <input type="text" class="form-control kd-berkas-edit " id="kd-berkas-edit" readonly>
                         </div>
                         <div class="form-group">
                             <label for="kategori-edit">Kategori</label>
                             <select class="form-control kategori-edit" name="kategori-edit" id="kategori-edit">
-                              <option value="pendidikan">Berkas Pendidikan</option>
-                              <option value="ijin">Berkas Ijin Praktek</option>
-                              <option value="identitas">Berkas Identitas</option>
-                              <option value="kompetensi">Berkas Kompetensi</option>
-                              <option value="kesehatan">Berkas Kesehatan</option>
-                              <option value="perjanjian">Berkas Perjanjian</option>
-                              <option value="orientasi">Berkas Orientasi</option>
-                              <option value="lain">Berkas Lain-Lain</option>
-                            
+                                <option value="pendidikan">Berkas Pendidikan</option>
+                                <option value="ijin">Berkas Ijin Praktek</option>
+                                <option value="identitas">Berkas Identitas</option>
+                                <option value="kompetensi">Berkas Kompetensi</option>
+                                <option value="kesehatan">Berkas Kesehatan</option>
+                                <option value="perjanjian">Berkas Perjanjian</option>
+                                <option value="orientasi">Berkas Orientasi</option>
+                                <option value="lain">Berkas Lain-Lain</option>
+
                             </select>
                         </div>
-                          <div class="form-group">
+                        <div class="form-group">
                             <label for="nama-berkas-edit" class="col-form-label">Nama Berkas</label>
                             <input type="text" class="form-control nama-berkas-edit" id="nama-berkas-edit">
                         </div>
@@ -137,10 +137,6 @@
     <!-- ./ end Modal Devisi -->
 @endsection
 @push('custom-scripts')
-    <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Page level custom scripts -->
     <script>
         $(document).ready(function() {
@@ -160,22 +156,22 @@
                     },
                     {
                         // data: 'kategori',
-                        data: function (data, row, type) { 
-                            if (data.kategori === 'pendidikan'){
-                                 return "Berkas Pendidikan";
-                            }else if(data.kategori === 'ijin'){
+                        data: function(data, row, type) {
+                            if (data.kategori === 'pendidikan') {
+                                return "Berkas Pendidikan";
+                            } else if (data.kategori === 'ijin') {
                                 return "Berkas Ijin Praktek";
-                            }else if(data.kategori === 'identitas'){
+                            } else if (data.kategori === 'identitas') {
                                 return "Berkas Identitas";
-                            }else if(data.kategori === 'kompetensi'){
+                            } else if (data.kategori === 'kompetensi') {
                                 return "Berkas Kompetensi";
-                            }else if(data.kategori === 'kesehatan'){
+                            } else if (data.kategori === 'kesehatan') {
                                 return "Berkas Kesehatan";
-                            }else if (data.kategori == 'lain') {
+                            } else if (data.kategori == 'lain') {
                                 return "Berkas Lain-Lain"
-                            }else if (data.kategori == 'perjanjian'){
+                            } else if (data.kategori == 'perjanjian') {
                                 return "Berkas Perjanjian"
-                            }else if (data.kategori == 'orientasi'){
+                            } else if (data.kategori == 'orientasi') {
                                 return "Berkas Orientasi"
                             }
                         }
@@ -212,7 +208,7 @@
                 var data = {
                     'kode': $('.kd_berkas').val(),
                     'kategori': $('.kategori').val(),
-                    'nama_berkas' : $('.nama_berkas').val(),
+                    'nama_berkas': $('.nama_berkas').val(),
                 }
 
                 $.ajaxSetup({
@@ -284,10 +280,10 @@
             e.preventDefault();
 
             var data = {
-                    'id' : $('#id-berkas-edit').val(),
-                    'kode': $('#kd-berkas-edit').val(),
-                    'kategori': $('#kategori-edit').val(),
-                    'nama_berkas' : $('#nama-berkas-edit').val(),
+                'id': $('#id-berkas-edit').val(),
+                'kode': $('#kd-berkas-edit').val(),
+                'kategori': $('#kategori-edit').val(),
+                'nama_berkas': $('#nama-berkas-edit').val(),
             }
 
             $.ajaxSetup({
@@ -362,10 +358,4 @@
             }
         });
     </script>
-@endpush
-
-@push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush

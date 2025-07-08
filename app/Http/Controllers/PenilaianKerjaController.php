@@ -71,7 +71,7 @@ class PenilaianKerjaController extends Controller
             'tgl_penilaian' => 'required',
             'dep_penilaian' => 'required',
             'jabatan' => 'required',
-            'nilai' => 'required',
+            'nilai' => 'required|numeric|min:0',
             // 'ket' => 'required',
             'file' => 'required|mimes:pdf|max:2048',
         ],[
@@ -79,6 +79,7 @@ class PenilaianKerjaController extends Controller
             'dep_penilaian.required' => 'Departemen / Unit Kerja Pegawai Wajib diisi',
             'jabatan.required' => 'Jabatan Pegawai Wajib diisi',
             'nilai.required' => 'Total Nilai Wajib diisi',
+            'nilai.min' => 'Nilai Tidak Sesuai (Minimal 0)',
             // 'ket.required' => 'Keterangan Nilai Wajib diisi',
             'file.required' => 'File Wajib diisi',
             'file.mimes' => 'Format File yang diizinkan: pdf',
@@ -134,17 +135,6 @@ class PenilaianKerjaController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\PenilaianKerja  $penilaianKerja
-     * @return \Illuminate\Http\Response
-     */
-    public function show(PenilaianKerja $penilaianKerja)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\PenilaianKerja  $penilaianKerja
@@ -181,13 +171,14 @@ class PenilaianKerjaController extends Controller
             'tgl_penilaian' => 'required',
             'dep_penilaian' => 'required',
             'jabatan' => 'required',
-            'nilai' => 'required',
+            'nilai' => 'required|numeric|min:0',
             'file' => 'mimes:pdf|max:2048',
         ],[
             'tgl_penilaian' => 'Tanggal Penilaian Wajib Diisi',
             'dep_penilaian.required' => 'Departemen / Unit Kerja Pegawai Wajib diisi',
             'jabatan.required' => 'Jabatan Pegawai Wajib diisi',
             'nilai.required' => 'Total Nilai Wajib diisi',
+            'nilai.min' => 'Nilai Tidak Sesuai (Minimal 0)',
             'file.mimes' => 'Format File yang diizinkan: pdf',
             'file.max' => 'File Maksimal 2MB'
         ]);

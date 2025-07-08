@@ -8,9 +8,7 @@
     <h1 class="h3 mb-2 text-gray-800">Profile Pengguna</h1>
     <div class="alert alert-info" role="alert">
         Pengubahan <strong>Nama, TTL, dan Alamat</strong> silakan ke Bagian Kepegawaian/SDI yaa... :)
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+
     </div>
     <!-- DataTales Example -->
     <div id="success_message"></div>
@@ -59,7 +57,7 @@
                                     <td><strong>Departemen</strong></td>
                                     <td>{{ $pegawai->nm_dep }}</td>
                                 </tr>
-                                <input type="hidden" name="id" id="id-pengguna" value="{{$pengguna->id}}">
+                                <input type="hidden" name="id" id="id-pengguna" value="{{ $pengguna->id }}">
                                 {{-- <tr>
                                     <td><strong>Email</strong></td>
                                     <td><input type="email" id="emailid" value="{{ $pengguna->email }}"
@@ -385,90 +383,11 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
         $(document).ready(function() {
             var idpegawai = $('#id-pegawai').val();
-
-            // $('#edit').click(function(e) {
-            //     e.preventDefault();
-            //     $('#simpan').removeClass("d-none")
-            //     $('#batal').removeClass("d-none")
-            //     $('#edit').addClass("d-none")
-            //     $('#emailid').removeAttr('readonly')
-            //     $('#emailid').removeClass('form-control-plaintext')
-            //     $('#emailid').addClass('form-control');
-            // });
-
-            // $('#batal').click(function(e) {
-            //     e.preventDefault();
-            //     $('#simpan').addClass("d-none")
-            //     $('#batal').addClass("d-none")
-            //     $('#edit').removeClass("d-none")
-            //     $('#emailid').prop('readonly', true);
-            //     $('#emailid').addClass("form-control-plaintext")
-            //     $('#emailid').removeClass('form-control');
-            //     location.reload();
-
-            //     // $('#email').removeAttr('readonly')
-            // });
-
-            // $('#simpan').click(function(e) {
-            //     e.preventDefault();
-                
-            //     var data = {
-            //         'id': $('#id-pengguna').val(),
-            //         'email': $('#emailid').val(),
-            //     }
-
-            //     $.ajaxSetup({
-            //         headers: {
-            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //         }
-            //     });
-
-            //     $.ajax({
-            //         type: "POST",
-            //         url: "{{ route('profile.ganti_email') }}",
-            //         data: data,
-            //         dataType: "json",
-            //         success: function(response) {
-            //             if (response.status == 400) {
-            //                 $('#error_list').html("")
-            //                 $('#success_message').addClass("d-none")
-            //                 $('#error_list').removeClass("d-none")
-            //                 $('#error_list').addClass("alert alert-danger")
-                         
-
-            //                 $.each(response.error, function(key, error_value) {
-            //                     $('#error_list').append('<li>' + error_value +
-            //                         '</li>');
-            //                 });
-            //             } else if (response.status == 401) {
-            //                 $('#error_list').html("")
-            //                 $('#success_message').addClass("d-none")
-            //                 $('#error_list').addClass("alert alert-danger")
-            //                 $('#error_list').removeClass("d-none")
-            //                 $('#error_list').text(response.error)
-            //             } else {
-            //                 $('#success_message').html("")
-            //                 $('#error_list').addClass("d-none")
-            //                 $('#success_message').removeClass("d-none")
-            //                 $('#success_message').removeClass("alert-danger")
-            //                 $('#success_message').removeClass("alert-success")
-            //                 $('#success_message').removeClass("alert-warning")
-            //                 $('#success_message').addClass("alert alert-primary")
-            //                 // $('#success_message').removeClass("d-none")
-            //                 $('#success_message').text(response.message)
-            //                 location.reload();
-            //             }
-            //         }
-            //     });
-            // });
 
             load_data();
 
@@ -481,7 +400,7 @@
                     // processing: true,
                     serverSide: true,
                     ajax: {
-                        url: '{{ route('pegawai.presensi') }}',
+                        url: '{{ route('pengguna.presensi') }}',
                         data: {
                             'id': idpegawai,
                             'from_date': from_date,
@@ -581,7 +500,7 @@
                 searching: false,
                 // processing: true,
                 serverSide: true,
-                ajax: '{{route('pengguna.getFileId')}}',
+                ajax: '{{ route('pengguna.getFileId') }}',
                 // ajax: route('berkas.lain.getFile', +idpegawai),
                 columns: [{
                         data: 'DT_RowIndex',
@@ -619,8 +538,8 @@
             $(document).on('click', '#view-lain', function(e) {
                 e.preventDefault();
                 var namafile = $(this).data('id');
-                var url = '{{route('login.index')}}';
-                PDFObject.embed(url+'/File/Pegawai/Dokumen/Identitas/' + namafile, "#view-lain-modal");
+                var url = '{{ route('login.index') }}';
+                PDFObject.embed(url + '/File/Pegawai/Dokumen/Identitas/' + namafile, "#view-lain-modal");
             });
 
             $('#form-tambah-lain').on('submit', function(e) {
@@ -805,9 +724,6 @@
     </script>
 @endpush
 @push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
         .pdfobject-container {
             height: 35rem;

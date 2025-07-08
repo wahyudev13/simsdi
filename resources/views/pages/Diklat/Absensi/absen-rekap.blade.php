@@ -40,25 +40,19 @@
     <!-- /.container-fluid -->
 @endsection
 @push('custom-scripts')
-    <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <!--Button Dattable-->
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/jszip.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/buttons.print.min.js') }}"></script>
     <!-- Page level custom scripts -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#tb-absen-rekab').DataTable({
-               
+
                 processing: false,
                 serverSide: true,
                 ajax: {
@@ -69,7 +63,7 @@
                 },
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy','excel', 'pdf', 'print'
+                    'copy', 'excel', 'pdf', 'print'
                 ],
                 columns: [{
                         data: 'DT_RowIndex',
@@ -105,13 +99,13 @@
                     //     'data': null,
                     //     render: function(data, row, type) {
                     //         return `<a href="#" data-id="${data.id}"  data-idpegawai="${data.id_pegawai}"class="btn btn-danger btn-icon-split btn-sm"
-                    //                 id="hapus-absen" title="Hapus Absen">
-                    //                     <span class="icon text-white">
-                    //                         <i class="fas fa-trash fa-xs"></i>
-                    //                     </span>
-                    //                 </a>
-                                    
-                    //                 `;
+                //                 id="hapus-absen" title="Hapus Absen">
+                //                     <span class="icon text-white">
+                //                         <i class="fas fa-trash fa-xs"></i>
+                //                     </span>
+                //                 </a>
+
+                //                 `;
                     //     }
                     // },
 
@@ -129,7 +123,7 @@
                         type: "POST",
                         url: "{{ route('absensi.diklat.destroy') }}",
                         data: {
-                            'id' : $(this).data('id'),
+                            'id': $(this).data('id'),
                             'id_kegiatan': $('#id-kegiatan').val(),
                             'id_pegawai': $(this).data('idpegawai'),
                         },
@@ -152,16 +146,5 @@
 @endpush
 
 @push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}"> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <link href="{{ asset('/vendor/datatables/button/buttons.dataTables.min.css') }}" rel="stylesheet" />
 @endpush

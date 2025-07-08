@@ -53,7 +53,7 @@ class FileIjazahController extends Controller
     }
 
     //Get Brekas Ijazah
-    public function getBerkas(Request $request)
+    public function getIjazah(Request $request)
     {
         $berkas = FileIjazah::where('id_pegawai', $request->id)
         ->join('master_berkas_pegawai', 'file_ijazah.nama_file_id', '=', 'master_berkas_pegawai.id')

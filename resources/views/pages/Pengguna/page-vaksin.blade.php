@@ -13,15 +13,15 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             @can('Tambah Vaksin')
-            <div class="button-add">
-                <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
-                    data-target="#modaladdVaksin">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-plus"></i>
-                    </span>
-                    <span class="text">Tambah Vaksin</span>
-                </a>
-            </div>
+                <div class="button-add">
+                    <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
+                        data-target="#modaladdVaksin">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <span class="text">Tambah Vaksin</span>
+                    </a>
+                </div>
             @endcan
         </div>
         <div class="card-body">
@@ -39,8 +39,8 @@
                                 <th>Jenis Vaksin</th>
                                 <th>Tanggal Vaksin</th>
                                 <th>Tempat Vaksin</th>
-                                @if(auth()->user()->can('View Vaksin') || auth()->user()->can('Edit Vaksin') || auth()->user()->can('Hapus Vaksin'))
-                                <th>Aksi</th>
+                                @if (auth()->user()->can('View Vaksin') || auth()->user()->can('Edit Vaksin') || auth()->user()->can('Hapus Vaksin'))
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
@@ -209,9 +209,6 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -224,7 +221,7 @@
                 searching: true,
                 processing: false,
                 serverSide: true,
-                ajax: '{{route('pengguna.getVaksin')}}',
+                ajax: '{{ route('pengguna.getVaksin') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -247,11 +244,11 @@
                         data: 'tempat_vaksin',
                         name: 'tempat_vaksin'
                     },
-                    @if(auth()->user()->can('View Vaksin') || auth()->user()->can('Edit Vaksin') || auth()->user()->can('Hapus Vaksin'))
-                    {
-                        'data': null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View Vaksin') || auth()->user()->can('Edit Vaksin') || auth()->user()->can('Hapus Vaksin'))
+                        {
+                            'data': null,
+                            render: function(data, row, type) {
+                                return `
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-solid fa-bars"></i>
@@ -270,8 +267,8 @@
                                     </div>
                                 </div>
                                 `;
-                        }
-                    },
+                            }
+                        },
                     @endif
                 ]
             }); //End Datatable
@@ -281,8 +278,8 @@
             $(document).on('click', '#view-vaksin', function(e) {
                 e.preventDefault();
                 var namafile = $(this).data('id');
-                var url = '{{route('login.index')}}';
-                PDFObject.embed(url+'/File/Pegawai/Kesehatan/Vaksin/' + namafile, "#view-vaksin-modal");
+                var url = '{{ route('login.index') }}';
+                PDFObject.embed(url + '/File/Pegawai/Kesehatan/Vaksin/' + namafile, "#view-vaksin-modal");
             });
             //ADD VAKSIN
             $('#form-add-vaksin').on('submit', function(e) {
@@ -460,8 +457,6 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
         .pdfobject-container {
             height: 35rem;

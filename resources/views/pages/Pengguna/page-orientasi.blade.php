@@ -35,8 +35,10 @@
                                     <th>No</th>
                                     <th>Nomor Sertifikat</th>
                                     <th>Tanggal Orientasi</th>
-                                    @if(auth()->user()->can('View Orientasi') || auth()->user()->can('Edit Orientasi') || auth()->user()->can('Hapus Orientasi'))
-                                    <th>Aksi</th>
+                                    @if (auth()->user()->can('View Orientasi') ||
+                                            auth()->user()->can('Edit Orientasi') ||
+                                            auth()->user()->can('Hapus Orientasi'))
+                                        <th>Aksi</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -65,7 +67,8 @@
                     <div id="error_list_ori"></div>
                     <form method="POST" id="form-tambah-orientasi" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" class="id_pegawai" id="id_pegawai_orientasi" value="{{ $pegawai->id }}" name="id_pegawai">
+                        <input type="hidden" class="id_pegawai" id="id_pegawai_orientasi" value="{{ $pegawai->id }}"
+                            name="id_pegawai">
                         <div class="form-group">
                             <label for="nomor_orientasi" class="col-form-label">Nomor Sertifikat <label
                                     class="text-danger">*</label></label>
@@ -73,18 +76,17 @@
                         </div>
                         <div class="form-group">
                             <label for="tgl_mulai" class="col-form-label">Tanggal Mulai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_mulai" name="tgl_mulai">
                         </div>
                         <div class="form-group">
                             <label for="tgl_selesai" class="col-form-label">Tanggal Selesai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_selesai" name="tgl_selesai">
                         </div>
                         <div class="form-group">
                             <label for="file_orientasi" class="col-form-label">File
-                                <span class="badge badge-secondary">.pdf</span> <label
-                                    class="text-danger">*</label></label>
+                                <span class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
                             <input type="file" class="form-control" id="file_orientasi" name="file">
                             <small>Ukuran maksimal 2MB</small>
                         </div>
@@ -125,12 +127,12 @@
                         </div>
                         <div class="form-group">
                             <label for="tgl_mulai_edit" class="col-form-label">Tanggal Mulai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_mulai_edit" name="tgl_mulai">
                         </div>
                         <div class="form-group">
                             <label for="tgl_selesai_edit" class="col-form-label">Tanggal Selesai<label
-                                class="text-danger">*</label></label>
+                                    class="text-danger">*</label></label>
                             <input type="date" class="form-control" id="tgl_selesai_edit" name="tgl_selesai">
                         </div>
                         <div class="form-group">
@@ -155,29 +157,26 @@
 
     <!-- Modal View orinetasi PDF -->
     <div class="modal fade " id="modal-orientasi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-     <div class="modal-dialog modal-xl" role="document">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Sertifikat Orientasi</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 <div id="view-ori-modal"></div>
-             </div>
-         </div>
-     </div>
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sertifikat Orientasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="view-ori-modal"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- ./ end Modal -->
 
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
@@ -216,11 +215,13 @@
                             `;
                         }
                     },
-                    @if(auth()->user()->can('View Orientasi') || auth()->user()->can('Edit Orientasi') || auth()->user()->can('Hapus Orientasi'))
-                    {
-                        data: null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View Orientasi') ||
+                            auth()->user()->can('Edit Orientasi') ||
+                            auth()->user()->can('Hapus Orientasi'))
+                        {
+                            data: null,
+                            render: function(data, row, type) {
+                                return `
                                     <div class="btn-group">
                                         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-solid fa-bars"></i>
@@ -239,13 +240,13 @@
                                         </div>
                                     </div>
                                     `;
-                        }
-                    },
+                            }
+                        },
                     @endif
-    
+
                 ]
             });
-    
+
             //VIEW Orientasi
             $(document).on('click', '#view-orientasi', function(e) {
                 e.preventDefault();
@@ -253,19 +254,19 @@
                 var url = '{{ route('login.index') }}';
                 PDFObject.embed(url + '/File/Pegawai/Dokumen/Orientasi/' + namafile, "#view-ori-modal");
             });
-    
+
             $('#form-tambah-orientasi').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-    
+
                 var form = $('#form-tambah-orientasi')[0];
                 var formData = new FormData(form);
-    
+
                 $.ajax({
                     type: "POST",
                     enctype: "multipart/form-data",
@@ -279,7 +280,7 @@
                             $('#error_list_ori').html("")
                             $('#error_list_ori').addClass("alert alert-danger")
                             $('#error_list_ori').removeClass("d-none")
-    
+
                             $.each(response.error, function(key, error_value) {
                                 $('#error_list_ori').append('<li>' + error_value +
                                     '</li>');
@@ -292,20 +293,20 @@
                             $('#success_message').text(response.message)
                             $('#modal-add-orientasi').modal('hide')
                             $('#modal-add-orientasi').find('.form-control').val("");
-    
+
                             $('#tb-orientasi').DataTable().ajax.reload();
-    
+
                         }
                     }
                 });
             });
-    
+
             $('#modal-add-orientasi').on('hidden.bs.modal', function() {
                 $('#modal-add-orientasi').find('.form-control').val("");
                 $('#modal-add-orientasi').find('.custom-file-input').val("");
                 $('.alert-danger').addClass('d-none');
             });
-    
+
             //EDIT Orientasi
             $(document).on('click', '#edit-orientasi', function(e) {
                 e.preventDefault();
@@ -325,27 +326,27 @@
                     }
                 });
             });
-    
+
             //UPDATE Berkas Lain
             $('#form-edit-orientasi').on('submit', function(e) {
                 e.preventDefault();
-    
+
                 // var data = {
                 //     'id': $('#id-lain-edit').val(),
                 // }
-    
+
                 // var file = $('.file').val();
                 // var rename = file.replace("C:\\fakepath\\", "");
-    
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-    
+
                 var form = $('#form-edit-orientasi')[0];
                 var formData = new FormData(form);
-    
+
                 $.ajax({
                     type: "POST",
                     enctype: "multipart/form-data",
@@ -359,7 +360,7 @@
                             $('#error_list_ori_edit').html("")
                             $('#error_list_ori_edit').addClass("alert alert-danger")
                             $('#error_list_ori_edit').removeClass("d-none")
-    
+
                             $.each(response.error, function(key, error_value) {
                                 $('#error_list_ori_edit').append('<li>' + error_value +
                                     '</li>');
@@ -374,18 +375,18 @@
                             $('#modal-edit-orientasi').modal('hide')
                             $('#modal-edit-orientasi').find('.form-control').val("");
                             $('#tb-orientasi').DataTable().ajax.reload();
-    
-    
+
+
                         }
                     }
                 });
             });
-    
+
             $('#modal-edit-orientasi').on('hidden.bs.modal', function() {
                 // $('#modalJenjang').find('.form-control').val("");
                 $('.alert-danger').addClass('d-none');
             });
-    
+
             //HAPUS Lain
             $(document).on('click', '#hapus-orientasi', function() {
                 $.ajaxSetup({
@@ -409,19 +410,16 @@
                             $('#success_message').addClass("alert alert-warning")
                             $('#success_message').text(response.message)
                             $('#tb-orientasi').DataTable().ajax.reload();
-    
+
                         }
                     });
                 }
             });
         });
     </script>
-    
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
         .pdfobject-container {
             height: 35rem;

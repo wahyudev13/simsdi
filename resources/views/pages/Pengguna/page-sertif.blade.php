@@ -37,9 +37,7 @@
                                 <th>Tgl Kegiatan</th>
                                 <th>Tempat Kegiatan</th>
                                 <th>Penyelenggara</th>
-                                @if (auth()->user()->can('View Sertif') ||
-                                        auth()->user()->can('Edit Sertif') ||
-                                        auth()->user()->can('Hapus Sertif'))
+                                @if (auth()->user()->can('View Sertif') || auth()->user()->can('Edit Sertif') || auth()->user()->can('Hapus Sertif'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -218,9 +216,6 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -232,7 +227,7 @@
                 searching: true,
                 // processing: true,
                 serverSide: true,
-                ajax: '{{route('pengguna.getSertif')}}',
+                ajax: '{{ route('pengguna.getSertif') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -259,13 +254,11 @@
                         data: 'penyelenggara',
                         name: 'penyelenggara'
                     },
-                    @if (auth()->user()->can('View Sertif') ||
-                                        auth()->user()->can('Edit Sertif') ||
-                                        auth()->user()->can('Hapus Sertif'))
-                    {
-                        'data': null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View Sertif') || auth()->user()->can('Edit Sertif') || auth()->user()->can('Hapus Sertif'))
+                        {
+                            'data': null,
+                            render: function(data, row, type) {
+                                return `
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-solid fa-bars"></i>
@@ -284,8 +277,8 @@
                                     </div>
                                 </div>
                                 `;
-                        }
-                    },
+                            }
+                        },
                     @endif
 
                 ]
@@ -474,8 +467,6 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
         .pdfobject-container {
             height: 35rem;

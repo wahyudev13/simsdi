@@ -126,12 +126,13 @@
                         <div class="form-group">
                             <label for="nilai" class="col-form-label">Total Nilai <label
                                     class="text-danger">*</label></label>
-                            <input type="text" class="form-control" id="nilai" name="nilai">
+                            <input type="number" class="form-control" id="nilai" name="nilai">
                         </div>
                         {{-- <div class="form-group">
-                        <label for="ket" class="col-form-label">Keterangan <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="ket" name="ket">
-                    </div> --}}
+                            <label for="ket" class="col-form-label">Keterangan <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="ket" name="ket">
+                        </div> --}}
                         <div class="form-group">
                             <label for="file-penilaian" class="col-form-label">File <span
                                     class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
@@ -192,12 +193,13 @@
                         <div class="form-group">
                             <label for="nilai-edit" class="col-form-label">Total Nilai <label
                                     class="text-danger">*</label></label>
-                            <input type="text" class="form-control" id="nilai-edit" name="nilai">
+                            <input type="number" class="form-control" id="nilai-edit" name="nilai">
                         </div>
                         {{-- <div class="form-group">
-                        <label for="ket" class="col-form-label">Keterangan <label class="text-danger">*</label></label>
-                        <input type="text" class="form-control" id="ket" name="ket">
-                    </div> --}}
+                            <label for="ket" class="col-form-label">Keterangan <label
+                                    class="text-danger">*</label></label>
+                            <input type="text" class="form-control" id="ket" name="ket">
+                        </div> --}}
                         <div class="form-group">
                             <label for="file-penilaian-edit" class="col-form-label">File <span
                                     class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
@@ -218,7 +220,7 @@
     </div>
     <!-- ./ end Modal -->
 
-    <!-- Modal View Uraian Tugas PDF -->
+    <!-- Modal View Penilaian PDF -->
     <div class="modal fade " id="modal-view-nilai" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
@@ -239,11 +241,9 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('/vendor/select2/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('.select-departemen').select2({
@@ -340,7 +340,7 @@
                 e.preventDefault();
                 var penilaian = $(this).data('file');
                 var url = '{{ route('login.index') }}';
-                PDFObject.embed(url + '/File/Pegawai/Penilaian/'+penilaian, "#view-nilai");
+                PDFObject.embed(url + '/File/Pegawai/Penilaian/' + penilaian, "#view-nilai");
             });
 
             //Store Berkas Penilaian
@@ -504,7 +504,7 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link href="{{ asset('/vendor/select2/select2.min.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
@@ -512,8 +512,7 @@
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}">
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+
     <style>
         .pdfobject-container {
             height: 35rem;

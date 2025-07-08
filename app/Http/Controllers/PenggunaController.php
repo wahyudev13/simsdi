@@ -25,19 +25,11 @@ class PenggunaController extends Controller
         ->select('pegawai.id','pegawai.nik','pegawai.nama','pegawai.jk','pegawai.jbtn','departemen.nama AS nama_dep')
         ->get();
 
-        $role = Role::whereNotIn('name',['superadmin'])->get();
-        $permission = Permission::get();
-
-
-        // $pegawairole = User::findOrFail($id);
-        // $rolesetting = Role::whereNotIn('name', $pegawai->getRoleNames())->get();
+        $role = Role::get();
 
         $data = [
             'pegawai' => $pegawai,
             'role' => $role,
-            'permission' => $permission
-            // 'pegawai-role' => $pegawairole,
-            // 'rolesetting' => $rolesetting
         ];
         return view('pages.Master.master-pengguna', $data);
     }
@@ -106,9 +98,7 @@ class PenggunaController extends Controller
             ]);
 
             $simpanuser->assignRole('user');
-            $simpanuser->givePermissionTo(['View Ijazah','View Transkrip','View STR','View SIP',
-            'View Riwayat','View Kesehatan','View Vaksin','View Sertif','View Orientasi']);
-
+        
             return response()->json([
                 'status' => 200,
                 'message' => 'Pengguna Berhasil Ditambah',
@@ -307,72 +297,6 @@ class PenggunaController extends Controller
                 ]);
             }
           
-        }
-        // if ($delete_role_user) {
-        //     $deluser = User::where('id', $request->id)->delete();
-        //     return response()->json([
-        //         'message' => 'Data Berhasil Dihapus',
-        //         'status' => 200,
-        //     ]);
-        // }else {
-        //     return response()->json([
-        //         'error' => 'Gagal Hapus data',
-        //         'status' => 500,
-        //     ]);
-        // }
-    }
-
-
-    public function addPermisUser(Request $request) {
-        $validated = Validator::make($request->all(),[
-            'id_pengguna' => 'required',
-            'permis' => 'required',
-        ],[
-            'id_pegawai.required' => 'ID Pegawai Wajib diisi',
-            'permis.required' => 'Permission Akses Wajib diisi',
-        ]);
-
-        if ($validated->passes()) {
-
-            $user = User::findOrFail($request->id_pengguna);
-            $user->givePermissionTo([$request->permis]);
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Permission Akses Berhasil Ditambahkan',
-            ]);
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function settingPermis(Request $request) {
-        //$pegawai = User::where('id',$request->id)->first();
-        $pegawai = User::findOrFail($request->id);
-        $permis = Permission::whereIn('name', $pegawai->getPermissionNames())->get();
-
-        return DataTables::of($permis)
-        // ->addIndexColumn()
-        ->make(true);
-    }
-
-    public function deletePermisUser(Request $request) {
-        $user = User::findOrFail($request->id);
-        $delete_permis_user = $user->revokePermissionTo($request->permisname);
-
-        if ($delete_permis_user) {
-            return response()->json([
-                'message' => 'Permission '.$request->permisname.' Berhasil Dihapus',
-                'status' => 200,
-            ]);
-        }else {
-            return response()->json([
-                'error' => 'Gagal Hapus data',
-                'status' => 500,
-            ]);
         }
     }
 }

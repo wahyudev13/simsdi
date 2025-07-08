@@ -9,7 +9,7 @@
             // processing: true,
             serverSide: true,
             ajax: {
-                url: '{{route('berkas.getBerkas')}}',
+                url: '{{ route('berkas.getIjazah') }}',
                 data: {
                     'id': idpegawai,
                 },
@@ -44,7 +44,7 @@
                                <i class="fas fa-times"></i> Belum Ada Bukti Verifikasi
                             </a>
                             `
-                        }else{
+                        } else {
                             return ` 
                             <a class="badge badge-success" href="#" data-verifijazah="${data.file_verif}" data-ket="${data.keterangan}" title="Lihat Bukti" data-toggle="modal" data-target="#modal-verijazah" id="view-bukti">
                                <i class="fas fa-check"></i> Sudah Ada Bukti Verifikasi
@@ -88,9 +88,9 @@
         $(document).on('click', '#view-ijazah', function(e) {
             e.preventDefault();
             var ijazah = $(this).data('id');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Dokumen/Ijazah/' + ijazah, "#view-ijazah-modal");
-        }); 
+            var url = '{{ route('login.index') }}';
+            PDFObject.embed(url + '/File/Pegawai/Dokumen/Ijazah/' + ijazah, "#view-ijazah-modal");
+        });
 
         //Store Berkas Ijazah
         $('#form-tambah-berkas').on('submit', function(e) {
@@ -115,9 +115,9 @@
                 contentType: false,
                 processData: false,
                 cache: false,
-                beforeSend:function(){
-                       $('.btn-login').addClass("d-none");
-                       $('.btn-login-disabled').removeClass("d-none");
+                beforeSend: function() {
+                    $('.btn-login').addClass("d-none");
+                    $('.btn-login-disabled').removeClass("d-none");
                 },
                 success: function(response) {
                     if (response.status == 400) {
@@ -151,7 +151,7 @@
                 }
             });
         });
-        
+
         $('#modalUpload').on('hidden.bs.modal', function() {
             $('#modalUpload').find('.form-control').val("");
             $('#modalUpload').find('.custom-file-input').val("");
@@ -220,7 +220,8 @@
                         $('#error_list_edit').removeClass("d-none")
 
                         $.each(response.error, function(key, error_value) {
-                            $('#error_list_edit').append('<li>' + error_value + '</li>');
+                            $('#error_list_edit').append('<li>' + error_value +
+                                '</li>');
                         });
                     } else {
                         $('#success_message').html("")
@@ -280,24 +281,25 @@
 </script>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         //VIEW Bukti Verifikasi Ijazah
         $(document).on('click', '#view-bukti', function(e) {
             e.preventDefault();
             var bukti = $(this).data('verifijazah');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Dokumen/Ijazah/Verifikasi/'+bukti, "#view-verijazah-modal");
+            var url = '{{ route('login.index') }}';
+            PDFObject.embed(url + '/File/Pegawai/Dokumen/Ijazah/Verifikasi/' + bukti,
+                "#view-verijazah-modal");
 
             var keterangan = $(this).data('ket');
             $('#ket-verif-ijazah').text(keterangan);
         });
 
         //View Modal ADD Bukti Verifikasi Ijazah
-        $('table').on('click','#add-bukti', function(e){
+        $('table').on('click', '#add-bukti', function(e) {
             e.preventDefault();
             var ijazah = $(this).data('id');
             $('#id-ijazah-bukti').val(ijazah);
-            
+
         });
 
         $('#modal-add-bukti').on('hidden.bs.modal', function() {
@@ -337,7 +339,8 @@
                         $('#error_list_bukti').removeClass("d-none")
 
                         $.each(response.error, function(key, error_value) {
-                            $('#error_list_bukti').append('<li>' + error_value + '</li>');
+                            $('#error_list_bukti').append('<li>' + error_value +
+                                '</li>');
                         });
                     } else {
                         $('#success_message').html("")
@@ -350,13 +353,13 @@
                         $('#modal-add-bukti').find('.form-control').val("");
                         var oTable = $('#tbJenjang').DataTable();
                         oTable.ajax.reload();
-                
+
                     }
                 }
             });
         });
 
-         //HAPUS Bukti Verifikasi Ijazah
+        //HAPUS Bukti Verifikasi Ijazah
         $(document).on('click', '#hapus-bukti', function() {
             $.ajaxSetup({
                 headers: {

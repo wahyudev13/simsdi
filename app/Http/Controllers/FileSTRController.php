@@ -175,8 +175,6 @@ class FileSTRController extends Controller
                     ]);
                 }
 
-               
-                
                 return response()->json([
                     'status' => 200,
                     'message' => 'STR Berhasil Disimpan',

@@ -18,7 +18,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {{ $pegawai->jbtn }} /  {{ $pegawai->nama_dep }}
+                                {{ $pegawai->jbtn }} / {{ $pegawai->nama_dep }}
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pegawai->nama }} ({{ $pegawai->nik }})
                             </div>
@@ -316,20 +316,19 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <!--Button Dattable-->
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/jszip.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/buttons.print.min.js') }}"></script>
     <!--SUM Datatable-->
-    <script src="https://cdn.datatables.net/plug-ins/1.13.1/api/sum().js"></script>
+    <script src="{{ asset('/vendor/datatables/button/js/sum().js') }}"></script>
+    {{-- <script src="https://cdn.datatables.net/plug-ins/1.13.1/api/sum().js"></script> --}}
 
     <script>
         $(document).ready(function() {
@@ -635,12 +634,12 @@
                                         $('sheetData', sheet).append(`
                                             <row r="${footerIndex}">
                                             ${$footerRowCols.map((index, el) => `
-                                                    <c t="inlineStr" r="${String.fromCharCode(65 + index)}${footerIndex}" s="2">
-                                                    <is>
-                                                        <t xml:space="preserve">${$(el).text()}</t>
-                                                    </is>
-                                                    </c>
-                                                `).get().join('')}
+                                                                                    <c t="inlineStr" r="${String.fromCharCode(65 + index)}${footerIndex}" s="2">
+                                                                                    <is>
+                                                                                        <t xml:space="preserve">${$(el).text()}</t>
+                                                                                    </is>
+                                                                                    </c>
+                                                                                `).get().join('')}
                                             </row>
                                         `);
                                     }
@@ -746,8 +745,6 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
         .pdfobject-container {
             height: 35rem;
@@ -755,5 +752,5 @@
         }
     </style>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <link href="{{ asset('/vendor/datatables/button/buttons.dataTables.min.css') }}" rel="stylesheet" />
 @endpush

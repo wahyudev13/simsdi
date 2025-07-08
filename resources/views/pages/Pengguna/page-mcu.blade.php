@@ -82,10 +82,6 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
     <script>
         $(document).ready(function() {
             var idpegawai = $('#id-pegawai').val();
@@ -96,7 +92,7 @@
                 searching: true,
                 processing: false,
                 serverSide: true,
-                ajax: '{{route('pengguna.getMCU')}}',
+                ajax: '{{ route('pengguna.getMCU') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -147,7 +143,7 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" href="#" data-norw="${data.no_rawat}" title="Laboratorium" data-toggle="modal" data-target="#modalLab" id="lab-mcu">Laboratorium</a>
-                                        <a class="dropdown-item" href="{{url('/penilaian/kesehatan/mcu/${data.tgl_registrasi}/${data.no_rkm_medis}/${data.kd_poli}/${data.no_reg}')}}"  target="_blank" data-norw="${data.no_rawat}" title="Lihat Hasil" id="lihat-hasil">Lihat Hasil</a>
+                                        <a class="dropdown-item" href="{{ url('pengguna/mcu/report/${data.tgl_registrasi}/${data.no_rkm_medis}/${data.kd_poli}/${data.no_reg}') }}"  target="_blank" data-norw="${data.no_rawat}" title="Lihat Hasil" id="lihat-hasil">Lihat Hasil</a>
                                     </div>
                                 </div>
                                 `;
@@ -168,7 +164,7 @@
                     processing: false,
                     serverSide: true,
                     ajax: {
-                        url: '{{ route('penilaian.mcu.periksalab') }}',
+                        url: '{{ route('pengguna.mcu.laborat') }}',
                         data: {
                             'no_rawat': $(this).data('norw'),
                         },
@@ -214,7 +210,7 @@
                             'data': null,
                             render: function(data, row, type) {
                                 return `
-                                <a href="{{url('/penilaian/kesehatan/mcu/laborat/${data.no_rkm_medis}/${data.kd_poli}/${data.tgl_registrasi}/${data.no_reg}/${data.kd_jenis_prw}')}}" target="_blank" class="btn btn-primary btn-icon-split btn-sm" title="Hasil Lab">
+                                <a href="{{ url('pengguna/mcu/report/laborat/${data.no_rkm_medis}/${data.kd_poli}/${data.tgl_registrasi}/${data.no_reg}/${data.kd_jenis_prw}') }}" target="_blank" class="btn btn-primary btn-icon-split btn-sm" title="Hasil Lab">
                                         <span class="icon text-white">
                                             <i class="fas fa-print fa-xs"></i>
                                         </span>
@@ -227,12 +223,7 @@
                 }); //End Datatable
 
             });
-            
+
         });
     </script>
-@endpush
-@push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush

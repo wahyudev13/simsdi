@@ -6,10 +6,6 @@
 @section('body')
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Master Pengguna</h1>
-    {{-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
-            DataTables documentation</a>.</p> --}}
-
     <!-- DataTales Example -->
     <div id="success_message"></div>
     <div class="card shadow mb-4">
@@ -222,71 +218,10 @@
         </div>
     </div>
 
-    <!-- Modal Setting Permission-->
-    <div class="modal fade" id="setting-permis" data-backdrop="static" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Setting Permission Akses</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="error_setting_permis"></div>
-                    <div id="success_setting_permis"></div>
-
-                    <input type="hidden" class="id-pengguna-permis" name="id-pengguna-permis" id="id-pengguna-permis">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="nama-pengguna-permis" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <select class="form-select select2-permis" id="select-permis-setting" name="permis[]"
-                            data-placeholder="Pilih Permission" multiple>
-                            @foreach ($permission as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="row text-right mb-3">
-                        <div class="col-md-12">
-                            {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> --}}
-                            <button type="button" class="btn btn-primary btn-sm" id="simpan-permis">Simpan</button>
-                        </div>
-                    </div>
-
-                    <table class="table" id="tb-permis" width="100%" cellspacing="0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">Permission</th>
-                                <th scope="col">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-
-                    
-
-                </div>
-                <div class="modal-footer">
-                    <input type="text" class="form-control form-control-sm mt-4" id="cari-permis" placeholder="Cari Permission">
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
 @endsection
 @push('custom-scripts')
     <!-- Scripts Select 2-->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script> --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('/vendor/select2/select2.min.js') }}"></script>
     <script>
         $('#single-select-field').select2({
             theme: "bootstrap-5",
@@ -311,22 +246,8 @@
             placeholder: $(this).data('placeholder'),
             closeOnSelect: false,
         });
-
-        $('#select-permis-setting').select2({
-            theme: "bootstrap-5",
-            dropdownParent: "#setting-permis",
-            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            placeholder: $(this).data('placeholder'),
-            closeOnSelect: false,
-        });
     </script>
 
-    <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
     <!-- Script Table Pengguna -->
     <script>
         $(document).ready(function() {
@@ -374,12 +295,6 @@
                                     data-toggle="modal" data-target="#setting-role" id="role-button" title="Setting Role">
                                         <span class="icon text-white">
                                             <i class="fas fa-key"></i>
-                                        </span>
-                                    </a>
-                                    <a href="#" data-id="${data.id}" class="btn btn-warning btn-role btn-icon-split btn-sm" 
-                                    data-toggle="modal" data-target="#setting-permis" id="permis-button" title="Setting Permission">
-                                        <span class="icon text-white">
-                                            <i class="fas fa-user-lock"></i>
                                         </span>
                                     </a>
                                     <a href="#" data-id="${data.id}" data-nama="${data.nama}" class="btn btn-danger btn-hapus btn-icon-split btn-sm" id="hapus" title="Hapus Pengguna">
@@ -475,459 +390,291 @@
                     }
                 });
             });
-        });
-        //END DOCUMENT READY FUNCTION
 
-        $('#modaladdPengguna').on('hidden.bs.modal', function() {
-            $('#modaladdPengguna').find('.form-control').val("");
-
-            $('.select2').val(null).trigger('change');
-            // $(".select2").trigger("change");
-            // $(".select2").trigger("change");
-            $('.alert-danger').addClass('d-none');
-        });
-
-
-        //EDIT PENGGUNA
-        $(document).on('click', '#edit', function() {
-            $.ajax({
-                type: "GET",
-                url: "{{ route('master.pengguna.show') }}",
-                data: {
-                    'id': $(this).data('id'),
-                },
-                dataType: "json",
-                success: function(response) {
-                    $('#id-pengguna').val(response.data.id);
-                    $('#namapegawai_edit').val(response.data.nama);
-                    $('#username_edit').val(response.data.username);
-                    // $('#email_edit').val(response.data.email);
-                }
-            });
-        });
-
-        //UPDATE PENGGUNA
-        $(document).on('click', '#edit-pengguna', function(e) {
-            e.preventDefault();
-
-            var data = {
-                'id': $('#id-pengguna').val(),
-                'pengguna' : $('#namapegawai_edit').val(),
-                'username': $('#username_edit').val(),
-                'password': $('#password_edit').val(),
-                // 'email': $('#email_edit').val(),
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+            $('#modaladdPengguna').on('hidden.bs.modal', function() {
+                $('#modaladdPengguna').find('.form-control').val("");
+                $('.select2').val(null).trigger('change');
+                $('.alert-danger').addClass('d-none');
             });
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('master.pengguna.update') }}",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.status == 400) {
-                        $('#error_list_edit').html("")
-                        $('#error_list_edit').addClass("alert alert-danger")
-                        $('#error_list_edit').removeClass("d-none")
-
-                        $.each(response.error, function(key, error_value) {
-                            $('#error_list_edit').append('<li>' + error_value + '</li>');
-                        });
-                    } else if (response.status == 401) {
-                        $('#error_list_edit').html("")
-                        $('#error_list_edit').addClass("alert alert-danger")
-                        $('#error_list_edit').removeClass("d-none")
-                        $('#error_list_edit').text(response.error)
-                    } else {
-                        $('#success_message').html("")
-                        $('#success_message').removeClass("alert-success")
-                        $('#success_message').removeClass("alert-warning")
-                        $('#success_message').addClass("alert alert-primary")
-                        // $('#success_message').removeClass("d-none")
-                        $('#success_message').text(response.message)
-                        $('#modaleditPengguna').modal('hide')
-                        $('#modaleditPengguna').find('.form-control').val("");
-
-                        var tbPengguna = $('#tbPengguna').DataTable();
-                        tbPengguna.ajax.reload();
-
-
-                    }
-                }
-            });
-
-        });
-
-        $('#modaleditPengguna').on('hidden.bs.modal', function() {
-            $('.alert-danger').addClass('d-none');
-            $('#modaleditPengguna').find('.form-control').val("");
-        });
-
-        //HAPUS PENGGUNA & Role User
-        $(document).on('click', '#hapus', function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            if (confirm('Yakin Ingin Menghapus data ?')) {
+            //EDIT PENGGUNA
+            $(document).on('click', '#edit', function() {
                 $.ajax({
-                    type: "POST",
-                    url: "{{ route('master.pengguna.destroy') }}",
+                    type: "GET",
+                    url: "{{ route('master.pengguna.show') }}",
                     data: {
                         'id': $(this).data('id'),
-                        'namapeg': $(this).data('nama')
                     },
                     dataType: "json",
                     success: function(response) {
-                        $('#success_message').html("")
-                        $('#success_message').removeClass("alert-primary")
-                        $('#success_message').removeClass("alert-success")
-                        $('#success_message').addClass("alert alert-warning")
-                        $('#success_message').text(response.message)
-                        var tbPengguna = $('#tbPengguna').DataTable();
-                        tbPengguna.ajax.reload();
+                        $('#id-pengguna').val(response.data.id);
+                        $('#namapegawai_edit').val(response.data.nama);
+                        $('#username_edit').val(response.data.username);
+                        // $('#email_edit').val(response.data.email);
                     }
                 });
-            }
+            });
+
+            //UPDATE PENGGUNA
+            $(document).on('click', '#edit-pengguna', function(e) {
+                e.preventDefault();
+
+                var data = {
+                    'id': $('#id-pengguna').val(),
+                    'pengguna': $('#namapegawai_edit').val(),
+                    'username': $('#username_edit').val(),
+                    'password': $('#password_edit').val(),
+                    // 'email': $('#email_edit').val(),
+                }
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('master.pengguna.update') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 400) {
+                            $('#error_list_edit').html("")
+                            $('#error_list_edit').addClass("alert alert-danger")
+                            $('#error_list_edit').removeClass("d-none")
+
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_list_edit').append('<li>' + error_value +
+                                    '</li>');
+                            });
+                        } else if (response.status == 401) {
+                            $('#error_list_edit').html("")
+                            $('#error_list_edit').addClass("alert alert-danger")
+                            $('#error_list_edit').removeClass("d-none")
+                            $('#error_list_edit').text(response.error)
+                        } else {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').removeClass("alert-warning")
+                            $('#success_message').addClass("alert alert-primary")
+                            // $('#success_message').removeClass("d-none")
+                            $('#success_message').text(response.message)
+                            $('#modaleditPengguna').modal('hide')
+                            $('#modaleditPengguna').find('.form-control').val("");
+
+                            $('#tbPengguna').DataTable().ajax.reload();
+
+
+                        }
+                    }
+                });
+
+            });
+
+            $('#modaleditPengguna').on('hidden.bs.modal', function() {
+                $('.alert-danger').addClass('d-none');
+                $('#modaleditPengguna').find('.form-control').val("");
+            });
+
+            //HAPUS PENGGUNA & Role User
+            $(document).on('click', '#hapus', function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                if (confirm('Yakin Ingin Menghapus data ?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('master.pengguna.destroy') }}",
+                        data: {
+                            'id': $(this).data('id'),
+                            'namapeg': $(this).data('nama')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-primary")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').addClass("alert alert-warning")
+                            $('#success_message').text(response.message)
+                            $('#tbPengguna').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            });
         });
     </script>
     <!-- END Script Table Pengguna -->
 
-    <!--  Script Role Akses -->
+    <!--  Script Role -->
     <script>
-        //SIMPAN ROLE USER
-        $(document).on('click', '#simpan-role', function(e) {
-            e.preventDefault();
-            var data = {
-                'id_pengguna': $('.id-pengguna-show').val(),
-                'role': $('.select2-role').val(),
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        $(document).ready(function() {
+            //SIMPAN ROLE USER
+            $(document).on('click', '#simpan-role', function(e) {
+                e.preventDefault();
+                var data = {
+                    'id_pengguna': $('.id-pengguna-show').val(),
+                    'role': $('.select2-role').val(),
                 }
-            });
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('master.pengguna.addRoleUser') }}",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.status == 400) {
-                        $('#success_setting_role').addClass("d-none")
-
-                        $('#error_setting_role').html("")
-                        $('#error_setting_role').addClass("alert alert-danger")
-                        $('#success_setting_role').removeClass("alert-warning")
-                        $('#success_setting_role').removeClass("alert-success")
-                        $('#error_setting_role').removeClass("d-none")
-
-                        $.each(response.error, function(key, error_value) {
-                            $('#error_setting_role').append('<li>' + error_value + '</li>');
-                        });
-                    } else {
-                        $('#error_setting_role').addClass("d-none")
-
-                        $('#success_setting_role').html("")
-                        $('#success_setting_role').addClass("alert alert-success alert-role")
-                        $('#success_setting_role').removeClass("d-none")
-                        $('#success_setting_role').removeClass("alert-warning")
-                        $('#success_setting_role').removeClass("alert-danger")
-                        $('#success_setting_role').text(response.message)
-
-                        // $('#setting-role').modal('hide');
-                        // $('#setting-role').find('.form-control').val("")
-                        $('.select2-role').val(null).trigger('change');
-                        // $('.alert-danger').addClass('d-none');
-
-                        var tbRole = $('#tbRole').DataTable();
-                        tbRole.ajax.reload();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('master.pengguna.addRoleUser') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 400) {
+                            $('#success_setting_role').addClass("d-none")
+
+                            $('#error_setting_role').html("")
+                            $('#error_setting_role').addClass("alert alert-danger")
+                            $('#success_setting_role').removeClass("alert-warning")
+                            $('#success_setting_role').removeClass("alert-success")
+                            $('#error_setting_role').removeClass("d-none")
+
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_setting_role').append('<li>' + error_value +
+                                    '</li>');
+                            });
+                        } else {
+                            $('#error_setting_role').addClass("d-none")
+
+                            $('#success_setting_role').html("")
+                            $('#success_setting_role').addClass(
+                                "alert alert-success alert-role")
+                            $('#success_setting_role').removeClass("d-none")
+                            $('#success_setting_role').removeClass("alert-warning")
+                            $('#success_setting_role').removeClass("alert-danger")
+                            $('#success_setting_role').text(response.message)
+
+                            // $('#setting-role').modal('hide');
+                            // $('#setting-role').find('.form-control').val("")
+                            $('.select2-role').val(null).trigger('change');
+                            // $('.alert-danger').addClass('d-none');
+
+                            var tbRole = $('#tbRole').DataTable();
+                            tbRole.ajax.reload();
+                        }
+                    }
+                });
             });
-        });
 
-        //SHOW ROLE PENGGUNA
-        $(document).on('click', '#role-button', function() {
-            $.ajax({
-                type: "GET",
-                url: "{{ route('master.pengguna.show') }}",
-                data: {
-                    'id': $(this).data('id'),
-                },
-                dataType: "json",
-                success: function(response) {
-                    //console.log(response.data.id);
-                    $('#id-pengguna-show').val(response.data.id);
-                    $('#nama-pengguna-show').val(response.data.nama);
+            //SHOW ROLE PENGGUNA
+            $(document).on('click', '#role-button', function() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('master.pengguna.show') }}",
+                    data: {
+                        'id': $(this).data('id'),
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        //console.log(response.data.id);
+                        $('#id-pengguna-show').val(response.data.id);
+                        $('#nama-pengguna-show').val(response.data.nama);
 
-                    //Datatable Role Akses
-                    $('#tbRole').DataTable({
-                        // processing: true,
-                        destroy: true,
-                        searching: false,
-                        lengthChange: false,
-                        ordering: false,
-                        serverSide: true,
-                        bInfo: false,
-                        bPaginate: false,
-                        ajax: {
-                            url: "{{ route('master.pengguna.settingRole') }}",
-                            data: {
-                                'id': response.data.id,
+                        //Datatable Role Akses
+                        $('#tbRole').DataTable({
+                            // processing: true,
+                            destroy: true,
+                            searching: false,
+                            lengthChange: false,
+                            ordering: false,
+                            serverSide: true,
+                            bInfo: false,
+                            bPaginate: false,
+                            ajax: {
+                                url: "{{ route('master.pengguna.settingRole') }}",
+                                data: {
+                                    'id': response.data.id,
+                                },
+
                             },
-
-                        },
-                        columns: [{
-                                data: 'name',
-                                name: 'name'
-                            },
-                            {
-                                'data': null,
-                                render: function(data, row, type) {
-                                    return `
+                            columns: [{
+                                    data: 'name',
+                                    name: 'name'
+                                },
+                                {
+                                    'data': null,
+                                    render: function(data, row, type) {
+                                        return `
                                             <a href="#" data-rolename="${data.name}" class="btn btn-danger btn-hapus btn-icon-split btn-sm" id="hapus-role-user" title="Hapus Role">
                                                 <span class="icon text-white">
                                                     <i class="fas fa-trash"></i>
                                                 </span>
                                             </a>
                                 `;
-                                }
-                            },
+                                    }
+                                },
 
-                        ]
-                    });
-
-
-
-                }
-            });
-        });
-       
-        //DELETE ROLE USER
-        $(document).ready(function () {
-            $('table').on('click','#hapus-role-user', function(){
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content')
-                    }
-                });
-                // if (confirm('Yakin Ingin Menghapus Role ?')) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('master.pengguna.deleteRoleUser') }}",
-                    data: {
-                        'id': $('#id-pengguna-show').val(),
-                        'rolename': $(this).data('rolename')
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        $('#error_setting_role').addClass("d-none")
-
-                        $('#success_setting_role').html("")
-                        $('#success_setting_role').addClass("alert alert-warning")
-                        $('#success_setting_role').removeClass("alert-danger")
-                        $('#success_setting_role').removeClass("alert-success")
-                        $('#success_setting_role').removeClass("d-none")
-                        $('#success_setting_role').text(response.message)
-
-                        var tbRole = $('#tbRole').DataTable();
-                        tbRole.ajax.reload();
-                    }
-                });
-                //}
-
-
-            });
-        });
-
-        $('#setting-role').on('hidden.bs.modal', function() {
-            $('.select2-role').val(null).trigger('change');
-            $('.alert-danger').addClass('d-none');
-            $('.alert-role').addClass('d-none');
-            $('.alert-warning').addClass('d-none');
-        });
-    </script>
-
-    <script>
-         //SIMPAN PERMISSION USER
-         $(document).on('click', '#simpan-permis', function(e) {
-            e.preventDefault();
-
-            var data = {
-                'id_pengguna': $('.id-pengguna-permis').val(),
-                'permis': $('.select2-permis').val(),
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('master.pengguna.addPermisUser') }}",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.status == 400) {
-                        $('#success_setting_permis').addClass("d-none")
-
-                        $('#error_setting_permis').html("")
-                        $('#error_setting_permis').addClass("alert alert-danger")
-                        $('#error_setting_permis').removeClass("alert-warning")
-                        $('#error_setting_permis').removeClass("alert-success")
-                        $('#error_setting_permis').removeClass("d-none")
-
-                        $.each(response.error, function(key, error_value) {
-                            $('#error_setting_permis').append('<li>' + error_value + '</li>');
+                            ]
                         });
-                    } else {
-                        $('#error_setting_permis').addClass("d-none")
 
-                        $('#success_setting_permis').html("")
-                        $('#success_setting_permis').addClass("alert alert-success alert-role")
-                        $('#success_setting_permis').removeClass("d-none")
-                        $('#success_setting_permis').removeClass("alert-warning")
-                        $('#success_setting_permis').removeClass("alert-danger")
-                        $('#success_setting_permis').text(response.message)
 
-                        // $('#setting-role').modal('hide');
-                        // $('#setting-role').find('.form-control').val("")
-                        $('.select2-permis').val(null).trigger('change');
-                        // $('.alert-danger').addClass('d-none');
 
-                        var tbpermis = $('#tb-permis').DataTable().ajax.reload();
-                        
                     }
-                }
+                });
             });
-        });
 
-        //SHOW PERMISSION USER
-        $(document).on('click', '#permis-button', function() {
-            $.ajax({
-                type: "GET",
-                url: "{{ route('master.pengguna.show') }}",
-                data: {
-                    'id': $(this).data('id'),
-                },
-                dataType: "json",
-                success: function(response) {
-                    //console.log(response.data.id);
-                    $('#id-pengguna-permis').val(response.data.id);
-                    $('#nama-pengguna-permis').val(response.data.nama);
-
-                    //Datatable Role Akses
-                    $('#tb-permis').DataTable({
-                        // processing: true,
-                        destroy: true,
-                        scrollY: "250px",
-                        scrollCollapse: false,
-                        searching: true,
-                        lengthChange: false,
-                        ordering: false,
-                        serverSide: true,
-                        bInfo: false,
-                        bPaginate: false,
-                        dom: 'lrt',
-                        ajax: {
-                            url: "{{ route('master.pengguna.settingPermis') }}",
-                            data: {
-                                'id': response.data.id,
-                            },
-
-                        },
-                        columns: [{
-                                data: 'name',
-                                name: 'name'
-                            },
-                            {
-                                'data': null,
-                                render: function(data, row, type) {
-                                    return `
-                                            <a href="#" data-permisname="${data.name}" class="btn btn-danger btn-hapus btn-sm"
-                                             id="hapus-permis-user" title="Hapus Permission">
-                                                <span class="icon text-white">
-                                                    <i class="fas fa-trash fa-sm"></i>
-                                                </span>
-                                            </a>
-                                `;
-                                }
-                            },
-
-                        ]
+            //DELETE ROLE USER
+            $(document).ready(function() {
+                $('table').on('click', '#hapus-role-user', function() {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
+                        }
                     });
-                }
-            });
-        });
+                    // if (confirm('Yakin Ingin Menghapus Role ?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('master.pengguna.deleteRoleUser') }}",
+                        data: {
+                            'id': $('#id-pengguna-show').val(),
+                            'rolename': $(this).data('rolename')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            $('#error_setting_role').addClass("d-none")
 
-        $('#cari-permis').on('keyup', function() {
-            $('#tb-permis').DataTable()
-                    .columns(0)
-                    .search(this.value)
-                    .draw();
-        });
+                            $('#success_setting_role').html("")
+                            $('#success_setting_role').addClass("alert alert-warning")
+                            $('#success_setting_role').removeClass("alert-danger")
+                            $('#success_setting_role').removeClass("alert-success")
+                            $('#success_setting_role').removeClass("d-none")
+                            $('#success_setting_role').text(response.message)
 
-         //DELETE PERMISSION USER
-         $(document).ready(function () {
-            $('table').on('click','#hapus-permis-user', function(){
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content')
-                    }
+                            var tbRole = $('#tbRole').DataTable();
+                            tbRole.ajax.reload();
+                        }
+                    });
+                    //}
+
+
                 });
-                // if (confirm('Yakin Ingin Menghapus Role ?')) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('master.pengguna.deletePermisUser') }}",
-                    data: {
-                        'id': $('#id-pengguna-permis').val(),
-                        'permisname': $(this).data('permisname')
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        $('#error_setting_permis').addClass("d-none")
-
-                        $('#success_setting_permis').html("")
-                        $('#success_setting_permis').addClass("alert alert-warning")
-                        $('#success_setting_permis').removeClass("alert-danger")
-                        $('#success_setting_permis').removeClass("alert-success")
-                        $('#success_setting_permis').removeClass("d-none")
-                        $('#success_setting_permis').text(response.message)
-
-                        $('#tb-permis').DataTable().ajax.reload();
-                    }
-                });
-                //}
-
-
             });
-        });
 
-        $('#setting-permis').on('hidden.bs.modal', function() {
-            $('.select2-permis').val(null).trigger('change');
-            $('.alert-danger').addClass('d-none');
-            $('.alert-role').addClass('d-none');
-            $('.alert-warning').addClass('d-none');
+            $('#setting-role').on('hidden.bs.modal', function() {
+                $('.select2-role').val(null).trigger('change');
+                $('.alert-danger').addClass('d-none');
+                $('.alert-role').addClass('d-none');
+                $('.alert-warning').addClass('d-none');
+            });
         });
     </script>
 @endpush
 
 @push('custom-css')
     <!-- Custom styles for this page -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link href="{{ asset('/vendor/select2/select2.min.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
@@ -935,7 +682,4 @@
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}">
-
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush

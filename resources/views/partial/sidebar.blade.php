@@ -20,7 +20,7 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-    @hasanyrole('superadmin|k3|sdi|diklat')
+    @if (auth()->user()->can('View Karyawan') || auth()->user()->can('Pegawai Admin'))
         <!-- Heading -->
         <div class="sidebar-heading">
             Kelola Karyawan
@@ -28,8 +28,8 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item @yield('main1')">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
-                aria-controls="collapseTwo">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-users"></i>
                 <span>Karyawan</span>
             </a>
@@ -40,8 +40,8 @@
                 </div>
             </div>
         </li>
-    @endhasanyrole
-    @hasanyrole('superadmin|sdi')
+    @endif
+    @if (auth()->user()->can('Peringatan') || auth()->user()->can('Pegawai Admin'))
         <li class="nav-item @yield('pengingat1')">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAlert"
                 aria-expanded="true" aria-controls="collapseTwo">
@@ -64,10 +64,10 @@
             </div>
         </li>
         <!-- Nav Item - Utilities Collapse Menu -->
-    @endhasanyrole
-    @hasanyrole('superadmin|diklat')
-     <!-- Divider -->
-     <hr class="sidebar-divider d-none d-md-block">
+    @endif
+    @if (auth()->user()->can('Dokumen Diklat') || auth()->user()->can('Pegawai Admin'))
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
         <!-- Heading -->
         <div class="sidebar-heading">
             Kelola Diklat Karyawan
@@ -75,8 +75,8 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item @yield('diklat-main1')">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDiklat" aria-expanded="true"
-                aria-controls="collapseTwo">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDiklat"
+                aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-calendar-day"></i>
                 <span>Diklat</span>
             </a>
@@ -84,13 +84,15 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     {{-- <h6 class="collapse-header">Custom Components:</h6> --}}
-                    <a class="collapse-item @yield('diklat-kegiatan')" href="{{route('kegiatan.index')}}">Kegiatan</a>
-                    <a class="collapse-item @yield('diklat-jeniskegiatan')" href="{{route('diklat.kegiatan.jenis')}}">Master Jenis Kegiatan</a>
+                    <a class="collapse-item @yield('diklat-kegiatan')" href="{{ route('kegiatan.index') }}">Kegiatan</a>
+                    <a class="collapse-item @yield('diklat-jeniskegiatan')" href="{{ route('diklat.kegiatan.jenis') }}">Master
+                        Jenis
+                        Kegiatan</a>
                 </div>
             </div>
         </li>
-    @endhasanyrole
-    @hasanyrole('user')
+    @endif
+    @if (auth()->user()->can('Pengguna'))
         <!-- Heading -->
         <div class="sidebar-heading">
             Dokumen Karyawan
@@ -110,10 +112,13 @@
             <div id="collapseUser" class="collapse @yield('user-main2')" aria-labelledby="headingTwo"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item @yield('user-pendidikan')" href="{{route('pengguna.pendidikan')}}">Data Pendidikan</a>
-                    <a class="collapse-item @yield('user-izin')" href="{{route('pengguna.izin')}}">Data Perizinan</a>
-                    <a class="collapse-item @yield('user-riwayat')" href="{{route('pengguna.riwayat')}}">Data Riwayat Pekerjaan</a>
-                    <a class="collapse-item @yield('user-orientasi')" href="{{route('pengguna.orientasi')}}">Data Orientasi</a>
+                    <a class="collapse-item @yield('user-pendidikan')" href="{{ route('pengguna.pendidikan') }}">Data
+                        Pendidikan</a>
+                    <a class="collapse-item @yield('user-izin')" href="{{ route('pengguna.izin') }}">Data Perizinan</a>
+                    <a class="collapse-item @yield('user-riwayat')" href="{{ route('pengguna.riwayat') }}">Data Riwayat
+                        Pekerjaan</a>
+                    <a class="collapse-item @yield('user-orientasi')" href="{{ route('pengguna.orientasi') }}">Data
+                        Orientasi</a>
                 </div>
             </div>
         </li>
@@ -126,28 +131,33 @@
             <div id="collapsekes" class="collapse @yield('user-main4')" aria-labelledby="headingTwo"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item @yield('user-kes')" href="{{route('pengguna.kesehatan')}}">Data Tes Kesehatan</a>
-                    <a class="collapse-item @yield('user-vaksin')" href="{{route('pengguna.vaksin')}}">Data Vaksinasi</a>
-                    <a class="collapse-item @yield('user-mcu')" href="{{route('pengguna.mcu')}}">Data Kesehatan Berkala</a>
+                    <a class="collapse-item @yield('user-kes')" href="{{ route('pengguna.kesehatan') }}">Data Tes
+                        Kesehatan</a>
+                    <a class="collapse-item @yield('user-vaksin')" href="{{ route('pengguna.vaksin') }}">Data
+                        Vaksinasi</a>
+                    <a class="collapse-item @yield('user-mcu')" href="{{ route('pengguna.mcu') }}">Data Kesehatan
+                        Berkala</a>
                 </div>
             </div>
         </li>
         <li class="nav-item @yield('user-main5')">
-            <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsediklat" aria-expanded="true"
-                aria-controls="collapseTwo">
+            <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsediklat"
+                aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-school"></i>
                 <span>Dokumen Diklat</span>
             </a>
             <div id="collapsediklat" class="collapse @yield('user-main6')" aria-labelledby="headingTwo"
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item @yield('user-sertif')" href="{{route('pengguna.sertifikat')}}">Sertifikat Pelatihan</a>
-                    <a class="collapse-item @yield('user-pelatihan')" href="{{route('pengguna.pelatihan')}}">Riwayat Pelatihan IHT</a>
+                    <a class="collapse-item @yield('user-sertif')" href="{{ route('pengguna.sertifikat') }}">Sertifikat
+                        Pelatihan</a>
+                    <a class="collapse-item @yield('user-pelatihan')" href="{{ route('pengguna.pelatihan') }}">Riwayat
+                        Pelatihan IHT</a>
                 </div>
             </div>
         </li>
-    @endhasanyrole
-    @hasanyrole('superadmin')
+    @endif
+    @if (auth()->user()->can('Pegawai Admin'))
         <!-- Divider -->
         <hr class="sidebar-divider">
         <!-- Heading -->
@@ -166,15 +176,12 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     {{-- <h6 class="collapse-header">Login Screens:</h6> --}}
-                    <a class="collapse-item @yield('master-berkas')" href="{{ route('master.berkas') }}">Berkas Pegawai</a>
+                    <a class="collapse-item @yield('master-berkas')" href="{{ route('master.berkas') }}">Berkas
+                        Pegawai</a>
+                    <a class="collapse-item @yield('master-role')" href="{{ route('master.role.index') }}">Role</a>
                     <a class="collapse-item @yield('master-pengguna')" href="{{ route('master.pengguna') }}">Pengguna</a>
-                    <a class="collapse-item @yield('master-mapingrm')" href="{{ route('master.maping') }}">Maping Rekam Medis</a>
-                    {{-- <a class="collapse-item" href="register.html">Register</a>
-                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Other Pages:</h6>
-                <a class="collapse-item" href="404.html">404 Page</a>
-                <a class="collapse-item" href="blank.html">Blank Page</a> --}}
+                    <a class="collapse-item @yield('master-mapingrm')" href="{{ route('master.maping') }}">Maping Rekam
+                        Medis</a>
                 </div>
             </div>
         </li>
@@ -202,7 +209,7 @@
                 </div>
             </div>
         </li>
-    @endhasanyrole
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

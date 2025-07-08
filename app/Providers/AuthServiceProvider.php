@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,8 +24,17 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        
         $this->registerPolicies();
 
-        //
+        Gate::before(function ($user, $ability) {
+            if (Auth::guard('admin')->check()) {
+                if ($ability === 'Pengguna') {
+                    // Jangan di-bypass
+                    return null;
+                }
+                return true;
+            }
+        });
     }
 }

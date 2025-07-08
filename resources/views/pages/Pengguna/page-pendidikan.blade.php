@@ -37,8 +37,8 @@
                                 <th>Asal</th>
                                 <th>Tahun Lulus</th>
                                 <th>Update</th>
-                                @if(auth()->user()->can('View Ijazah') || auth()->user()->can('Edit Ijazah') || auth()->user()->can('Hapus Ijazah'))
-                                <th>Aksi</th>
+                                @if (auth()->user()->can('View Ijazah') || auth()->user()->can('Edit Ijazah') || auth()->user()->can('Hapus Ijazah'))
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
@@ -67,7 +67,7 @@
         </div>
         <div class="card-body">
             <div class="container-fluid mt-4 mb-4">
-                
+
                 <div class="table-responsive">
                     <table class="table table-bordered" id="tb-trans" width="100%" cellspacing="0">
                         <thead>
@@ -76,8 +76,10 @@
                                 <th>Nama File</th>
                                 <th>Nomor</th>
                                 <th>Update</th>
-                                @if(auth()->user()->can('View Transkrip') || auth()->user()->can('Edit Transkrip') || auth()->user()->can('Hapus Transkrip'))
-                                <th>Aksi</th>
+                                @if (auth()->user()->can('View Transkrip') ||
+                                        auth()->user()->can('Edit Transkrip') ||
+                                        auth()->user()->can('Hapus Transkrip'))
+                                    <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
@@ -392,9 +394,6 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
     <script>
         var idpegawai = $('#id-pegawai').val();
@@ -406,7 +405,7 @@
                 searching: false,
                 // processing: true,
                 serverSide: true,
-                ajax: '{{route('pengguna.getijazah')}}',
+                ajax: '{{ route('pengguna.getijazah') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -433,11 +432,11 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if(auth()->user()->can('View Ijazah') || auth()->user()->can('Edit Ijazah') || auth()->user()->can('Hapus Ijazah'))
-                    {
-                        'data': null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View Ijazah') || auth()->user()->can('Edit Ijazah') || auth()->user()->can('Hapus Ijazah'))
+                        {
+                            'data': null,
+                            render: function(data, row, type) {
+                                return `
                            
                                     <div class="btn-group">
                                         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -458,9 +457,9 @@
                                     </div>
                            
                                     `;
-                            
-                        }
-                    },
+
+                            }
+                        },
                     @endif
                 ]
             });
@@ -469,9 +468,9 @@
             $(document).on('click', '#view-ijazah', function(e) {
                 e.preventDefault();
                 var ijazah = $(this).data('id');
-                var url = '{{route('login.index')}}';
+                var url = '{{ route('login.index') }}';
                 // console.log(url);
-                PDFObject.embed(url+'/File/Pegawai/Dokumen/Ijazah/'+ijazah, "#view-ijazah-modal");
+                PDFObject.embed(url + '/File/Pegawai/Dokumen/Ijazah/' + ijazah, "#view-ijazah-modal");
             });
 
             //STORE IJAZAH
@@ -666,7 +665,7 @@
                 searching: true,
                 // processing: true,
                 serverSide: true,
-                ajax: '{{route('pengguna.gettrans')}}',
+                ajax: '{{ route('pengguna.gettrans') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -686,11 +685,13 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if(auth()->user()->can('View Transkrip') || auth()->user()->can('Edit Transkrip') || auth()->user()->can('Hapus Transkrip'))
-                    {
-                        'data': null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View Transkrip') ||
+                            auth()->user()->can('Edit Transkrip') ||
+                            auth()->user()->can('Hapus Transkrip'))
+                        {
+                            'data': null,
+                            render: function(data, row, type) {
+                                return `
                             
                                     <div class="btn-group">
                                         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -711,8 +712,8 @@
                                     </div>
                            
                             `;
-                        }
-                    },
+                            }
+                        },
                     @endif
 
                 ]
@@ -722,8 +723,8 @@
             $(document).on('click', '#view-trasnkrip', function(e) {
                 e.preventDefault();
                 var transkripfile = $(this).data('id');
-                var url = '{{route('login.index')}}';
-                PDFObject.embed(url+'/File/Pegawai/Dokumen/Transkrip/' + transkripfile,
+                var url = '{{ route('login.index') }}';
+                PDFObject.embed(url + '/File/Pegawai/Dokumen/Transkrip/' + transkripfile,
                     "#view-transkrip-modal");
             });
 
@@ -750,9 +751,9 @@
                     contentType: false,
                     processData: false,
                     cache: false,
-                    beforeSend:function(){
-                       $('#add_transkrip').addClass("d-none");
-                       $('#add_transkrip_disabled').removeClass("d-none");
+                    beforeSend: function() {
+                        $('#add_transkrip').addClass("d-none");
+                        $('#add_transkrip_disabled').removeClass("d-none");
                     },
                     success: function(response) {
                         if (response.status == 400) {
@@ -901,8 +902,6 @@
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
         .pdfobject-container {
             height: 35rem;

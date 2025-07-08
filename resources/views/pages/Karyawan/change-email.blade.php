@@ -21,7 +21,8 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" value="{{$pengguna->email}}" placeholder="Email Pengguna / Pegawai">
+                            <input type="email" class="form-control" id="email" value="{{ $pengguna->email }}"
+                                placeholder="Email Pengguna / Pegawai">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary" id="ganti">Ganti</button>
@@ -33,10 +34,6 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
     <script>
         $(document).ready(function() {
 
@@ -96,9 +93,4 @@
             });
         });
     </script>
-@endpush
-@push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
