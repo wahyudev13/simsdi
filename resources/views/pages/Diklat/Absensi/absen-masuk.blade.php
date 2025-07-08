@@ -49,16 +49,7 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-<<<<<<< HEAD
     <script src="{{ asset('/vendor/html5-qrcode/html5-qrcode.min.js') }}" type="text/javascript"></script>
-=======
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <!-- Page level custom scripts -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script> --}}
->>>>>>> 45cadeb52b1c52222b2ce0a7ea4ac6c53377f75d
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
@@ -176,20 +167,3 @@
         });
     </script>
 @endpush
-<<<<<<< HEAD
-=======
-
-@push('custom-css')
-    <!-- Custom styles for this page -->
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
-    <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}"> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
-    <link href="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-@endpush
->>>>>>> 45cadeb52b1c52222b2ce0a7ea4ac6c53377f75d

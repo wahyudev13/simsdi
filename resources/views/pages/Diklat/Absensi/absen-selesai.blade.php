@@ -49,12 +49,10 @@
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
+    <script src="{{ asset('/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Page level custom scripts -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script> --}}
+    <script src="{{ asset('/vendor/html5-qrcode/html5-qrcode.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/vendor/PDFObject-master/pdfobject.js') }}"></script>
 
     <script>
