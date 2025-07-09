@@ -2225,7 +2225,7 @@ class PageuserController extends Controller
             'pengguna' => $pengguna
         ];
 
-        return view('pages.Karyawan.change-password',$data);
+        return view('pages.Pengguna.change-password',$data);
     }
 
     public function ganti_passowrd(Request $request) {
