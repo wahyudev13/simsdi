@@ -109,7 +109,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="error_list_edit"></div>
-                    <form id="form-add-pengguna">
+                    <form id="form-edit-pengguna">
 
                         <input type="hidden" class="form-control id-pengguna" id="id-pengguna" name="id">
                         <div class="form-group">
@@ -122,11 +122,11 @@
                             <label for="username_edit" class="col-form-label">Username<label
                                     class="text-danger">*</label></label>
                             <input type="text" class="form-control username_edit" id="username_edit"
-                                placeholder="Username" name="username">
+                                placeholder="Username" name="username" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="password_edit" class="col-form-label">Password<label
-                                    class="text-danger">*</label></label>
+                            <label for="password_edit" class="col-form-label">Password <label class="text-danger">
+                                    (Kosongkan jika tidak ingin mengubah password)</label></label>
                             <input type="text" class="form-control password_edit" id="password_edit"
                                 placeholder="Password Pengguna" name="password">
                         </div>
@@ -246,11 +246,11 @@
                     },
                     {
                         data: 'jbtn',
-                        nama: 'jbtn'
+                        name: 'jbtn'
                     },
                     {
                         data: 'username',
-                        nama: 'username'
+                        name: 'username'
                     },
                     {
                         'data': null,
@@ -306,6 +306,9 @@
                             $('#password').val(response.data.nik);
                             //console.log(response.data.id);
 
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error loading pegawai data:', error);
                         }
                     });
 
@@ -357,6 +360,14 @@
                             var tbPengguna = $('#tbPengguna').DataTable();
                             tbPengguna.ajax.reload();
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error storing pengguna:', error);
+                        $('#error_list').html("")
+                        $('#error_list').addClass("alert alert-danger")
+                        $('#error_list').removeClass("d-none")
+                        $('#error_list').append(
+                            '<li>Terjadi kesalahan sistem. Silakan coba lagi.</li>');
                     }
                 });
             });
@@ -366,6 +377,7 @@
                 $('#modaladdPengguna').find('.form-control').val("");
                 $('.select2').val(null).trigger('change');
                 $('.alert-danger').addClass('d-none');
+                $('#error_list').html("").removeClass("alert alert-danger").addClass("d-none");
             });
 
             //EDIT PENGGUNA
@@ -381,6 +393,10 @@
                         $('#id-pengguna').val(response.data.id);
                         $('#namapegawai_edit').val(response.data.nama);
                         $('#username_edit').val(response.data.username);
+                        $('#password_edit').val(''); // Clear password field
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading pengguna data:', error);
                     }
                 });
             });
@@ -441,6 +457,14 @@
 
                             $('#tbPengguna').DataTable().ajax.reload();
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating pengguna:', error);
+                        $('#error_list_edit').html("")
+                        $('#error_list_edit').addClass("alert alert-danger")
+                        $('#error_list_edit').removeClass("d-none")
+                        $('#error_list_edit').append(
+                            '<li>Terjadi kesalahan sistem. Silakan coba lagi.</li>');
                     }
                 });
             });
@@ -448,6 +472,7 @@
             $('#modaleditPengguna').on('hidden.bs.modal', function() {
                 $('.alert-danger').addClass('d-none');
                 $('#modaleditPengguna').find('.form-control').val("");
+                $('#error_list_edit').html("").removeClass("alert alert-danger").addClass("d-none");
             });
 
             //HAPUS PENGGUNA & Role User
@@ -476,6 +501,10 @@
                                 "alert alert-warning")
                             $('#success_message').text(response.message)
                             $('#tbPengguna').DataTable().ajax.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error deleting pengguna:', error);
+                            alert('Terjadi kesalahan saat menghapus data.');
                         }
                     });
                 }
@@ -487,159 +516,175 @@
     <!--  Script Role -->
     <script>
         $(document).ready(function() {
-                    //SIMPAN ROLE USER
-                    $(document).on('click', '#simpan-role', function(e) {
-                        e.preventDefault();
-                        var data = {
-                            'id_pengguna': $('.id-pengguna-show').val(),
-                            'role': $('.select2-role').val(),
-                        }
+            //SIMPAN ROLE USER
+            $(document).on('click', '#simpan-role', function(e) {
+                e.preventDefault();
+                var data = {
+                    'id_pengguna': $('.id-pengguna-show').val(),
+                    'role': $('.select2-role').val(),
+                }
 
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
 
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('master.pengguna.addRoleUser') }}",
-                            data: data,
-                            dataType: "json",
-                            success: function(response) {
-                                if (response.status == 400) {
-                                    $('#success_setting_role').addClass("d-none")
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('master.pengguna.addRoleUser') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 400) {
+                            $('#success_setting_role').addClass("d-none")
 
-                                    $('#error_setting_role').html("")
-                                    $('#error_setting_role').addClass("alert alert-danger")
-                                    $('#success_setting_role').removeClass("alert-warning")
-                                    $('#success_setting_role').removeClass("alert-success")
-                                    $('#error_setting_role').removeClass("d-none")
+                            $('#error_setting_role').html("")
+                            $('#error_setting_role').addClass("alert alert-danger")
+                            $('#success_setting_role').removeClass("alert-warning")
+                            $('#success_setting_role').removeClass("alert-success")
+                            $('#error_setting_role').removeClass("d-none")
 
-                                    $.each(response.error, function(key, error_value) {
-                                        $('#error_setting_role').append('<li>' + error_value +
-                                            '</li>');
-                                    });
-                                } else {
-                                    $('#error_setting_role').addClass("d-none")
-
-                                    $('#success_setting_role').html("")
-                                    $('#success_setting_role').addClass(
-                                        "alert alert-success alert-role")
-                                    $('#success_setting_role').removeClass("d-none")
-                                    $('#success_setting_role').removeClass("alert-warning")
-                                    $('#success_setting_role').removeClass("alert-danger")
-                                    $('#success_setting_role').text(response.message)
-
-                                    $('.select2-role').val(null).trigger('change');
-
-                                    var tbRole = $('#tbRole').DataTable();
-                                    tbRole.ajax.reload();
-                                }
-                            }
-                        });
-                    });
-
-                    //SHOW ROLE PENGGUNA
-                    $(document).on('click', '#role-button', function() {
-                            $.ajax({
-                                    type: "GET",
-                                    url: "{{ route('master.pengguna.show') }}",
-                                    data: {
-                                        'id': $(this).data('id'),
-                                    },
-                                    dataType: "json",
-                                    success: function(response) {
-                                        $('#id-pengguna-show').val(response.data.id);
-                                        $('#nama-pengguna-show').val(response.data.nama);
-
-                                        //Datatable Role Akses
-                                        $('#tbRole').DataTable({
-                                                // processing: true,
-                                                destroy: true,
-                                                searching: false,
-                                                lengthChange: false,
-                                                ordering: false,
-                                                serverSide: true,
-                                                bInfo: false,
-                                                bPaginate: false,
-                                                ajax: {
-                                                    url: "{{ route('master.pengguna.settingRole') }}",
-                                                    data: {
-                                                        'id': response.data.id,
-                                                    },
-
-                                                },
-                                                columns: [{
-                                                        data: 'name',
-                                                        name: 'name'
-                                                    },
-                                                    {
-                                                        'data': null,
-                                                        render: function(data, row, type) {
-                                                            return `
-                                            <a href="#" data-rolename="${data.name}" class="btn btn-danger btn-hapus btn-icon-split btn-sm" id="hapus-role-user" title="Hapus Role">
-                                                <span class="icon text-white">
-                                                    <i class="fas fa-trash"></i>
-                                                </span>
-                                            </a>
-                                `;
-                                                        }
-                                                    },
-
-
-                                                ]
-                                            ]
-                                        });
-
-
-
-                                }
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_setting_role').append('<li>' + error_value +
+                                    '</li>');
                             });
-                    });
+                        } else {
+                            $('#error_setting_role').addClass("d-none")
 
-                //DELETE ROLE USER
-                $(document).ready(function() {
-                    $('table').on('click', '#hapus-role-user', function() {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                    'content')
-                            }
-                        });
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('master.pengguna.deleteRoleUser') }}",
-                            data: {
-                                'id': $('#id-pengguna-show').val(),
-                                'rolename': $(this).data('rolename')
+                            $('#success_setting_role').html("")
+                            $('#success_setting_role').addClass(
+                                "alert alert-success alert-role")
+                            $('#success_setting_role').removeClass("d-none")
+                            $('#success_setting_role').removeClass("alert-warning")
+                            $('#success_setting_role').removeClass("alert-danger")
+                            $('#success_setting_role').text(response.message)
+
+                            $('.select2-role').val(null).trigger('change');
+
+                            var tbRole = $('#tbRole').DataTable();
+                            tbRole.ajax.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding role:', error);
+                        $('#error_setting_role').html("")
+                        $('#error_setting_role').addClass("alert alert-danger")
+                        $('#error_setting_role').removeClass("d-none")
+                        $('#error_setting_role').append(
+                            '<li>Terjadi kesalahan sistem. Silakan coba lagi.</li>');
+                    }
+                });
+            });
+
+            //SHOW ROLE PENGGUNA
+            $(document).on('click', '#role-button', function() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('master.pengguna.show') }}",
+                    data: {
+                        'id': $(this).data('id'),
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        $('#id-pengguna-show').val(response.data.id);
+                        $('#nama-pengguna-show').val(response.data.nama);
+
+                        //Datatable Role Akses
+                        $('#tbRole').DataTable({
+                            // processing: true,
+                            destroy: true,
+                            searching: false,
+                            lengthChange: false,
+                            ordering: false,
+                            serverSide: true,
+                            bInfo: false,
+                            bPaginate: false,
+                            ajax: {
+                                url: "{{ route('master.pengguna.settingRole') }}",
+                                data: {
+                                    'id': response.data.id,
+                                },
+
                             },
-                            dataType: "json",
-                            success: function(response) {
-                                $('#error_setting_role').addClass("d-none")
+                            columns: [{
+                                    data: 'name',
+                                    name: 'name'
+                                },
+                                {
+                                    'data': null,
+                                    render: function(data, row, type) {
+                                        return `
+                                        <a href="#" data-rolename="${data.name}" class="btn btn-danger btn-hapus btn-icon-split btn-sm" id="hapus-role-user" title="Hapus Role">
+                                            <span class="icon text-white">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                        </a>
+                            `;
+                                    }
+                                },
 
-                                $('#success_setting_role').html("")
-                                $('#success_setting_role').addClass("alert alert-warning")
-                                $('#success_setting_role').removeClass("alert-danger")
-                                $('#success_setting_role').removeClass("alert-success")
-                                $('#success_setting_role').removeClass("d-none")
-                                $('#success_setting_role').text(response.message)
 
-                                var tbRole = $('#tbRole').DataTable();
-                                tbRole.ajax.reload();
-                            }
+                            ]
+
                         });
 
 
-                    });
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading role data:', error);
+                    }
+                });
+            });
+
+            $('table').on('click', '#hapus-role-user', function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                            'content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('master.pengguna.deleteRoleUser') }}",
+                    data: {
+                        'id': $('#id-pengguna-show').val(),
+                        'rolename': $(this).data('rolename')
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        $('#error_setting_role').addClass("d-none")
+
+                        $('#success_setting_role').html("")
+                        $('#success_setting_role').addClass("alert alert-warning")
+                        $('#success_setting_role').removeClass("alert-danger")
+                        $('#success_setting_role').removeClass("alert-success")
+                        $('#success_setting_role').removeClass("d-none")
+                        $('#success_setting_role').text(response.message)
+
+                        var tbRole = $('#tbRole').DataTable();
+                        tbRole.ajax.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error deleting role:', error);
+                        alert('Terjadi kesalahan saat menghapus role.');
+                    }
                 });
 
-                $('#setting-role').on('hidden.bs.modal', function() {
-                    $('.select2-role').val(null).trigger('change');
-                    $('.alert-danger').addClass('d-none');
-                    $('.alert-role').addClass('d-none');
-                    $('.alert-warning').addClass('d-none');
-                });
+
+            });
+
+            $('#setting-role').on('hidden.bs.modal', function() {
+                $('.select2-role').val(null).trigger('change');
+                $('.alert-danger').addClass('d-none');
+                $('.alert-role').addClass('d-none');
+                $('.alert-warning').addClass('d-none');
+                $('#error_setting_role').html("").removeClass("alert alert-danger").addClass("d-none");
+                $('#success_setting_role').html("").removeClass("alert alert-success alert-role").addClass(
+                    "d-none");
+            });
+        });
     </script>
 @endpush
 

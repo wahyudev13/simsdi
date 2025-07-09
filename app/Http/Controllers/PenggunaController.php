@@ -154,14 +154,20 @@ class PenggunaController extends Controller
             'id_pengguna' => 'required',
             'role' => 'required',
         ],[
-            'id_pegawai.required' => 'ID Pegawai Wajib diisi',
+            'id_pengguna.required' => 'ID Pengguna Wajib diisi',
             'role.required' => 'Role Akses Wajib diisi',
         ]);
 
         if ($validated->passes()) {
 
             $user = User::findOrFail($request->id_pengguna);
-            $user->assignRole([$request->role]);
+            
+            // Handle both single role and array of roles
+            if (is_array($request->role)) {
+                $user->assignRole($request->role);
+            } else {
+                $user->assignRole([$request->role]);
+            }
 
             return response()->json([
                 'status' => 200,
@@ -215,11 +221,10 @@ class PenggunaController extends Controller
     {
         $validated = Validator::make($request->all(),[
             'username' => 'required',
-            'password' => 'required|min:6',
+            'password' => 'nullable|min:6',
         ],[
             'username.required' => 'Username Wajib diisi',
-            'password.required' => 'Password Wajib Diisi',
-            'password.min' => 'Passowrd Minimal 6 Karakter'
+            'password.min' => 'Password Minimal 6 Karakter'
         ]);
       
         if ($validated->passes()) {
@@ -232,11 +237,16 @@ class PenggunaController extends Controller
                     'error' => 'Username '.$request->username.' Sudah Digunakan'
                 ]);
             }else {
-                $update = User::where('id', $request->id)->update([
+                $updateData = [
                     'username' => $request->username,
-                    // 'email' => $request->email,
-                    'password' => Hash::make($request->password)
-                ]);   
+                ];
+                
+                // Only update password if provided
+                if (!empty($request->password)) {
+                    $updateData['password'] = Hash::make($request->password);
+                }
+                
+                $update = User::where('id', $request->id)->update($updateData);   
                 return response()->json([
                     'status' => 200,
                     'message' => 'Pengguna '.$request->pengguna.' Berhasil Diubah',
