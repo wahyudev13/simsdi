@@ -2214,7 +2214,7 @@ class PageuserController extends Controller
             'master_berkas_identitas' => $master_berkas_identitas,
         ];
 
-        return view('pages.Karyawan.profile-pengguna',$data);
+        return view('pages.Pengguna.profile-pengguna',$data);
     }
 
     public function ubah_password() {
