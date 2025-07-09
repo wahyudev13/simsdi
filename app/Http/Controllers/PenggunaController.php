@@ -96,8 +96,6 @@ class PenggunaController extends Controller
                 'password' => Hash::make($request->password)
     
             ]);
-
-            $simpanuser->assignRole('user');
         
             return response()->json([
                 'status' => 200,
