@@ -13,7 +13,7 @@ class Pegawai extends Model
     protected $fillable = ['id','nik','nama','jk','jbtn','jnj_jabatan'];
 
     public function pengguna() {
-        return $this->hasOne(User::class,'id');
+        return $this->hasOne(User::class,'id_pegawai','id');
     }
 
     public function maping_norm_simrs() {
