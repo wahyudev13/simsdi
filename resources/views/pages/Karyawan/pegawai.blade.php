@@ -33,7 +33,7 @@
 
         </div>
         <div class="card-body">
-            @hasanyrole('superadmin|sdi')
+            @if (auth()->user()->can('Peringatan') || auth()->user()->can('Pegawai Admin'))
                 @if ($alert_pengingat || $alert_exp || $peringatan_sip || $peringatan_nonaktif_sip > 0)
                     <div class="alert alert-danger" role="alert">
                         @if ($alert_exp > 0)
@@ -46,7 +46,8 @@
                         @if ($alert_pengingat > 0)
                             <li style="list-style-type:none;">
                                 <i class="fa fa-spin fa-cog"></i>
-                                <a href="{{ route('pengingat.str.index') }}" class="alert-link">{{ $alert_pengingat }} Karyawan
+                                <a href="{{ route('pengingat.str.index') }}" class="alert-link">{{ $alert_pengingat }}
+                                    Karyawan
                                     yang Dokumen STR Dalam Masa Ingatkan.</a>
                             </li>
                         @endif
@@ -89,7 +90,7 @@
                         @endif
                     </div>
                 @endif
-            @endhasanyrole
+            @endif
             <div class="table-responsive">
                 <table class="table table-bordered " id="tbJenjang" width="100%" cellspacing="0">
                     <thead>
