@@ -19,7 +19,6 @@ class AdminSeeder extends Seeder
             'username' => 'admin',
             'password' => bcrypt('admin')
         ]);
-        $admin->assignRole('superadmin');
         //$admin->hasAllDirectPermissions(Permission::all());
     }
 }
