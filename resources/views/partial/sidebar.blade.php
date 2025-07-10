@@ -21,10 +21,10 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     @if (
-        (auth()->check() && (auth()->user()->can('View Karyawan') || auth()->user()->can('Pegawai Admin'))) ||
+        (auth()->check() && (auth()->user()->can('admin-karyawan-view') || auth()->user()->can('admin-all-access'))) ||
             (auth()->guard('admin')->check() &&
-                (auth()->guard('admin')->user()->can('View Karyawan') ||
-                    auth()->guard('admin')->user()->can('Pegawai Admin'))))
+                (auth()->guard('admin')->user()->can('admin-karyawan-view') ||
+                    auth()->guard('admin')->user()->can('admin-all-access'))))
         <!-- Heading -->
         <div class="sidebar-heading">
             Kelola Karyawan
@@ -46,10 +46,10 @@
         </li>
     @endif
     @if (
-        (auth()->check() && (auth()->user()->can('Peringatan') || auth()->user()->can('Pegawai Admin'))) ||
+        (auth()->check() && (auth()->user()->can('admin-peringatan') || auth()->user()->can('admin-all-access'))) ||
             (auth()->guard('admin')->check() &&
-                (auth()->guard('admin')->user()->can('Peringatan') ||
-                    auth()->guard('admin')->user()->can('Pegawai Admin'))))
+                (auth()->guard('admin')->user()->can('admin-peringatan') ||
+                    auth()->guard('admin')->user()->can('admin-all-access'))))
         <li class="nav-item @yield('pengingat1')">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAlert"
                 aria-expanded="true" aria-controls="collapseTwo">
@@ -74,10 +74,11 @@
         <!-- Nav Item - Utilities Collapse Menu -->
     @endif
     @if (
-        (auth()->check() && (auth()->user()->can('Dokumen Diklat') || auth()->user()->can('Pegawai Admin'))) ||
+        (auth()->check() &&
+            (auth()->user()->can('admin-karyawan-dokumen-diklat') || auth()->user()->can('admin-all-access'))) ||
             (auth()->guard('admin')->check() &&
-                (auth()->guard('admin')->user()->can('Dokumen Diklat') ||
-                    auth()->guard('admin')->user()->can('Pegawai Admin'))))
+                (auth()->guard('admin')->user()->can('admin-karyawan-dokumen-diklat') ||
+                    auth()->guard('admin')->user()->can('admin-all-access'))))
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Heading -->
@@ -105,8 +106,8 @@
         </li>
     @endif
     @if (
-        (auth()->check() && auth()->user()->can('Pengguna')) ||
-            (auth()->guard('admin')->check() && auth()->guard('admin')->user()->can('Pengguna')))
+        (auth()->check() && auth()->user()->can('user-menu-access')) ||
+            (auth()->guard('admin')->check() && auth()->guard('admin')->user()->can('user-menu-access')))
         <!-- Heading -->
         <div class="sidebar-heading">
             Dokumen Karyawan
@@ -166,7 +167,7 @@
             </div>
         </li>
     @endif
-    @if ((auth()->check() && auth()->user()->can('Pegawai Admin')) || auth()->guard('admin')->check())
+    @if ((auth()->check() && auth()->user()->can('admin-all-access')) || auth()->guard('admin')->check())
         <!-- Divider -->
         <hr class="sidebar-divider">
         <!-- Heading -->

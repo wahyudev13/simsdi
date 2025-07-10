@@ -108,7 +108,7 @@
     <!-- Modal Setting Permission-->
     <div class="modal fade" id="setting-permis" data-backdrop="static" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Setting Permission Akses</h5>
@@ -117,6 +117,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <p class="mb-2 text-muted">Pilih permission yang ingin diberikan pada role ini. Klik <b>Simpan</b>
+                        untuk memperbarui.</p>
                     <div id="error_setting_permis"></div>
                     <div id="success_setting_permis"></div>
 
@@ -125,33 +127,38 @@
                         <input type="text" class="form-control" id="nama-role-permis" readonly>
                     </div>
 
-                    <div class="form-group">
-                        <select class="form-select select2-permis" id="select-permis-setting" name="permis[]"
-                            data-placeholder="Pilih Permission" multiple>
+                    <div class="d-flex justify-content-end mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="select-all-permis">Select
+                            All</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="unselect-all-permis">Unselect
+                            All</button>
+                    </div>
+                    <div class="form-group" id="checkbox-permission-list">
+                        <div class="row">
                             @foreach ($permission as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input permis-checkbox" type="checkbox"
+                                            value="{{ $item->id }}" id="permis-{{ $item->id }}">
+                                        <label class="form-check-label" for="permis-{{ $item->id }}">
+                                            {{ $item->name }}
+                                        </label>
+                                    </div>
+                                </div>
                             @endforeach
-                        </select>
+                        </div>
+                    </div>
+                    <div id="loading-permis" class="text-center d-none">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p>Memuat data...</p>
                     </div>
                     <div class="row text-right mb-3">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-primary btn-sm" id="simpan-permis">Simpan</button>
                         </div>
                     </div>
-                    <table class="table" id="tb-permis" width="100%" cellspacing="0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">Permission</th>
-                                <th scope="col">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
                 </div>
                 <div class="modal-footer">
-                    <input type="text" class="form-control form-control-sm mt-4" id="cari-permis"
-                        placeholder="Cari Permission">
                 </div>
             </div>
         </div>
@@ -166,14 +173,7 @@
     <script src="{{ asset('/vendor/select2/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('#select-permis-setting').select2({
-                theme: "bootstrap-5",
-                dropdownParent: "#setting-permis",
-                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
-                    'style',
-                placeholder: $(this).data('placeholder'),
-                closeOnSelect: false,
-            });
+            // The select2 initialization for permission list is removed as per the edit hint.
         })
     </script>
 
@@ -370,8 +370,107 @@
                 }
             });
 
+            //SHOW PERMISSION ROLE
+            $(document).on('click', '#permis-button', function() {
+                $('#loading-permis').removeClass('d-none');
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('master.role.edit') }}",
+                    data: {
+                        'id': $(this).data('id'),
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        $('#id-role-permis').val(response.id);
+                        $('#nama-role-permis').val(response.name);
+                        // Centang permission yang sudah dimiliki
+                        $('.permis-checkbox').prop('checked', false);
+                        if (response.permission_ids) {
+                            response.permission_ids.forEach(function(id) {
+                                $('#permis-' + id).prop('checked', true);
+                            });
+                        }
+                        $('#loading-permis').addClass('d-none');
+                    },
+                    error: function() {
+                        $('#loading-permis').addClass('d-none');
+                    }
+                });
+            });
+
+            // Tombol Select All / Unselect All
+            $(document).on('click', '#select-all-permis', function() {
+                $('.permis-checkbox').prop('checked', true);
+            });
+            $(document).on('click', '#unselect-all-permis', function() {
+                $('.permis-checkbox').prop('checked', false);
+            });
+
+            //SIMPAN PERMISSION ROLE
+            $(document).on('click', '#simpan-permis', function(e) {
+                e.preventDefault();
+                var permis = [];
+                $('.permis-checkbox:checked').each(function() {
+                    permis.push($(this).val());
+                });
+                var data = {
+                    'id': $('.id-role-permis').val(),
+                    'permis': permis,
+                };
+                $('#simpan-permis').prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm"></span> Menyimpan...');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('master.role.addPermissionRole') }}",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        $('#simpan-permis').prop('disabled', false).html('Simpan');
+                        if (response.status == 400) {
+                            $('#success_setting_permis').addClass("d-none")
+
+                            $('#error_setting_permis').html("")
+                            $('#error_setting_permis').addClass("alert alert-danger")
+                            $('#error_setting_permis').removeClass("alert-warning")
+                            $('#error_setting_permis').removeClass("alert-success")
+                            $('#error_setting_permis').removeClass("d-none")
+
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_setting_permis').append('<li>' + error_value +
+                                    '</li>');
+                            });
+                        } else {
+                            $('#error_setting_permis').addClass("d-none")
+
+                            $('#success_setting_permis').html("")
+                            $('#success_setting_permis').addClass(
+                                "alert alert-success alert-role")
+                            $('#success_setting_permis').removeClass("d-none")
+                            $('#success_setting_permis').removeClass("alert-warning")
+                            $('#success_setting_permis').removeClass("alert-danger")
+                            $('#success_setting_permis').text(response.message)
+                            // Jangan reset checkbox, biarkan tetap sesuai permission yang baru saja disimpan
+                        }
+                    },
+                    error: function() {
+                        $('#simpan-permis').prop('disabled', false).html('Simpan');
+                    }
+                });
+            });
+
+            $('#setting-permis').on('hidden.bs.modal', function() {
+                $('.permis-checkbox').prop('checked', false);
+                $('.alert-danger').addClass('d-none');
+                $('.alert-role').addClass('d-none');
+                $('.alert-warning').addClass('d-none');
+            });
         });
-        //END DOCUMENT READY FUNCTION
     </script>
     <!-- END Script Table Role -->
 
@@ -380,10 +479,16 @@
         //SIMPAN PERMISSION ROLE
         $(document).on('click', '#simpan-permis', function(e) {
             e.preventDefault();
+            var permis = [];
+            $('.permis-checkbox:checked').each(function() {
+                permis.push($(this).val());
+            });
             var data = {
                 'id': $('.id-role-permis').val(),
-                'permis': $('.select2-permis').val(),
-            }
+                'permis': permis,
+            };
+            $('#simpan-permis').prop('disabled', true).html(
+                '<span class="spinner-border spinner-border-sm"></span> Menyimpan...');
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -396,6 +501,7 @@
                 data: data,
                 dataType: "json",
                 success: function(response) {
+                    $('#simpan-permis').prop('disabled', false).html('Simpan');
                     if (response.status == 400) {
                         $('#success_setting_permis').addClass("d-none")
 
@@ -417,17 +523,18 @@
                         $('#success_setting_permis').removeClass("alert-warning")
                         $('#success_setting_permis').removeClass("alert-danger")
                         $('#success_setting_permis').text(response.message)
-                        $('.select2-permis').val(null).trigger('change');
-
-                        $('#tb-permis').DataTable().ajax.reload();
-
+                        // Jangan reset checkbox, biarkan tetap sesuai permission yang baru saja disimpan
                     }
+                },
+                error: function() {
+                    $('#simpan-permis').prop('disabled', false).html('Simpan');
                 }
             });
         });
 
         //SHOW PERMISSION ROLE
         $(document).on('click', '#permis-button', function() {
+            $('#loading-permis').removeClass('d-none');
             $.ajax({
                 type: "GET",
                 url: "{{ route('master.role.edit') }}",
@@ -436,95 +543,35 @@
                 },
                 dataType: "json",
                 success: function(response) {
-                    // console.log(response);
                     $('#id-role-permis').val(response.id);
                     $('#nama-role-permis').val(response.name);
-
-                    //Datatable Role Akses
-                    $('#tb-permis').DataTable({
-                        // processing: true,
-                        destroy: true,
-                        scrollY: "250px",
-                        scrollCollapse: false,
-                        searching: true,
-                        lengthChange: false,
-                        ordering: false,
-                        serverSide: true,
-                        bInfo: false,
-                        bPaginate: false,
-                        dom: 'lrt',
-                        ajax: {
-                            url: "{{ route('master.role.getPermission') }}",
-                            data: {
-                                'id': response.id,
-                            },
-                        },
-                        columns: [{
-                                data: 'name',
-                                name: 'name'
-                            },
-                            {
-                                'data': null,
-                                render: function(data, row, type) {
-                                    return `
-                                        <a href="#" data-permisname="${data.name}" class="btn btn-danger btn-hapus btn-sm"
-                                         id="hapus-permis-role" title="Hapus Permission">
-                                            <span class="icon text-white">
-                                                <i class="fas fa-trash fa-sm"></i>
-                                            </span>
-                                        </a>
-                            `;
-                                }
-                            },
-
-                        ]
-                    });
+                    // Centang permission yang sudah dimiliki
+                    $('.permis-checkbox').prop('checked', false);
+                    if (response.permission_ids) {
+                        response.permission_ids.forEach(function(id) {
+                            $('#permis-' + id).prop('checked', true);
+                        });
+                    }
+                    $('#loading-permis').addClass('d-none');
+                },
+                error: function() {
+                    $('#loading-permis').addClass('d-none');
                 }
             });
         });
 
-        //DELETE PERMISSION ROLE
-        $(document).ready(function() {
-            $('table').on('click', '#hapus-permis-role', function() {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content')
-                    }
-                });
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('master.role.deletePermission') }}",
-                    data: {
-                        'id': $('#id-role-permis').val(),
-                        'permisname': $(this).data('permisname')
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        $('#error_setting_permis').addClass("d-none")
-
-                        $('#success_setting_permis').html("")
-                        $('#success_setting_permis').addClass("alert alert-warning")
-                        $('#success_setting_permis').removeClass("alert-danger")
-                        $('#success_setting_permis').removeClass("alert-success")
-                        $('#success_setting_permis').removeClass("d-none")
-                        $('#success_setting_permis').text(response.message)
-
-                        $('#tb-permis').DataTable().ajax.reload();
-                    }
-                });
-            });
+        // Tombol Select All / Unselect All
+        $(document).on('click', '#select-all-permis', function() {
+            $('.permis-checkbox').prop('checked', true);
+        });
+        $(document).on('click', '#unselect-all-permis', function() {
+            $('.permis-checkbox').prop('checked', false);
         });
 
-        $('#cari-permis').on('keyup', function() {
-            $('#tb-permis').DataTable()
-                .columns(0)
-                .search(this.value)
-                .draw();
-        });
+        // Hapus seluruh kode terkait tabel permission (tb-permis) dan event-eventnya
 
         $('#setting-permis').on('hidden.bs.modal', function() {
-            $('.select2-permis').val(null).trigger('change');
+            $('.permis-checkbox').prop('checked', false);
             $('.alert-danger').addClass('d-none');
             $('.alert-role').addClass('d-none');
             $('.alert-warning').addClass('d-none');

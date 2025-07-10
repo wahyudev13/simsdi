@@ -78,7 +78,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
     //Dashboard
     Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard.index');
     
-    Route::group(['middleware' => ['permission:Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-all-access']], function () {
         //Setting
         Route::get('/setting/aplikasi', [SetAplikasiController::class, 'index'])->name('setting.aplikasi.index');
         Route::post('/setting/aplikasi/store', [SetAplikasiController::class, 'store'])->name('setting.aplikasi.store');
@@ -147,20 +147,20 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         
     });
     
-    Route::group(['middleware' => ['permission:Detail Karyawan|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-karyawan-detail|admin-all-access']], function () {
         //Detail Kepegawaian
         Route::get('karyawan/detail/get/{id}', [DetailKepegawaianController::class, 'index'])->name('pegawai.detail.index');
         //Presensi
         Route::get('karyawan/admin/presensi/rekap', [DetailKepegawaianController::class, 'rekap_presensi_admin'])->name('pegawai.presensi.rekap_presensi_admin');
     });
 
-    Route::group(['middleware' => ['permission:View Karyawan|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-karyawan-view|admin-all-access']], function () {
         //Pegawai
         Route::get('/karyawan', [Karyawan::class, 'index'])->name('karyawan.index');
         Route::get('/karyawan/get', [Karyawan::class, 'getPegawai'])->name('karyawan.getPegawai');
     });
   
-    Route::group(['middleware' => ['permission:Dokumen Karyawan|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-karyawan-dokumen|admin-all-access']], function () {
         //Berkas Ijazah
         Route::get('/karyawan/berkas/ijazah/get', [FileIjazahController::class, 'getIjazah'])->name('berkas.getIjazah');
         Route::get('/karyawan/berkas/kepeg/{id}', [FileIjazahController::class, 'index'])->name('berkas.index');
@@ -250,7 +250,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
 
     });
 
-    Route::group(['middleware' => ['permission:Peringatan|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-peringatan|admin-all-access']], function () {
         //Peringatan
         Route::get('/pengingat/str', [PengingatController::class, 'index'])->name('pengingat.str.index');
         Route::get('/pengingat/str/get', [PengingatController::class, 'get'])->name('pengingat.str.get');
@@ -260,7 +260,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('/pengingat/sip/get', [PengingatController::class, 'getSip'])->name('pengingat.sip.get');
     });
 
-    Route::group(['middleware' => ['permission:Dokumen K3|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-karyawan-dokumen-k3|admin-all-access']], function () {
         //Kesehatan
         Route::get('/karyawan/berkas/kesehatan/{id}', [KesehatanController::class, 'index'])->name('berkas.kesehatan.index');
 
@@ -287,7 +287,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('penilaian/kesehatan/mcu/laborat/{norm}/{kdpoli}/{tglreg}/{noreg}/{kdprw}', [PenilaianMCUController::class, 'report_lab_v2'])->name('mcu.report.lab.v2');
     });
   
-    Route::group(['middleware' => ['permission:Penilaian Kerja|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-karyawan-penilaian|admin-all-access']], function () {
         //Penilaian Kerja
         Route::get('karyawan/berkas/penilaian/{id}', [PenilaianKerjaController::class, 'index'])->name('penilaian.index');
         Route::get('karyawan/penilaian/get', [PenilaianKerjaController::class, 'get'])->name('penilaian.berkas.get');
@@ -297,7 +297,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::post('karyawan/penilaian/destroy', [PenilaianKerjaController::class, 'destroy'])->name('penilaian.berkas.destroy');
     });
 
-    Route::group(['middleware' => ['permission:Dokumen Diklat|Pegawai Admin']], function () {
+    Route::group(['middleware' => ['permission:admin-karyawan-dokumen-diklat|admin-all-access']], function () {
         //Dokumen Diklat
         Route::get('karyawan/berkas/diklat/{id}', [DiklatController::class, 'index'])->name('karywan.diklat');
         Route::post('karyawan/berkas/diklat/sertif/store', [FileSertifPelatihanController::class, 'store'])->name('karywan.diklat.sertif.store');
@@ -341,7 +341,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('karyawan/diklat/iht', [DiklatController::class, 'absen_iht'])->name('karywan.diklat.absen_iht');
     });
 
-    Route::group(['middleware' => ['permission:Pengguna']], function () { 
+    Route::group(['middleware' => ['permission:user-menu-access']], function () { 
         //Presensi
         Route::get('karyawan/presensi/rekap', [PageuserController::class, 'getPresensiPengguna'])->name('pengguna.presensi');
         //Profile
@@ -383,113 +383,113 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('pengguna/mcu/report/laborat/{norm}/{kdpoli}/{tglreg}/{noreg}/{kdprw}', [PageuserController::class, 'reportLabPengguna'])->name('pengguna.mcu.report.laborat');
 
         //TAMBAH
-        Route::group(['middleware' => ['permission:Tambah Ijazah']], function () {
+        Route::group(['middleware' => ['permission:tambah-ijazah']], function () {
             Route::post('pengguna/ijazah/store', [PageuserController::class, 'storeijazah'])->name('pengguna.ijazah.store');
         });
-        Route::group(['middleware' => ['permission:Tambah Transkrip']], function () {
+        Route::group(['middleware' => ['permission:tambah-transkrip']], function () {
             Route::post('pengguna/transkrip/store', [PageuserController::class, 'storetrans'])->name('pengguna.trans.store');
         });
-        Route::group(['middleware' => ['permission:Tambah STR']], function () {
+        Route::group(['middleware' => ['permission:tambah-str']], function () {
             Route::post('pengguna/str/store', [PageuserController::class, 'storestr'])->name('pengguna.str.store');
         });
-        Route::group(['middleware' => ['permission:Tambah SIP']], function () {
+        Route::group(['middleware' => ['permission:tambah-sip']], function () {
             Route::post('pengguna/sip/store', [PageuserController::class, 'storesip'])->name('pengguna.sip.store');
         });
-        Route::group(['middleware' => ['permission:Tambah Riwayat']], function () {
+        Route::group(['middleware' => ['permission:tambah-riwayat']], function () {
             Route::post('pengguna/riwayat/store', [PageuserController::class, 'storeriwayat'])->name('pengguna.riwayat.store');
         });
-        Route::group(['middleware' => ['permission:Tambah Kesehatan']], function () {
+        Route::group(['middleware' => ['permission:tambah-kesehatan']], function () {
             Route::post('pengguna/kesehatan/store', [PageuserController::class, 'storekes'])->name('pengguna.kesehatan.store');
         });
-        Route::group(['middleware' => ['permission:Tambah Vaksin']], function () {
+        Route::group(['middleware' => ['permission:tambah-vaksin']], function () {
             Route::post('pengguna/vaksin/store', [PageuserController::class, 'storevaksin'])->name('pengguna.vaksin.store');
         });
-        Route::group(['middleware' => ['permission:Tambah Sertif']], function () {
+        Route::group(['middleware' => ['permission:tambah-sertif']], function () {
             Route::post('pengguna/sertifikat/store', [PageuserController::class, 'storeSertif'])->name('pengguna.sertifikat.store');
         });
-        Route::group(['middleware' => ['permission:Tambah Orientasi']], function () {
+        Route::group(['middleware' => ['permission:tambah-orientasi']], function () {
             Route::post('pengguna/orientasi/store', [PageuserController::class, 'storeOrientasi'])->name('pengguna.orientasi.store');
         });
 
         //EDIT
-        Route::group(['middleware' => ['permission:Edit Ijazah']], function () {
+        Route::group(['middleware' => ['permission:edit-ijazah']], function () {
             Route::get('pengguna/ijazah/edit', [PageuserController::class, 'editijazah'])->name('pengguna.ijazah.edit');
             Route::post('pengguna/ijazah/update', [PageuserController::class, 'updateijazah'])->name('pengguna.ijazah.update');
         });
-        Route::group(['middleware' => ['permission:Edit Transkrip']], function () {
+        Route::group(['middleware' => ['permission:edit-transkrip']], function () {
             Route::get('pengguna/transkrip/edit', [PageuserController::class, 'edittrans'])->name('pengguna.trans.edit');
             Route::post('pengguna/transkrip/update', [PageuserController::class, 'updatetrans'])->name('pengguna.trans.update');
         });
-        Route::group(['middleware' => ['permission:Edit STR']], function () {
+        Route::group(['middleware' => ['permission:edit-str']], function () {
             Route::get('pengguna/str/edit', [PageuserController::class, 'editstr'])->name('pengguna.str.edit');
             Route::post('pengguna/str/update', [PageuserController::class, 'updatestr'])->name('pengguna.str.update');
         });
-        Route::group(['middleware' => ['permission:Edit STR']], function () {
+        Route::group(['middleware' => ['permission:edit-str']], function () {
             Route::get('pengguna/sip/edit', [PageuserController::class, 'editsip'])->name('pengguna.sip.edit');
             Route::post('pengguna/sip/update', [PageuserController::class, 'updatesip'])->name('pengguna.sip.update');
         });
-        Route::group(['middleware' => ['permission:Edit Riwayat']], function () {
+        Route::group(['middleware' => ['permission:edit-riwayat']], function () {
             Route::get('pengguna/riwayat/edit', [PageuserController::class, 'editriwayat'])->name('pengguna.riwayat.edit');
             Route::post('pengguna/riwayat/update', [PageuserController::class, 'updateriwayat'])->name('pengguna.riwayat.update');
         });
-        Route::group(['middleware' => ['permission:Edit Kesehatan']], function () {
+        Route::group(['middleware' => ['permission:edit-kesehatan']], function () {
             Route::get('pengguna/kesehatan/edit', [PageuserController::class, 'editkes'])->name('pengguna.kesehatan.edit');
             Route::post('pengguna/kesehatan/update', [PageuserController::class, 'updatekes'])->name('pengguna.kesehatan.update');
         });
-        Route::group(['middleware' => ['permission:Edit Vaksin']], function () {
+        Route::group(['middleware' => ['permission:edit-vaksin']], function () {
             Route::get('pengguna/vaksin/edit', [PageuserController::class, 'editvaksin'])->name('pengguna.vaksin.edit');
             Route::post('pengguna/vaksin/update', [PageuserController::class, 'updatevaksin'])->name('pengguna.vaksin.update');
         });
-        Route::group(['middleware' => ['permission:Edit Sertif']], function () {
+        Route::group(['middleware' => ['permission:edit-sertif']], function () {
             Route::get('pengguna/sertifikat/edit', [PageuserController::class, 'editSertif'])->name('pengguna.sertifikat.edit');
             Route::post('pengguna/sertifikat/update', [PageuserController::class, 'updateSertif'])->name('pengguna.sertifikat.update');
         });
-        Route::group(['middleware' => ['permission:Edit Orientasi']], function () {
+        Route::group(['middleware' => ['permission:edit-orientasi']], function () {
             Route::get('pengguna/orientasi/edit', [PageuserController::class, 'editOrientasi'])->name('pengguna.orientasi.edit');
             Route::post('pengguna/orientasi/update', [PageuserController::class, 'updateOrientasi'])->name('pengguna.orientasi.update');
         });
 
         //FileIdentitas (lain lain) - Untuk Pengguna
-        Route::group(['middleware' => ['permission:View Identitas']], function () {
+        Route::group(['middleware' => ['permission:view-identitas']], function () {
             Route::get('pengguna/berkas/lain/get', [FileIdentitasController::class, 'getFile'])->name('pengguna.berkas.lain.getFile');
         });
-        Route::group(['middleware' => ['permission:Tambah Identitas']], function () {
+        Route::group(['middleware' => ['permission:tambah-identitas']], function () {
             Route::post('pengguna/berkas/lain/store', [FileIdentitasController::class, 'store'])->name('pengguna.berkas.lain.store');
         });
-        Route::group(['middleware' => ['permission:Edit Identitas']], function () {
+        Route::group(['middleware' => ['permission:edit-identitas']], function () {
             Route::get('pengguna/berkas/lain/edit', [FileIdentitasController::class, 'edit'])->name('pengguna.berkas.lain.edit');
             Route::post('pengguna/berkas/lain/update', [FileIdentitasController::class, 'update'])->name('pengguna.berkas.lain.update');
         });
-        Route::group(['middleware' => ['permission:Hapus Identitas']], function () {
+        Route::group(['middleware' => ['permission:hapus-identitas']], function () {
             Route::post('pengguna/berkas/lain/destroy', [FileIdentitasController::class, 'destroy'])->name('pengguna.berkas.lain.destroy');
         });
 
         //HAPUS
-        Route::group(['middleware' => ['permission:Hapus Ijazah']], function () {
+        Route::group(['middleware' => ['permission:hapus-ijazah']], function () {
             Route::post('pengguna/ijazah/destroy', [PageuserController::class, 'destroyijazah'])->name('pengguna.ijazah.destroy');
         });
-        Route::group(['middleware' => ['permission:Hapus Transkrip']], function () {
+        Route::group(['middleware' => ['permission:hapus-transkrip']], function () {
             Route::post('pengguna/transkrip/destroy', [PageuserController::class, 'destroytrans'])->name('pengguna.transkrip.destroy');   
         });
-        Route::group(['middleware' => ['permission:Hapus STR']], function () {
+        Route::group(['middleware' => ['permission:hapus-str']], function () {
             Route::post('pengguna/str/destroy', [PageuserController::class, 'destroystr'])->name('pengguna.str.destroy');   
         });
-        Route::group(['middleware' => ['permission:Hapus SIP']], function () {
+        Route::group(['middleware' => ['permission:hapus-sip']], function () {
             Route::post('pengguna/sip/destroy', [PageuserController::class, 'destroysip'])->name('pengguna.sip.destroy');   
         });
-        Route::group(['middleware' => ['permission:Hapus Riwayat']], function () {
+        Route::group(['middleware' => ['permission:hapus-riwayat']], function () {
             Route::post('pengguna/riwayat/destroy', [PageuserController::class, 'destroyriwayat'])->name('pengguna.riwayat.destroy');
         });
-        Route::group(['middleware' => ['permission:Hapus Kesehatan']], function () {
+        Route::group(['middleware' => ['permission:hapus-kesehatan']], function () {
             Route::post('pengguna/kesehatan/destroy', [PageuserController::class, 'destroykes'])->name('pengguna.kesehatan.destroy');
         });
-        Route::group(['middleware' => ['permission:Hapus Vaksin']], function () {
+        Route::group(['middleware' => ['permission:hapus-vaksin']], function () {
             Route::post('pengguna/vaksin/destroy', [PageuserController::class, 'destroyvaksin'])->name('pengguna.vaksin.destroy');
         });
-        Route::group(['middleware' => ['permission:Hapus Sertif']], function () {
+        Route::group(['middleware' => ['permission:hapus-sertif']], function () {
             Route::post('pengguna/sertifikat/destroy', [PageuserController::class, 'destroySertif'])->name('pengguna.sertifikat.destroy');
         });
-        Route::group(['middleware' => ['permission:Hapus Orientasi']], function () {
+        Route::group(['middleware' => ['permission:hapus-orientasi']], function () {
             Route::post('pengguna/orientasi/destroy', [PageuserController::class, 'destroyOrientasi'])->name('pengguna.orientasi.destroy');
         });
     }); 

@@ -154,7 +154,7 @@
         </li> --}}
 
         <!-- Nav Item - Activity Log (Admin Only) -->
-        @if ((auth()->check() && auth()->user()->can('Pegawai Admin')) || auth()->guard('admin')->check())
+        @if ((auth()->check() && auth()->user()->can('admin-all-access')) || auth()->guard('admin')->check())
             <li class="nav-item dropdown no-arrow mx-1">
                 <a class="nav-link dropdown-toggle" href="#" id="activityLogDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Activity Log">
@@ -227,7 +227,7 @@
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                @if (auth()->user()->can('Pengguna'))
+                @if (auth()->user()->can('user-menu-access'))
                     <a class="dropdown-item" href="{{ route('profile.index') }}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile
@@ -257,7 +257,7 @@
 
 </nav>
 
-@if ((auth()->check() && auth()->user()->can('Pegawai Admin')) || auth()->guard('admin')->check())
+@if ((auth()->check() && auth()->user()->can('admin-all-access')) || auth()->guard('admin')->check())
     <script>
         // Update activity log counter
         function updateActivityLogCounter() {

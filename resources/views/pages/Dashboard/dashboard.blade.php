@@ -11,7 +11,7 @@
 
     <!-- Content Row -->
     <div class="row">
-        @if (auth()->user()->can('Dokumen Karyawan') || auth()->user()->can('Pegawai Admin'))
+        @if (auth()->user()->can('admin-karyawan-dokumen') || auth()->user()->can('admin-all-access'))
             <!-- Karyawan -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         @endif
-        @if (auth()->user()->can('Dokumen Diklat') || auth()->user()->can('Pegawai Admin'))
+        @if (auth()->user()->can('admin-karyawan-dokumen-diklat') || auth()->user()->can('admin-all-access'))
             <!-- Kegiatan Diklat -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
@@ -51,7 +51,7 @@
                 </div>
             </div>
         @endif
-        @if (auth()->user()->can('Pegawai Admin'))
+        @if (auth()->user()->can('admin-all-access'))
             <!-- Maping RM -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-warning shadow h-100 py-2">
@@ -71,7 +71,7 @@
                 </div>
             </div>
         @endif
-        @if (auth()->user()->can('Peringatan') || auth()->user()->can('Pegawai Admin'))
+        @if (auth()->user()->can('admin-peringatan') || auth()->user()->can('admin-all-access'))
             <!-- Peringatan STR -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-danger shadow h-100 py-2">
@@ -110,7 +110,7 @@
             </div>
         @endif
 
-        @if (auth()->user()->can('Pengguna'))
+        @if (auth()->user()->can('user-menu-access'))
             <!-- Ijazah -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
@@ -291,7 +291,7 @@
         @endif
 
     </div>
-    @if (auth()->user()->can('Dokumen Karyawan') || auth()->user()->can('Pegawai Admin'))
+    @if (auth()->user()->can('admin-karyawan-dokumen') || auth()->user()->can('admin-all-access'))
         <!-- Content Row -->
         <div class="row">
             <div class="col-xl-12 col-lg-12">

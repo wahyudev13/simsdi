@@ -34,6 +34,8 @@ class RoleController extends Controller
 
     public function edit(Request $request){
         $role = Role::find($request->id);
+        $permission_ids = $role->permissions->pluck('id');
+        $role->permission_ids = $permission_ids;
         return response()->json($role);
     }
 
@@ -59,20 +61,20 @@ class RoleController extends Controller
     public function addPermissionRole(Request $request) {
         $validated = Validator::make($request->all(),[
             'id' => 'required',
-            'permis' => 'required',
+            // 'permis' => 'required', // Hapus validasi required pada permis
         ],[
             'id_pegawai.required' => 'ID Pegawai Wajib diisi',
-            'permis.required' => 'Permission Akses Wajib diisi',
+            // 'permis.required' => 'Permission Akses Wajib diisi',
         ]);
 
         if ($validated->passes()) {
 
             $role = Role::find($request->id);
-            $role->givePermissionTo([$request->permis]);
+            $role->syncPermissions($request->permis ? $request->permis : []);
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Permission Akses Berhasil Ditambahkan',
+                'message' => 'Permission Akses Berhasil Disimpan',
             ]);
         }else {
             return response()->json([

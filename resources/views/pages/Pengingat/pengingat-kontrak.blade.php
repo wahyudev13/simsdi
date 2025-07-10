@@ -96,7 +96,7 @@
                         'data': null,
                         render: function(data, row, type) {
                             return `
-                                    @if (auth()->user()->can('Dokumen Karyawan') || auth()->user()->can('Pegawai Admin'))
+                                    @if (auth()->user()->can('admin-karyawan-dokumen') || auth()->user()->can('admin-all-access'))
                                         <a href="{{ url('karyawan/berkas/kepeg/${data.id_pegawai}') }}" target="_blank" class="btn btn-primary btn-icon-split btn-sm detail-kontrak" id="detail-kontrak">
                                             <span class="icon text-white">
                                                 <i class="fas fa-info-circle"></i> Detail

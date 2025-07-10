@@ -13,7 +13,7 @@
     <div class="card shadow mb-4">
         <input type="hidden" id="id-pegawai" value="{{ $pegawai->id_pegawai }}">
         <div class="card-header py-3">
-            @can('Tambah Orientasi')
+            @can('user-orientasi-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modal-add-orientasi">
@@ -35,9 +35,9 @@
                                     <th>No</th>
                                     <th>Nomor Sertifikat</th>
                                     <th>Tanggal Orientasi</th>
-                                    @if (auth()->user()->can('View Orientasi') ||
-                                            auth()->user()->can('Edit Orientasi') ||
-                                            auth()->user()->can('Hapus Orientasi'))
+                                    @if (auth()->user()->can('user-orientasi-view') ||
+                                            auth()->user()->can('user-orientasi-edit') ||
+                                            auth()->user()->can('user-orientasi-delete'))
                                         <th>Aksi</th>
                                     @endif
                                 </tr>
@@ -215,9 +215,9 @@
                             `;
                         }
                     },
-                    @if (auth()->user()->can('View Orientasi') ||
-                            auth()->user()->can('Edit Orientasi') ||
-                            auth()->user()->can('Hapus Orientasi'))
+                    @if (auth()->user()->can('user-orientasi-view') ||
+                            auth()->user()->can('user-orientasi-edit') ||
+                            auth()->user()->can('user-orientasi-delete'))
                         {
                             data: null,
                             render: function(data, row, type) {
@@ -228,13 +228,13 @@
                                            
                                         </button>
                                         <div class="dropdown-menu">
-                                            @can('View Orientasi')
+                                            @can('user-orientasi-view')
                                             <a class="dropdown-item" href="#" data-file="${data.file}"  title="Lihat Dokumen" id="view-orientasi"  data-toggle="modal" data-target="#modal-orientasi">Lihat Dokumen</a>
                                             @endcan
-                                            @can('Edit Orientasi')
+                                            @can('user-orientasi-edit')
                                             <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modal-edit-orientasi" id="edit-orientasi">Edit Dokumen</a>
                                             @endcan
-                                            @can('Hapus Orientasi')
+                                            @can('user-orientasi-delete')
                                             <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" data-nomor="${data.nomor}" id="hapus-orientasi"  title="Hapus Dokumen">Hapus</a>
                                             @endcan
                                         </div>

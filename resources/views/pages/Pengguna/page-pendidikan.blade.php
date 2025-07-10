@@ -12,7 +12,7 @@
     {{-- <div id="error_list"></div> --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            @can('Tambah Ijazah')
+            @can('user-ijazah-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modal-add-ijazah">
@@ -37,7 +37,9 @@
                                 <th>Asal</th>
                                 <th>Tahun Lulus</th>
                                 <th>Update</th>
-                                @if (auth()->user()->can('View Ijazah') || auth()->user()->can('Edit Ijazah') || auth()->user()->can('Hapus Ijazah'))
+                                @if (auth()->user()->can('user-ijazah-view') ||
+                                        auth()->user()->can('user-ijazah-edit') ||
+                                        auth()->user()->can('user-ijazah-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -53,7 +55,7 @@
     {{-- Transkrip --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            @can('Tambah Transkrip')
+            @can('user-transkrip-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modal-add-trans">
@@ -76,9 +78,9 @@
                                 <th>Nama File</th>
                                 <th>Nomor</th>
                                 <th>Update</th>
-                                @if (auth()->user()->can('View Transkrip') ||
-                                        auth()->user()->can('Edit Transkrip') ||
-                                        auth()->user()->can('Hapus Transkrip'))
+                                @if (auth()->user()->can('user-transkrip-view') ||
+                                        auth()->user()->can('user-transkrip-edit') ||
+                                        auth()->user()->can('user-transkrip-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -432,7 +434,9 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if (auth()->user()->can('View Ijazah') || auth()->user()->can('Edit Ijazah') || auth()->user()->can('Hapus Ijazah'))
+                    @if (auth()->user()->can('user-ijazah-view') ||
+                            auth()->user()->can('user-ijazah-edit') ||
+                            auth()->user()->can('user-ijazah-delete'))
                         {
                             'data': null,
                             render: function(data, row, type) {
@@ -444,13 +448,13 @@
                                            
                                         </button>
                                         <div class="dropdown-menu">
-                                            @can('View Ijazah')
+                                            @can('user-ijazah-view')
                                             <a class="dropdown-item" href="#" data-id="${data.file}" title="Lihat Dokumen" data-toggle="modal" data-target="#modalIjazah" id="view-ijazah">Lihat Dokumen</a>
                                             @endcan
-                                            @can('Edit Ijazah')
+                                            @can('user-ijazah-edit')
                                             <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modal-edit-ijazah" id="editberkas">Edit Dokumen</a>
                                             @endcan
-                                            @can('Hapus Ijazah')
+                                            @can('user-ijazah-delete')
                                             <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus"  title="Hapus Dokumen">Hapus</a>
                                             @endcan
                                         </div>
@@ -685,9 +689,9 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if (auth()->user()->can('View Transkrip') ||
-                            auth()->user()->can('Edit Transkrip') ||
-                            auth()->user()->can('Hapus Transkrip'))
+                    @if (auth()->user()->can('user-transkrip-view') ||
+                            auth()->user()->can('user-transkrip-edit') ||
+                            auth()->user()->can('user-transkrip-delete'))
                         {
                             'data': null,
                             render: function(data, row, type) {
@@ -699,13 +703,13 @@
                                         
                                         </button>
                                         <div class="dropdown-menu">
-                                            @can('View Transkrip')
+                                            @can('user-transkrip-view')
                                             <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Dokumen" data-toggle="modal" data-target="#modalTranskrip" id="view-trasnkrip">Lihat Dokumen</a>
                                             @endcan
-                                            @can('Edit Transkrip')
+                                            @can('user-transkrip-edit')
                                             <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditTrans" id="edit_trans">Edit Dokumen</a>
                                             @endcan
-                                            @can('Hapus Transkrip')
+                                            @can('user-transkrip-delete')
                                             <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_trans"  title="Hapus Dokumen">Hapus</a>
                                             @endcan
                                         </div>

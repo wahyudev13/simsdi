@@ -12,7 +12,7 @@
     {{-- <div id="error_list"></div> --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            @can('Tambah Kesehatan')
+            @can('user-kesehatan-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal" data-target="#modaladdAwal">
                         <span class="icon text-white-50">
@@ -36,9 +36,9 @@
                                 <th>Nama Pemeriksaan</th>
                                 <th>Tanggal Pemeriksaan</th>
                                 <th>Update</th>
-                                @if (auth()->user()->can('View Kesehatan') ||
-                                        auth()->user()->can('Edit Kesehatan') ||
-                                        auth()->user()->can('Hapus Kesehatan'))
+                                @if (auth()->user()->can('user-kesehatan-view') ||
+                                        auth()->user()->can('user-kesehatan-edit') ||
+                                        auth()->user()->can('user-kesehatan-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -225,9 +225,9 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if (auth()->user()->can('View Kesehatan') ||
-                            auth()->user()->can('Edit Kesehatan') ||
-                            auth()->user()->can('Hapus Kesehatan'))
+                    @if (auth()->user()->can('user-kesehatan-view') ||
+                            auth()->user()->can('user-kesehatan-edit') ||
+                            auth()->user()->can('user-kesehatan-delete'))
                         {
                             'data': null,
                             render: function(data, row, type) {
@@ -238,13 +238,13 @@
                                     
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View Kesehatan')
+                                        @can('user-kesehatan-view')
                                         <a class="dropdown-item" href="#" data-id="${data.file}" title="Lihat Dokumen" data-toggle="modal" data-target="#modalKesehatanAwal" id="view-kesehatan-awal">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit Kesehatan')
+                                        @can('user-kesehatan-edit')
                                         <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditAwal" id="edit-kes-awal">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus Kesehatan')
+                                        @can('user-kesehatan-delete')
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus"  title="Hapus Dokumen">Hapus</a>
                                         @endcan
                                     </div>

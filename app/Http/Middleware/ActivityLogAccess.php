@@ -31,7 +31,7 @@ class ActivityLogAccess
         }
         
         // For web guard users, check permission
-        if (!$user || !$user->hasPermissionTo('Pegawai Admin')) {
+        if (!$user || !$user->hasPermissionTo('admin-all-access')) {
             abort(403, 'Unauthorized access to activity log.');
         }
 

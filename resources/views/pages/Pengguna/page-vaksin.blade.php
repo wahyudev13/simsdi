@@ -12,7 +12,7 @@
     {{-- <div id="error_list"></div> --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            @can('Tambah Vaksin')
+            @can('user-vaksin-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modaladdVaksin">
@@ -39,7 +39,9 @@
                                 <th>Jenis Vaksin</th>
                                 <th>Tanggal Vaksin</th>
                                 <th>Tempat Vaksin</th>
-                                @if (auth()->user()->can('View Vaksin') || auth()->user()->can('Edit Vaksin') || auth()->user()->can('Hapus Vaksin'))
+                                @if (auth()->user()->can('user-vaksin-view') ||
+                                        auth()->user()->can('user-vaksin-edit') ||
+                                        auth()->user()->can('user-vaksin-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -244,7 +246,9 @@
                         data: 'tempat_vaksin',
                         name: 'tempat_vaksin'
                     },
-                    @if (auth()->user()->can('View Vaksin') || auth()->user()->can('Edit Vaksin') || auth()->user()->can('Hapus Vaksin'))
+                    @if (auth()->user()->can('user-vaksin-view') ||
+                            auth()->user()->can('user-vaksin-edit') ||
+                            auth()->user()->can('user-vaksin-delete'))
                         {
                             'data': null,
                             render: function(data, row, type) {
@@ -255,13 +259,13 @@
                                     
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View Vaksin')
+                                        @can('user-vaksin-view')
                                         <a class="dropdown-item" href="#" data-id="${data.file}" title="Lihat Dokumen" data-toggle="modal" data-target="#modalviewVaksin" id="view-vaksin">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit Vaksin')
+                                        @can('user-vaksin-edit')
                                         <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditVaksin" id="edit-vaksin">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus Vaksin')
+                                        @can('user-vaksin-delete')
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}"  data-jenis="${data.jenis_vaksin}" id="hapus-vaksin"  title="Hapus Dokumen">Hapus</a>
                                         @endcan
                                     </div>

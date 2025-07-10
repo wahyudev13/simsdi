@@ -13,7 +13,7 @@
     <div class="card shadow mb-4">
         <input type="hidden" id="id-pegawai" value="{{ $pengguna->id_pegawai }}">
         <div class="card-header py-3">
-            @can('Tambah STR')
+            @can('user-str-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modaladdSTR">
@@ -37,7 +37,9 @@
                                 <th>Bidang Kesehatan</th>
                                 <th>Berlaku Sampai</th>
                                 <th>Update</th>
-                                @if (auth()->user()->can('View STR') || auth()->user()->can('Edit STR') || auth()->user()->can('Hapus STR'))
+                                @if (auth()->user()->can('user-str-view') ||
+                                        auth()->user()->can('user-str-edit') ||
+                                        auth()->user()->can('user-str-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -55,7 +57,7 @@
     {{-- Transkrip --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            @can('Tambah SIP')
+            @can('user-sip-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modaladdSIP">
@@ -79,7 +81,9 @@
                                 <th>Nomor Reg STR</th>
                                 <th>Bidang Kesehatan</th>
                                 <th>Update</th>
-                                @if (auth()->user()->can('View SIP') || auth()->user()->can('Edit SIP') || auth()->user()->can('Hapus SIP'))
+                                @if (auth()->user()->can('user-sip-view') ||
+                                        auth()->user()->can('user-sip-edit') ||
+                                        auth()->user()->can('user-sip-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -535,7 +539,9 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if (auth()->user()->can('View STR') || auth()->user()->can('Edit STR') || auth()->user()->can('Hapus STR'))
+                    @if (auth()->user()->can('user-str-view') ||
+                            auth()->user()->can('user-str-edit') ||
+                            auth()->user()->can('user-str-delete'))
                         {
                             // {{ asset('/File/Pegawai/Dokumen/STR/${data.file}') }}
                             data: null,
@@ -546,13 +552,13 @@
                                         <i class="fas fa-solid fa-bars"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View STR')
+                                        @can('user-str-view')
                                         <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Dokumen" id="view-str"  data-toggle="modal" data-target="#modalSTR">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit STR')
+                                        @can('user-str-edit')
                                         <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditSTR" id="edit_str">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus STR')
+                                        @can('user-str-delete')
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_str"  title="Hapus Dokumen">Hapus</a>
                                         @endcan
@@ -788,7 +794,9 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if (auth()->user()->can('View SIP') || auth()->user()->can('Edit SIP') || auth()->user()->can('Hapus SIP'))
+                    @if (auth()->user()->can('user-sip-view') ||
+                            auth()->user()->can('user-sip-edit') ||
+                            auth()->user()->can('user-sip-delete'))
                         {
                             // {{ asset('/Pegawai/Dokumen/STR/${data.file}') }}
                             data: null,
@@ -801,13 +809,13 @@
                                        
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View SIP')
+                                        @can('user-sip-view')
                                         <a class="dropdown-item" href="#" data-id="${data.file}"   title="Lihat Dokumen" id="view-sip"  data-toggle="modal" data-target="#modalSIP">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit SIP')
+                                        @can('user-sip-edit')
                                         <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditSIP" id="edit_sip">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus SIP')
+                                        @can('user-sip-delete')
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_sip"  title="Hapus Dokumen">Hapus</a>
                                         @endcan
                                     </div>

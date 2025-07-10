@@ -94,7 +94,7 @@
                                     type="button" role="tab" aria-controls="absen" aria-selected="false">Riwayat
                                     Presensi</button>
                             </li>
-                            @can('Tambah Identitas')
+                            @can('user-identitas-create')
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="identitas-tab" data-toggle="tab" data-target="#identitas"
                                         type="button" role="tab" aria-controls="identitas" aria-selected="false">Dokumen
@@ -227,9 +227,9 @@
                                     </table>
                                 </div>
                             </div>
-                            @can('Tambah Identitas')
+                            @can('user-identitas-create')
                                 <div class="tab-pane fade" id="identitas" role="tabpanel" aria-labelledby="identitas-tab">
-                                    @can('Tambah Identitas')
+                                    @can('user-identitas-create')
                                         <div class="button-add mb-4 mt-4">
                                             <a href="#" class="btn btn-success btn-icon-split btn-sm" data-toggle="modal"
                                                 data-target="#modaladdLain">
@@ -247,9 +247,9 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Nama File</th>
-                                                    @if (auth()->user()->can('View Identitas') ||
-                                                            auth()->user()->can('Edit Identitas') ||
-                                                            auth()->user()->can('Hapus Identitas'))
+                                                    @if (auth()->user()->can('user-identitas-view') ||
+                                                            auth()->user()->can('user-identitas-edit') ||
+                                                            auth()->user()->can('user-identitas-delete'))
                                                         <th>Aksi</th>
                                                     @endif
                                                 </tr>
@@ -519,9 +519,9 @@
                         data: 'nama_berkas',
                         name: 'nama_berkas'
                     },
-                    @if (auth()->user()->can('View Identitas') ||
-                            auth()->user()->can('Edit Identitas') ||
-                            auth()->user()->can('Hapus Identitas'))
+                    @if (auth()->user()->can('user-identitas-view') ||
+                            auth()->user()->can('user-identitas-edit') ||
+                            auth()->user()->can('user-identitas-delete'))
                         {
                             data: null,
                             render: function(data, row, type) {
@@ -532,13 +532,13 @@
                                        
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View Identitas')
+                                        @can('user-identitas-view')
                                             <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Identitas" id="view-lain"  data-toggle="modal" data-target="#modalLain">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit Identitas')
+                                        @can('user-identitas-edit')
                                             <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Identitas" data-toggle="modal" data-target="#modaleditLain" id="edit_lain">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus Identitas')
+                                        @can('user-identitas-delete')
                                             <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_lain"  title="Hapus Identitas">Hapus</a>
                                         @endcan
                                     </div>

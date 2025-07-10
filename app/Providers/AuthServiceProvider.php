@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::before(function ($user, $ability) {
             if (Auth::guard('admin')->check()) {
-                if ($ability === 'Pengguna') {
+                if ($ability === 'user-menu-access') {
                     // Jangan di-bypass
                     return null;
                 }

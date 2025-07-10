@@ -13,7 +13,7 @@
     <div class="card shadow mb-4">
         <input type="hidden" id="id-pegawai" value="{{ $pengguna->id_pegawai }}">
         <div class="card-header py-3">
-            @can('Tambah Riwayat')
+            @can('user-riwayat-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modaladdRiwayat">
@@ -37,7 +37,9 @@
                                     <th>Nomor</th>
                                     <th>Berlaku Sampai</th>
                                     <th>Update</th>
-                                    @if (auth()->user()->can('View Riwayat') || auth()->user()->can('Edit Riwayat') || auth()->user()->can('Hapus Riwayat'))
+                                    @if (auth()->user()->can('user-riwayat-view') ||
+                                            auth()->user()->can('user-riwayat-edit') ||
+                                            auth()->user()->can('user-riwayat-delete'))
                                         <th>Aksi</th>
                                     @endif
                                 </tr>
@@ -271,7 +273,9 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-                    @if (auth()->user()->can('View Riwayat') || auth()->user()->can('Edit Riwayat') || auth()->user()->can('Hapus Riwayat'))
+                    @if (auth()->user()->can('user-riwayat-view') ||
+                            auth()->user()->can('user-riwayat-edit') ||
+                            auth()->user()->can('user-riwayat-delete'))
                         {
                             // {{ asset('/Pegawai/Dokumen/STR/${data.file}') }}
                             data: null,
@@ -284,13 +288,13 @@
                                        
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View Riwayat')
+                                        @can('user-riwayat-view')
                                         <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Dokumen" id="view-rw"  data-toggle="modal" data-target="#modalRiwayat">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit Riwayat')
+                                        @can('user-riwayat-edit')
                                         <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditRiwayat" id="edit_riwayat">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus Riwayat')
+                                        @can('user-riwayat-delete')
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_riwayat"  title="Hapus Dokumen">Hapus</a>
                                         @endcan
                                     </div>

@@ -12,7 +12,7 @@
     {{-- <div id="error_list"></div> --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            @can('Tambah Sertif')
+            @can('user-sertif-create')
                 <div class="button-add">
                     <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
                         data-target="#modaladd_sertif">
@@ -37,7 +37,9 @@
                                 <th>Tgl Kegiatan</th>
                                 <th>Tempat Kegiatan</th>
                                 <th>Penyelenggara</th>
-                                @if (auth()->user()->can('View Sertif') || auth()->user()->can('Edit Sertif') || auth()->user()->can('Hapus Sertif'))
+                                @if (auth()->user()->can('user-sertif-view') ||
+                                        auth()->user()->can('user-sertif-edit') ||
+                                        auth()->user()->can('user-sertif-delete'))
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -254,7 +256,9 @@
                         data: 'penyelenggara',
                         name: 'penyelenggara'
                     },
-                    @if (auth()->user()->can('View Sertif') || auth()->user()->can('Edit Sertif') || auth()->user()->can('Hapus Sertif'))
+                    @if (auth()->user()->can('user-sertif-view') ||
+                            auth()->user()->can('user-sertif-edit') ||
+                            auth()->user()->can('user-sertif-delete'))
                         {
                             'data': null,
                             render: function(data, row, type) {
@@ -265,13 +269,13 @@
                                        
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('View Sertif')
+                                        @can('user-sertif-view')
                                         <a class="dropdown-item" href="#" data-file="${data.file}" title="Lihat Dokumen" data-toggle="modal" data-target="#modalviewSer" id="view-sertif">Lihat Dokumen</a>
                                         @endcan
-                                        @can('Edit Sertif')
+                                        @can('user-sertif-edit')
                                         <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#editmodal_sertif" id="edit_sertif">Edit Dokumen</a>
                                         @endcan
-                                        @can('Hapus Sertif')
+                                        @can('user-sertif-delete')
                                         <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" data-berkas="${data.berkas_id}" data-pegawai="${data.id_pegawai}" id="hapus"  title="Hapus Dokumen">Hapus</a>
                                         @endcan
                                     </div>
