@@ -136,11 +136,16 @@
                     <div class="form-group" id="checkbox-permission-list">
                         <div class="row">
                             @foreach ($permission as $item)
+                                @php
+                                    $isAdmin = Str::startsWith($item->name, 'admin');
+                                @endphp
                                 <div class="col-md-4 mb-2">
                                     <div class="form-check">
                                         <input class="form-check-input permis-checkbox" type="checkbox"
                                             value="{{ $item->id }}" id="permis-{{ $item->id }}">
-                                        <label class="form-check-label" for="permis-{{ $item->id }}">
+                                        <label
+                                            class="form-check-label permission-label {{ $isAdmin ? 'permission-admin' : 'permission-user' }}"
+                                            for="permis-{{ $item->id }}">
                                             {{ $item->name }}
                                         </label>
                                     </div>
@@ -589,4 +594,16 @@
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}">
+    <style>
+        .permission-admin {
+            color: #dc3545 !important;
+            /* merah */
+            font-weight: bold;
+        }
+
+        .permission-user {
+            color: #212529 !important;
+            /* hitam */
+        }
+    </style>
 @endpush
