@@ -10,6 +10,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Validator;
+use App\Helpers\ActivityLogHelper;
+use Illuminate\Support\Facades\Auth;
 
 class PenggunaController extends Controller
 {
@@ -55,22 +57,6 @@ class PenggunaController extends Controller
     }
     
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StorePenggunaRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -96,6 +82,9 @@ class PenggunaController extends Controller
                 'password' => Hash::make($request->password)
     
             ]);
+            
+            // Log activity
+            ActivityLogHelper::logCrud('created', $simpanuser, 'Created new user: ' . $simpanuser->username);
         
             return response()->json([
                 'status' => 200,
@@ -163,9 +152,21 @@ class PenggunaController extends Controller
             // Handle both single role and array of roles
             if (is_array($request->role)) {
                 $user->assignRole($request->role);
+                $roles = implode(', ', $request->role);
             } else {
                 $user->assignRole([$request->role]);
+                $roles = $request->role;
             }
+            
+            // Log activity
+            ActivityLogHelper::log('Assigned roles to user: ' . $user->username, [
+                'target_user_id' => $user->id,
+                'target_user_username' => $user->username,
+                'assigned_roles' => $roles,
+                'action_performed_by' => Auth::user() ? Auth::user()->username : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->username : 'System'),
+                'action_performed_by_id' => Auth::user() ? Auth::user()->id : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->id : null),
+                'action_performed_by_type' => Auth::user() ? 'user' : (Auth::guard('admin')->user() ? 'admin' : 'system')
+            ], 'user');
 
             return response()->json([
                 'status' => 200,
@@ -184,6 +185,16 @@ class PenggunaController extends Controller
         $delete_role_user = $user->removeRole($request->rolename);
 
         if ($delete_role_user) {
+            // Log activity
+            ActivityLogHelper::log('Removed role from user: ' . $user->username, [
+                'target_user_id' => $user->id,
+                'target_user_username' => $user->username,
+                'removed_role' => $request->rolename,
+                'action_performed_by' => Auth::user() ? Auth::user()->username : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->username : 'System'),
+                'action_performed_by_id' => Auth::user() ? Auth::user()->id : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->id : null),
+                'action_performed_by_type' => Auth::user() ? 'user' : (Auth::guard('admin')->user() ? 'admin' : 'system')
+            ], 'admin');
+            
             return response()->json([
                 'message' => 'Role '.$request->rolename.' Berhasil Dihapus',
                 'status' => 200,
@@ -244,7 +255,14 @@ class PenggunaController extends Controller
                     $updateData['password'] = Hash::make($request->password);
                 }
                 
-                $update = User::where('id', $request->id)->update($updateData);   
+                $user = User::findOrFail($request->id);
+                $oldUsername = $user->username;
+                
+                $user->update($updateData);
+                
+                // Log activity
+                ActivityLogHelper::logCrud('updated', $user, 'Updated user: ' . $oldUsername . ' to ' . $user->username);
+                
                 return response()->json([
                     'status' => 200,
                     'message' => 'Pengguna '.$request->pengguna.' Berhasil Diubah',
@@ -280,7 +298,20 @@ class PenggunaController extends Controller
             $delete_role_user = $user->roles()->detach();
             $delete_permis_user = $user->syncPermissions([]);
             if ($delete_role_user || $delete_permis_user) {
+                $username = $user->username;
                 $deluser = User::where('id', $request->id)->delete();
+                
+                // Log activity
+                ActivityLogHelper::log('Deleted user: ' . $username, [
+                    'target_user_id' => $request->id,
+                    'target_user_username' => $username,
+                    'had_roles' => $coun > 0,
+                    'had_permissions' => $countper > 0,
+                    'action_performed_by' => Auth::user() ? Auth::user()->username : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->username : 'System'),
+                    'action_performed_by_id' => Auth::user() ? Auth::user()->id : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->id : null),
+                    'action_performed_by_type' => Auth::user() ? 'user' : (Auth::guard('admin')->user() ? 'admin' : 'system')
+                ], 'user');
+                
                 return response()->json([
                     'message' => 'Data '.$request->namapeg.' Berhasil Dihapus',
                     'status' => 200,
@@ -292,8 +323,20 @@ class PenggunaController extends Controller
                 ]);
             }
         }else {
+            $username = $user->username;
             $deluser = User::where('id', $request->id)->delete();
             if ($deluser) {
+                // Log activity
+                ActivityLogHelper::log('Deleted user: ' . $username, [
+                    'target_user_id' => $request->id,
+                    'target_user_username' => $username,
+                    'had_roles' => false,
+                    'had_permissions' => false,
+                    'action_performed_by' => Auth::user() ? Auth::user()->username : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->username : 'System'),
+                    'action_performed_by_id' => Auth::user() ? Auth::user()->id : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->id : null),
+                    'action_performed_by_type' => Auth::user() ? 'user' : (Auth::guard('admin')->user() ? 'admin' : 'system')
+                ], 'user');
+                
                 return response()->json([
                     'message' => 'Data '.$request->namapeg.' Berhasil Dihapus',
                     'status' => 200,

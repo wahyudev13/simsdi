@@ -94,11 +94,13 @@
                                     type="button" role="tab" aria-controls="absen" aria-selected="false">Riwayat
                                     Presensi</button>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="identitas-tab" data-toggle="tab" data-target="#identitas"
-                                    type="button" role="tab" aria-controls="identitas" aria-selected="false">Dokumen
-                                    Data Diri</button>
-                            </li>
+                            @can('Tambah Identitas')
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="identitas-tab" data-toggle="tab" data-target="#identitas"
+                                        type="button" role="tab" aria-controls="identitas" aria-selected="false">Dokumen
+                                        Data Diri</button>
+                                </li>
+                            @endcan
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="biodata" role="tabpanel"
@@ -220,40 +222,45 @@
                                                 <th>Status</th>
                                                 <th>Keterlambatan</th>
                                                 <th>Durasi</th>
-                                                {{-- <th>Catatan</th> --}}
-                                                {{-- <th>Aksi</th> --}}
                                             </tr>
                                         </thead>
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="identitas" role="tabpanel" aria-labelledby="identitas-tab">
-                                <div class="button-add mb-4 mt-4">
-                                    <a href="#" class="btn btn-success btn-icon-split btn-sm" data-toggle="modal"
-                                        data-target="#modaladdLain">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-plus"></i>
-                                        </span>
-                                        <span class="text">Tambah Berkas Data Diri</span>
-                                    </a>
-                                </div>
+                            @can('Tambah Identitas')
+                                <div class="tab-pane fade" id="identitas" role="tabpanel" aria-labelledby="identitas-tab">
+                                    @can('Tambah Identitas')
+                                        <div class="button-add mb-4 mt-4">
+                                            <a href="#" class="btn btn-success btn-icon-split btn-sm" data-toggle="modal"
+                                                data-target="#modaladdLain">
+                                                <span class="icon text-white-50">
+                                                    <i class="fas fa-plus"></i>
+                                                </span>
+                                                <span class="text">Tambah Berkas Data Diri</span>
+                                            </a>
+                                        </div>
+                                    @endcan
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="tb-identitas" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama File</th>
+                                                    @if (auth()->user()->can('View Identitas') ||
+                                                            auth()->user()->can('Edit Identitas') ||
+                                                            auth()->user()->can('Hapus Identitas'))
+                                                        <th>Aksi</th>
+                                                    @endif
+                                                </tr>
+                                            </thead>
 
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="tb-identitas" width="100%"
-                                        cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama File</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -512,25 +519,34 @@
                         data: 'nama_berkas',
                         name: 'nama_berkas'
                     },
-                    {
-                        data: null,
-                        render: function(data, row, type) {
-                            return `
+                    @if (auth()->user()->can('View Identitas') ||
+                            auth()->user()->can('Edit Identitas') ||
+                            auth()->user()->can('Hapus Identitas'))
+                        {
+                            data: null,
+                            render: function(data, row, type) {
+                                return `
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-solid fa-bars"></i>
                                        
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Dokumen" id="view-lain"  data-toggle="modal" data-target="#modalLain">Lihat Dokumen</a>
-                                        <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Dokumen" data-toggle="modal" data-target="#modaleditLain" id="edit_lain">Edit Dokumen</a>
-                                        <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_lain"  title="Hapus Dokumen">Hapus</a>
+                                        @can('View Identitas')
+                                            <a class="dropdown-item" href="#" data-id="${data.file}"  title="Lihat Identitas" id="view-lain"  data-toggle="modal" data-target="#modalLain">Lihat Dokumen</a>
+                                        @endcan
+                                        @can('Edit Identitas')
+                                            <a class="dropdown-item" href="#" data-id="${data.id}"  title="Edit Identitas" data-toggle="modal" data-target="#modaleditLain" id="edit_lain">Edit Dokumen</a>
+                                        @endcan
+                                        @can('Hapus Identitas')
+                                            <a class="dropdown-item text-danger" href="#"  data-id="${data.id}" id="hapus_lain"  title="Hapus Identitas">Hapus</a>
+                                        @endcan
                                     </div>
                                 </div>
                                 `;
-                        }
-                    },
-
+                            }
+                        },
+                    @endif
                 ]
             });
 
@@ -559,7 +575,7 @@
                 $.ajax({
                     type: "POST",
                     enctype: "multipart/form-data",
-                    url: "{{ route('berkas.lain.store') }}",
+                    url: "{{ route('pengguna.berkas.lain.store') }}",
                     data: formData,
                     contentType: false,
                     processData: false,
@@ -602,7 +618,7 @@
                 e.preventDefault();
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('berkas.lain.edit') }}",
+                    url: "{{ route('pengguna.berkas.lain.edit') }}",
                     data: {
                         'id': $(this).data('id'),
                     },
@@ -637,7 +653,7 @@
                 $.ajax({
                     type: "POST",
                     enctype: "multipart/form-data",
-                    url: "{{ route('berkas.lain.update') }}",
+                    url: "{{ route('pengguna.berkas.lain.update') }}",
                     data: formData,
                     contentType: false,
                     processData: false,
@@ -685,7 +701,7 @@
                 if (confirm('Yakin Ingin Menghapus Berkas ?')) {
                     $.ajax({
                         type: "POST",
-                        url: "{{ route('berkas.lain.destroy') }}",
+                        url: "{{ route('pengguna.berkas.lain.destroy') }}",
                         data: {
                             'id': $(this).data('id'),
                         },

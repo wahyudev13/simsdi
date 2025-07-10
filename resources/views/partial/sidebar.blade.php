@@ -20,7 +20,11 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-    @if (auth()->user()->can('View Karyawan') || auth()->user()->can('Pegawai Admin'))
+    @if (
+        (auth()->check() && (auth()->user()->can('View Karyawan') || auth()->user()->can('Pegawai Admin'))) ||
+            (auth()->guard('admin')->check() &&
+                (auth()->guard('admin')->user()->can('View Karyawan') ||
+                    auth()->guard('admin')->user()->can('Pegawai Admin'))))
         <!-- Heading -->
         <div class="sidebar-heading">
             Kelola Karyawan
@@ -41,7 +45,11 @@
             </div>
         </li>
     @endif
-    @if (auth()->user()->can('Peringatan') || auth()->user()->can('Pegawai Admin'))
+    @if (
+        (auth()->check() && (auth()->user()->can('Peringatan') || auth()->user()->can('Pegawai Admin'))) ||
+            (auth()->guard('admin')->check() &&
+                (auth()->guard('admin')->user()->can('Peringatan') ||
+                    auth()->guard('admin')->user()->can('Pegawai Admin'))))
         <li class="nav-item @yield('pengingat1')">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAlert"
                 aria-expanded="true" aria-controls="collapseTwo">
@@ -65,7 +73,11 @@
         </li>
         <!-- Nav Item - Utilities Collapse Menu -->
     @endif
-    @if (auth()->user()->can('Dokumen Diklat') || auth()->user()->can('Pegawai Admin'))
+    @if (
+        (auth()->check() && (auth()->user()->can('Dokumen Diklat') || auth()->user()->can('Pegawai Admin'))) ||
+            (auth()->guard('admin')->check() &&
+                (auth()->guard('admin')->user()->can('Dokumen Diklat') ||
+                    auth()->guard('admin')->user()->can('Pegawai Admin'))))
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Heading -->
@@ -92,16 +104,13 @@
             </div>
         </li>
     @endif
-    @if (auth()->user()->can('Pengguna'))
+    @if (
+        (auth()->check() && auth()->user()->can('Pengguna')) ||
+            (auth()->guard('admin')->check() && auth()->guard('admin')->user()->can('Pengguna')))
         <!-- Heading -->
         <div class="sidebar-heading">
             Dokumen Karyawan
         </div>
-        {{-- <li class="nav-item @yield('user-izin')">
-            <a class="nav-link" href="#">
-                <i class="fas fa-paste"></i>
-                <span>Dokumen Perizinan</span></a>
-        </li> --}}
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item @yield('user-main1')">
             <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true"
@@ -157,7 +166,7 @@
             </div>
         </li>
     @endif
-    @if (auth()->user()->can('Pegawai Admin'))
+    @if ((auth()->check() && auth()->user()->can('Pegawai Admin')) || auth()->guard('admin')->check())
         <!-- Divider -->
         <hr class="sidebar-divider">
         <!-- Heading -->
@@ -206,6 +215,9 @@
                         Administrator</a>
                     <a class="collapse-item @yield('aplikasi')" href="{{ route('setting.aplikasi.index') }}">Set
                         Aplikasi</a>
+                    <a class="collapse-item @yield('activity-log')" href="{{ route('activity-log.index') }}">
+                        Log Aktifitas
+                    </a>
                 </div>
             </div>
         </li>

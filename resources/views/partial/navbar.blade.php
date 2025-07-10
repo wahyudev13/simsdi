@@ -153,13 +153,76 @@
             </div>
         </li> --}}
 
+        <!-- Nav Item - Activity Log (Admin Only) -->
+        @if ((auth()->check() && auth()->user()->can('Pegawai Admin')) || auth()->guard('admin')->check())
+            <li class="nav-item dropdown no-arrow mx-1">
+                <a class="nav-link dropdown-toggle" href="#" id="activityLogDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Activity Log">
+                    <i class="fas fa-history fa-fw"></i>
+                    <span class="badge badge-info badge-counter" id="activityLogCounter">0</span>
+                </a>
+                <!-- Dropdown - Activity Log -->
+                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                    aria-labelledby="activityLogDropdown">
+                    <h6 class="dropdown-header">
+                        <i class="fas fa-history"></i> Activity Log
+                    </h6>
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('activity-log.index') }}">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-info">
+                                <i class="fas fa-list text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-weight-bold">View All Activities</div>
+                            <div class="small text-gray-500">Complete activity log</div>
+                        </div>
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center"
+                        href="{{ route('activity-log.index') }}?date_from={{ now()->subDay()->format('Y-m-d') }}">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-warning">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-weight-bold">Recent Activities</div>
+                            <div class="small text-gray-500">Last 24 hours</div>
+                        </div>
+                    </a>
+                    <a class="dropdown-item d-flex align-items-center"
+                        href="{{ route('activity-log.index') }}?event=failed&date_from={{ now()->subDay()->format('Y-m-d') }}">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-danger">
+                                <i class="fas fa-exclamation-triangle text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-weight-bold">Failed Logins</div>
+                            <div class="small text-gray-500">Security alerts</div>
+                        </div>
+                    </a>
+                    <a class="dropdown-item text-center small text-gray-500"
+                        href="{{ route('activity-log.index') }}">View All Activities</a>
+                </div>
+            </li>
+        @endif
+
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth()->user()->username }}</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                    @if (auth()->check())
+                        {{ auth()->user()->pegawai ? auth()->user()->pegawai->nama : auth()->user()->username }}
+                    @elseif(auth()->guard('admin')->check())
+                        {{ auth()->guard('admin')->user()->username }}
+                    @else
+                        Guest
+                    @endif
+                </span>
                 <img class="img-profile rounded-circle" src="{{ asset('/img/undraw_profile.svg') }}">
             </a>
             <!-- Dropdown - User Information -->
@@ -193,3 +256,56 @@
 
 
 </nav>
+
+@if ((auth()->check() && auth()->user()->can('Pegawai Admin')) || auth()->guard('admin')->check())
+    <script>
+        // Update activity log counter
+        function updateActivityLogCounter() {
+            fetch('{{ route('activity-log.index') }}?ajax=stats')
+                .then(response => response.json())
+                .then(data => {
+                    const counter = document.getElementById('activityLogCounter');
+                    if (counter) {
+                        const total = data.today_activities || 0;
+                        counter.textContent = total > 99 ? '99+' : total;
+
+                        // Add pulse animation if there are activities
+                        if (total > 0) {
+                            counter.classList.add('pulse');
+                        } else {
+                            counter.classList.remove('pulse');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating activity log counter:', error);
+                });
+        }
+
+        // Update counter every 30 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            updateActivityLogCounter();
+            setInterval(updateActivityLogCounter, 30000);
+        });
+    </script>
+
+    <style>
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+@endif

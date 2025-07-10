@@ -10,6 +10,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Validator;
+use App\Helpers\ActivityLogHelper;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -66,6 +68,9 @@ class AdminController extends Controller
 
             // $user = Admin::findOrFail($request->id_pengguna);
             $admin->assignRole('superadmin');
+
+            // Log activity
+            ActivityLogHelper::logCrud('created', $admin, 'Created new administrator: ' . $admin->username);
 
             return response()->json([
                 'status' => 200,
@@ -132,10 +137,16 @@ class AdminController extends Controller
         ]);
 
         if ($validated->passes()) {
-            Admin::where('id',$request->id)->update([
+            $admin = Admin::findOrFail($request->id);
+            $oldUsername = $admin->username;
+            
+            $admin->update([
                 'username' => $request->username,
                 'password' => Hash::make($request->password)
             ]);
+
+            // Log activity
+            ActivityLogHelper::logCrud('updated', $admin, 'Updated administrator: ' . $oldUsername . ' to ' . $admin->username);
 
             return response()->json([
                 'status' => 200,
@@ -167,7 +178,18 @@ class AdminController extends Controller
         if ($coun > 0) {
             $delete_role_admin = $admin->roles()->detach();
             if ($delete_role_admin) {
+                $username = $admin->username;
                 $deladmin = Admin::where('id', $request->id)->delete();
+                
+                // Log activity
+                ActivityLogHelper::log('Deleted administrator: ' . $username, [
+                    'target_admin_id' => $request->id,
+                    'target_admin_username' => $username,
+                    'action_performed_by' => Auth::user() ? Auth::user()->username : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->username : 'System'),
+                    'action_performed_by_id' => Auth::user() ? Auth::user()->id : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->id : null),
+                    'action_performed_by_type' => Auth::user() ? 'user' : (Auth::guard('admin')->user() ? 'admin' : 'system')
+                ], 'admin');
+                
                 return response()->json([
                     'message' => 'Data Berhasil Dihapus',
                     'status' => 200,
@@ -179,8 +201,18 @@ class AdminController extends Controller
                 ]);
             }
         }else {
+            $username = $admin->username;
             $deladmin = Admin::where('id', $request->id)->delete();
             if ($deladmin) {
+                // Log activity
+                ActivityLogHelper::log('Deleted administrator: ' . $username, [
+                    'target_admin_id' => $request->id,
+                    'target_admin_username' => $username,
+                    'action_performed_by' => Auth::user() ? Auth::user()->username : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->username : 'System'),
+                    'action_performed_by_id' => Auth::user() ? Auth::user()->id : (Auth::guard('admin')->user() ? Auth::guard('admin')->user()->id : null),
+                    'action_performed_by_type' => Auth::user() ? 'user' : (Auth::guard('admin')->user() ? 'admin' : 'system')
+                ], 'admin');
+                
                 return response()->json([
                     'message' => 'Data Berhasil Dihapus',
                     'status' => 200,

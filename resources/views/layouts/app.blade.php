@@ -23,7 +23,7 @@
                 <!-- Topbar -->
                 @include('partial.navbar')
                 <!-- End of Topbar -->
-                
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     @yield('body')

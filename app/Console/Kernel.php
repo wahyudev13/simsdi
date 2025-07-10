@@ -21,6 +21,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('nonaktif:str')->everyMinute();
         $schedule->command('notifikasi:kontrak')->everyMinute();
         $schedule->command('nonaktif:kontrak')->everyMinute();
+        
+        // Cleanup activity logs every week
+        $schedule->command('activity:cleanup --days=90 --force')->weekly();
     
 
     }

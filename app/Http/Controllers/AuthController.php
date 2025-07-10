@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\Activitylog\Facades\LogBatch;
+use App\Helpers\ActivityLogHelper;
 
 use App\Models\User;
 use App\Models\Admin;
@@ -43,12 +45,19 @@ class AuthController extends Controller
         if ($validated->passes()) { 
             if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
                 $request->session()->regenerate();
+                
+                // Log successful login
+                ActivityLogHelper::logLogin(Auth::user());
+                
                 return response()->json([
                     'status' => 200,
                     'message' => 'Berhasil Login'
                 ]);
                 return redirect('/dashboard');
             }else {
+                // Log failed login attempt with credentials
+                ActivityLogHelper::logFailedLogin($request->username, $request->password);
+                
                 return response()->json([
                     'status' => 401,
                     'message' => 'Login Gagal, Username / Password Salah'
@@ -77,12 +86,19 @@ class AuthController extends Controller
         if ($validated->passes()) { 
             if (Auth::guard('admin')->attempt(['username' => $request->username, 'password' => $request->password])) {
                 $request->session()->regenerate();
+                
+                // Log successful admin login
+                ActivityLogHelper::logLogin(Auth::guard('admin')->user());
+                
                 return response()->json([
                     'status' => 200,
                     'message' => 'Berhasil Login'
                 ]);
                 return redirect('/dashboard');
             }else {
+                // Log failed admin login attempt with credentials
+                ActivityLogHelper::logFailedLogin($request->username, $request->password);
+                
                 return response()->json([
                     'status' => 401,
                     'message' => 'Login Gagal, Username / Password Salah'
@@ -98,74 +114,18 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request) {
+        // Log logout activity before actually logging out
+        if (Auth::check()) {
+            ActivityLogHelper::logLogout(Auth::user());
+        } elseif (Auth::guard('admin')->check()) {
+            ActivityLogHelper::logLogout(Auth::guard('admin')->user());
+        }
+        
         Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    
 }

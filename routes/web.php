@@ -39,6 +39,7 @@ use App\Http\Controllers\VerifStrController;
 use App\Http\Controllers\SpkRkkController;
 use App\Http\Controllers\UraianTugasController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ActivityLogController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -134,6 +135,14 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('/master/role/getPermission', [RoleController::class, 'getPermission'])->name('master.role.getPermission');
         Route::post('/master/role/addPermissionRole', [RoleController::class, 'addPermissionRole'])->name('master.role.addPermissionRole');
         Route::post('/master/role/deletePermission', [RoleController::class, 'deletePermission'])->name('master.role.deletePermission');
+
+        // Activity Log Routes
+        Route::group(['middleware' => ['activity.log']], function () {
+            Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+            Route::get('/activity-log/{id}', [ActivityLogController::class, 'show'])->name('activity-log.show');
+            Route::post('/activity-log/clear', [ActivityLogController::class, 'clearLogs'])->name('activity-log.clear');
+            Route::get('/activity-log/export', [ActivityLogController::class, 'exportLogs'])->name('activity-log.export');
+        });
 
         
     });
@@ -438,6 +447,21 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::group(['middleware' => ['permission:Edit Orientasi']], function () {
             Route::get('pengguna/orientasi/edit', [PageuserController::class, 'editOrientasi'])->name('pengguna.orientasi.edit');
             Route::post('pengguna/orientasi/update', [PageuserController::class, 'updateOrientasi'])->name('pengguna.orientasi.update');
+        });
+
+        //FileIdentitas (lain lain) - Untuk Pengguna
+        Route::group(['middleware' => ['permission:View Identitas']], function () {
+            Route::get('pengguna/berkas/lain/get', [FileIdentitasController::class, 'getFile'])->name('pengguna.berkas.lain.getFile');
+        });
+        Route::group(['middleware' => ['permission:Tambah Identitas']], function () {
+            Route::post('pengguna/berkas/lain/store', [FileIdentitasController::class, 'store'])->name('pengguna.berkas.lain.store');
+        });
+        Route::group(['middleware' => ['permission:Edit Identitas']], function () {
+            Route::get('pengguna/berkas/lain/edit', [FileIdentitasController::class, 'edit'])->name('pengguna.berkas.lain.edit');
+            Route::post('pengguna/berkas/lain/update', [FileIdentitasController::class, 'update'])->name('pengguna.berkas.lain.update');
+        });
+        Route::group(['middleware' => ['permission:Hapus Identitas']], function () {
+            Route::post('pengguna/berkas/lain/destroy', [FileIdentitasController::class, 'destroy'])->name('pengguna.berkas.lain.destroy');
         });
 
         //HAPUS

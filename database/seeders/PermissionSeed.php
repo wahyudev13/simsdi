@@ -59,5 +59,12 @@ class PermissionSeed extends Seeder
         Permission::create(['name' => 'Tambah Orientasi']);
         Permission::create(['name' => 'Edit Orientasi']);
         Permission::create(['name' => 'Hapus Orientasi']);
+
+        Permission::create(['name' => 'View Identitas']);
+        Permission::create(['name' => 'Tambah Identitas']);
+        Permission::create(['name' => 'Edit Identitas']);
+        Permission::create(['name' => 'Hapus Identitas']);
+
+        Permission::create(['name' => 'Pengguna']);
     }
 }
