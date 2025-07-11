@@ -382,114 +382,125 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('pengguna/mcu/report/{tglreg}/{norm}/{kdpoli}/{noreg}', [PageuserController::class, 'reportMCUPengguna'])->name('pengguna.mcu.report');
         Route::get('pengguna/mcu/report/laborat/{norm}/{kdpoli}/{tglreg}/{noreg}/{kdprw}', [PageuserController::class, 'reportLabPengguna'])->name('pengguna.mcu.report.laborat');
 
+        //STR
+        Route::get('pengguna/getSTR', [FileSTRController::class, 'getSTR'])->name('pengguna.getSTR');
+        Route::group(['middleware' => ['permission:user-str-create']], function () {
+            Route::post('pengguna/str/store', [FileSTRController::class, 'store'])->name('pengguna.str.store');
+             //Verifikasi STR
+            Route::post('pengguna/str/verif/store', [VerifStrController::class, 'store'])->name('pengguna.verif.str.store');
+            Route::post('pengguna/str/verif/destroy', [VerifStrController::class, 'destroy'])->name('pengguna.verif.str.destroy');
+        });
+        Route::group(['middleware' => ['permission:user-str-edit']], function () {
+            Route::get('pengguna/str/edit', [FileSTRController::class, 'edit'])->name('pengguna.str.edit');
+            Route::post('pengguna/str/update', [FileSTRController::class, 'update'])->name('pengguna.str.update');
+        });
+        Route::group(['middleware' => ['permission:user-str-delete']], function () {
+            Route::post('pengguna/str/destroy', [FileSTRController::class, 'destroy'])->name('pengguna.str.destroy');   
+        });
+
+        
+
         //TAMBAH
-        Route::group(['middleware' => ['permission:tambah-ijazah']], function () {
+        Route::group(['middleware' => ['permission:user-ijazah-create']], function () {
             Route::post('pengguna/ijazah/store', [PageuserController::class, 'storeijazah'])->name('pengguna.ijazah.store');
         });
-        Route::group(['middleware' => ['permission:tambah-transkrip']], function () {
+        Route::group(['middleware' => ['permission:user-transkrip-create']], function () {
             Route::post('pengguna/transkrip/store', [PageuserController::class, 'storetrans'])->name('pengguna.trans.store');
         });
-        Route::group(['middleware' => ['permission:tambah-str']], function () {
-            Route::post('pengguna/str/store', [PageuserController::class, 'storestr'])->name('pengguna.str.store');
-        });
-        Route::group(['middleware' => ['permission:tambah-sip']], function () {
+       
+        Route::group(['middleware' => ['permission:user-sip-create']], function () {
             Route::post('pengguna/sip/store', [PageuserController::class, 'storesip'])->name('pengguna.sip.store');
         });
-        Route::group(['middleware' => ['permission:tambah-riwayat']], function () {
+        Route::group(['middleware' => ['permission:user-riwayat-create']], function () {
             Route::post('pengguna/riwayat/store', [PageuserController::class, 'storeriwayat'])->name('pengguna.riwayat.store');
         });
-        Route::group(['middleware' => ['permission:tambah-kesehatan']], function () {
+        Route::group(['middleware' => ['permission:user-kesehatan-create']], function () {
             Route::post('pengguna/kesehatan/store', [PageuserController::class, 'storekes'])->name('pengguna.kesehatan.store');
         });
-        Route::group(['middleware' => ['permission:tambah-vaksin']], function () {
+        Route::group(['middleware' => ['permission:user-vaksin-create']], function () {
             Route::post('pengguna/vaksin/store', [PageuserController::class, 'storevaksin'])->name('pengguna.vaksin.store');
         });
-        Route::group(['middleware' => ['permission:tambah-sertif']], function () {
+        Route::group(['middleware' => ['permission:user-setif-create']], function () {
             Route::post('pengguna/sertifikat/store', [PageuserController::class, 'storeSertif'])->name('pengguna.sertifikat.store');
         });
-        Route::group(['middleware' => ['permission:tambah-orientasi']], function () {
+        Route::group(['middleware' => ['permission:user-orientasi-create']], function () {
             Route::post('pengguna/orientasi/store', [PageuserController::class, 'storeOrientasi'])->name('pengguna.orientasi.store');
         });
 
         //EDIT
-        Route::group(['middleware' => ['permission:edit-ijazah']], function () {
+        Route::group(['middleware' => ['permission:user-ijazah-edit']], function () {
             Route::get('pengguna/ijazah/edit', [PageuserController::class, 'editijazah'])->name('pengguna.ijazah.edit');
             Route::post('pengguna/ijazah/update', [PageuserController::class, 'updateijazah'])->name('pengguna.ijazah.update');
         });
-        Route::group(['middleware' => ['permission:edit-transkrip']], function () {
+        Route::group(['middleware' => ['permission:user-transkrip-edit']], function () {
             Route::get('pengguna/transkrip/edit', [PageuserController::class, 'edittrans'])->name('pengguna.trans.edit');
             Route::post('pengguna/transkrip/update', [PageuserController::class, 'updatetrans'])->name('pengguna.trans.update');
         });
-        Route::group(['middleware' => ['permission:edit-str']], function () {
-            Route::get('pengguna/str/edit', [PageuserController::class, 'editstr'])->name('pengguna.str.edit');
-            Route::post('pengguna/str/update', [PageuserController::class, 'updatestr'])->name('pengguna.str.update');
-        });
-        Route::group(['middleware' => ['permission:edit-str']], function () {
+       
+        Route::group(['middleware' => ['permission:user-sip-edit']], function () {
             Route::get('pengguna/sip/edit', [PageuserController::class, 'editsip'])->name('pengguna.sip.edit');
             Route::post('pengguna/sip/update', [PageuserController::class, 'updatesip'])->name('pengguna.sip.update');
         });
-        Route::group(['middleware' => ['permission:edit-riwayat']], function () {
+        Route::group(['middleware' => ['permission:user-riwayat-edit']], function () {
             Route::get('pengguna/riwayat/edit', [PageuserController::class, 'editriwayat'])->name('pengguna.riwayat.edit');
             Route::post('pengguna/riwayat/update', [PageuserController::class, 'updateriwayat'])->name('pengguna.riwayat.update');
         });
-        Route::group(['middleware' => ['permission:edit-kesehatan']], function () {
+        Route::group(['middleware' => ['permission:user-kesehatan-edit']], function () {
             Route::get('pengguna/kesehatan/edit', [PageuserController::class, 'editkes'])->name('pengguna.kesehatan.edit');
             Route::post('pengguna/kesehatan/update', [PageuserController::class, 'updatekes'])->name('pengguna.kesehatan.update');
         });
-        Route::group(['middleware' => ['permission:edit-vaksin']], function () {
+        Route::group(['middleware' => ['permission:user-vaksin-edit']], function () {
             Route::get('pengguna/vaksin/edit', [PageuserController::class, 'editvaksin'])->name('pengguna.vaksin.edit');
             Route::post('pengguna/vaksin/update', [PageuserController::class, 'updatevaksin'])->name('pengguna.vaksin.update');
         });
-        Route::group(['middleware' => ['permission:edit-sertif']], function () {
+        Route::group(['middleware' => ['permission:user-setif-edit']], function () {
             Route::get('pengguna/sertifikat/edit', [PageuserController::class, 'editSertif'])->name('pengguna.sertifikat.edit');
             Route::post('pengguna/sertifikat/update', [PageuserController::class, 'updateSertif'])->name('pengguna.sertifikat.update');
         });
-        Route::group(['middleware' => ['permission:edit-orientasi']], function () {
+        Route::group(['middleware' => ['permission:user-orientasi-edit']], function () {
             Route::get('pengguna/orientasi/edit', [PageuserController::class, 'editOrientasi'])->name('pengguna.orientasi.edit');
             Route::post('pengguna/orientasi/update', [PageuserController::class, 'updateOrientasi'])->name('pengguna.orientasi.update');
         });
 
         //FileIdentitas (lain lain) - Untuk Pengguna
-        Route::group(['middleware' => ['permission:view-identitas']], function () {
+        Route::group(['middleware' => ['permission:user-identitas-view']], function () {
             Route::get('pengguna/berkas/lain/get', [FileIdentitasController::class, 'getFile'])->name('pengguna.berkas.lain.getFile');
         });
-        Route::group(['middleware' => ['permission:tambah-identitas']], function () {
+        Route::group(['middleware' => ['permission:user-identitas-create']], function () {
             Route::post('pengguna/berkas/lain/store', [FileIdentitasController::class, 'store'])->name('pengguna.berkas.lain.store');
         });
-        Route::group(['middleware' => ['permission:edit-identitas']], function () {
+        Route::group(['middleware' => ['permission:user-identitas-edit']], function () {
             Route::get('pengguna/berkas/lain/edit', [FileIdentitasController::class, 'edit'])->name('pengguna.berkas.lain.edit');
             Route::post('pengguna/berkas/lain/update', [FileIdentitasController::class, 'update'])->name('pengguna.berkas.lain.update');
         });
-        Route::group(['middleware' => ['permission:hapus-identitas']], function () {
+        Route::group(['middleware' => ['permission:user-identitas-delete']], function () {
             Route::post('pengguna/berkas/lain/destroy', [FileIdentitasController::class, 'destroy'])->name('pengguna.berkas.lain.destroy');
         });
 
         //HAPUS
-        Route::group(['middleware' => ['permission:hapus-ijazah']], function () {
+        Route::group(['middleware' => ['permission:user-ijazah-delete']], function () {
             Route::post('pengguna/ijazah/destroy', [PageuserController::class, 'destroyijazah'])->name('pengguna.ijazah.destroy');
         });
-        Route::group(['middleware' => ['permission:hapus-transkrip']], function () {
+        Route::group(['middleware' => ['permission:user-transkrip-delete']], function () {
             Route::post('pengguna/transkrip/destroy', [PageuserController::class, 'destroytrans'])->name('pengguna.transkrip.destroy');   
         });
-        Route::group(['middleware' => ['permission:hapus-str']], function () {
-            Route::post('pengguna/str/destroy', [PageuserController::class, 'destroystr'])->name('pengguna.str.destroy');   
-        });
-        Route::group(['middleware' => ['permission:hapus-sip']], function () {
+      
+        Route::group(['middleware' => ['permission:user-sip-delete']], function () {
             Route::post('pengguna/sip/destroy', [PageuserController::class, 'destroysip'])->name('pengguna.sip.destroy');   
         });
-        Route::group(['middleware' => ['permission:hapus-riwayat']], function () {
+        Route::group(['middleware' => ['permission:user-riwayat-delete']], function () {
             Route::post('pengguna/riwayat/destroy', [PageuserController::class, 'destroyriwayat'])->name('pengguna.riwayat.destroy');
         });
-        Route::group(['middleware' => ['permission:hapus-kesehatan']], function () {
+        Route::group(['middleware' => ['permission:user-kesehatan-delete']], function () {
             Route::post('pengguna/kesehatan/destroy', [PageuserController::class, 'destroykes'])->name('pengguna.kesehatan.destroy');
         });
-        Route::group(['middleware' => ['permission:hapus-vaksin']], function () {
+        Route::group(['middleware' => ['permission:user-vaksin-delete']], function () {
             Route::post('pengguna/vaksin/destroy', [PageuserController::class, 'destroyvaksin'])->name('pengguna.vaksin.destroy');
         });
-        Route::group(['middleware' => ['permission:hapus-sertif']], function () {
+        Route::group(['middleware' => ['permission:user-setif-delete']], function () {
             Route::post('pengguna/sertifikat/destroy', [PageuserController::class, 'destroySertif'])->name('pengguna.sertifikat.destroy');
         });
-        Route::group(['middleware' => ['permission:hapus-orientasi']], function () {
+        Route::group(['middleware' => ['permission:user-orientasi-delete']], function () {
             Route::post('pengguna/orientasi/destroy', [PageuserController::class, 'destroyOrientasi'])->name('pengguna.orientasi.destroy');
         });
     }); 

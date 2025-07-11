@@ -86,7 +86,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="activityLogTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -153,7 +153,8 @@
                                             <small>-</small>
                                         @endif
                                     </td>
-                                    <td>{{ $activity->created_at->format('Y-m-d H:i:s') }}</td>
+                                    <td data-order="{{ $activity->created_at->timestamp }}">
+                                        {{ $activity->created_at->format('Y-m-d H:i:s') }}</td>
                                     <td>
                                         <a href="{{ route('activity-log.show', $activity->id) }}"
                                             class="btn btn-info btn-sm">
@@ -170,14 +171,8 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Pagination -->
-            <div class="d-flex justify-content-center">
-                {{ $activities->appends(request()->query())->links() }}
-            </div>
         </div>
     </div>
-
 
     <!-- Clear Logs Modal -->
     <div class="modal fade" id="clearLogsModal" tabindex="-1" role="dialog">
@@ -204,6 +199,41 @@
 
 @push('scripts')
     <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#activityLogTable').DataTable({
+                "pageLength": 25,
+                "lengthMenu": [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "All"]
+                ],
+                "order": [
+                    [6, "desc"]
+                ], // Sort by date column (index 6) in descending order
+                "language": {
+                    "search": "Cari:",
+                    "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                    "zeroRecords": "Data tidak ditemukan",
+                    "info": "Menampilkan halaman _PAGE_ dari _PAGES_",
+                    "infoEmpty": "Tidak ada data yang tersedia",
+                    "infoFiltered": "(difilter dari _MAX_ total data)",
+                    "paginate": {
+                        "first": "Pertama",
+                        "last": "Terakhir",
+                        "next": "Selanjutnya",
+                        "previous": "Sebelumnya"
+                    }
+                },
+                "responsive": true,
+                "autoWidth": false,
+                "columnDefs": [{
+                    "targets": [7], // Action column
+                    "orderable": false,
+                    "searchable": false
+                }]
+            });
+        });
+
         function exportLogs() {
             const form = document.getElementById('filterForm');
             const formData = new FormData(form);

@@ -8,10 +8,10 @@
             searching: false,
             // processing: true,
             serverSide: true,
-            ajax:  {
-                url: '{{route('berkas.getSTR')}}',
-                data:{
-                    'id' : idpegawai,
+            ajax: {
+                url: '{{ route('berkas.getSTR') }}',
+                data: {
+                    'id': idpegawai,
                 },
             },
             columns: [{
@@ -46,17 +46,17 @@
                                 <span class="badge badge-info"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span><br>
                                 <small><i class="fas fa-info-circle"></i> Masa Dokumen Akan Berakhir (Ingatkan)</small>
                                 `;
-                        } else if (data.status === 'changed'){
+                        } else if (data.status === 'changed') {
                             return `
                                 <span class="badge badge-secondary"><i class="fas fa-bell"></i> ${data.pengingat}</span>
                                 <span class="badge badge-secondary"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span><br>
                                 <small><i class="fas fa-info-circle"></i> Dokumen Sudah ada Yang Baru (Diperbaharui)</small>
                                 `;
-                        } else if (data.status === 'lifetime'){
+                        } else if (data.status === 'lifetime') {
                             return `
                             <span class="badge badge-success">STR Seumur Hidup</span>
                                 `;
-                        }else {
+                        } else {
                             return `
                                 <span class="badge badge-success"><i class="fas fa-bell"></i> ${data.pengingat}</span>
                                 <span class="badge badge-info"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span>
@@ -73,7 +73,7 @@
                                <i class="fas fa-times"></i> Belum Ada Bukti Verifikasi
                             </a>
                             `
-                        }else{
+                        } else {
                             return ` 
                             <a class="badge badge-success" href="#" data-verifstr="${data.file_verif}" data-ket="${data.keterangan}" title="Lihat Bukti" data-toggle="modal" data-target="#modal-verstr" id="view-bukti-str">
                                <i class="fas fa-check"></i> Sudah Ada Bukti Verifikasi
@@ -91,7 +91,6 @@
                     name: 'updated_at'
                 },
                 {
-                    // {{ asset('/File/Pegawai/Dokumen/STR/${data.file}') }}
                     data: null,
                     render: function(data, row, type) {
                         if (data.status !== 'lifetime') {
@@ -122,7 +121,7 @@
                                     </div>
                                 </div>
                                 `;
-                        }else{
+                        } else {
                             return `
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm dropdown-toggle" title="Aksi Dokumen" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -138,7 +137,7 @@
                                 </div>
                                 `;
                         }
-                       
+
                     }
                 },
 
@@ -155,14 +154,14 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-           
+
             $.ajax({
                 type: "POST",
                 url: "{{ route('berkas.str.status') }}",
                 data: {
                     'id': $(this).data('id'),
-                    'status' : $(this).data('status'),
-                    'noreg' : $(this).data('noreg'),
+                    'status': $(this).data('status'),
+                    'noreg': $(this).data('noreg'),
                 },
                 dataType: "json",
                 success: function(response) {
@@ -175,10 +174,10 @@
                     var tbSTR = $('#tbSTR').DataTable();
                     tbSTR.ajax.reload();
 
-                  
+
 
                 }
-                });
+            });
 
         });
 
@@ -186,8 +185,8 @@
         $(document).on('click', '#view-str', function(e) {
             e.preventDefault();
             var namafile = $(this).data('id');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Dokumen/STR/' + namafile, "#view-str-modal");
+            var url = '{{ route('login.index') }}';
+            PDFObject.embed(url + '/File/Pegawai/Dokumen/STR/' + namafile, "#view-str-modal");
         });
 
         $('#form-tambah-str').on('submit', function(e) {
@@ -212,16 +211,16 @@
                 contentType: false,
                 processData: false,
                 cache: false,
-                beforeSend:function(){
-                       $('#add_str').addClass("d-none");
-                       $('#add_str_disabled').removeClass("d-none");
+                beforeSend: function() {
+                    $('#add_str').addClass("d-none");
+                    $('#add_str_disabled').removeClass("d-none");
                 },
                 success: function(response) {
                     if (response.status == 400) {
                         $('#error_list_str').html("")
                         $('#error_list_str').addClass("alert alert-danger")
                         $('#error_list_str').removeClass("d-none")
-                        
+
                         $.each(response.error, function(key, error_value) {
                             $('#error_list_str').append('<li>' + error_value +
                                 '</li>');
@@ -241,7 +240,7 @@
                         $('#add_str_disabled').addClass("d-none");
                         var tbSTR = $('#tbSTR').DataTable();
                         tbSTR.ajax.reload();
-                        
+
                         // location.reload();
                     }
                 }
@@ -252,7 +251,7 @@
             $('#modaladdSTR').find('.form-control').val("");
             $('#modaladdSTR').find('.custom-file-input').val("");
             $('#enable_exp_str').prop('checked', false);
-            document.getElementById('masa-berlaku').innerHTML=``;
+            document.getElementById('masa-berlaku').innerHTML = ``;
             $('.alert-danger').addClass('d-none');
         });
 
@@ -274,10 +273,10 @@
                     $('#kompetensi_edit').val(response.data.kompetensi);
                     if (response.data.tgl_ed == null || response.data.pengingat == null) {
                         $('#enable_exp_str_edit').prop('checked', false);
-                        document.getElementById('masa-berlaku-edit').innerHTML=``;
-                    }else{
+                        document.getElementById('masa-berlaku-edit').innerHTML = ``;
+                    } else {
                         $('#enable_exp_str_edit').prop('checked', true);
-                        document.getElementById('masa-berlaku-edit').innerHTML=`
+                        document.getElementById('masa-berlaku-edit').innerHTML = `
                             <div class="form-group">
                                 <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
                                         class="text-danger">*</label></label>
@@ -293,7 +292,7 @@
                         $('#tgl_ed_edit').val(response.data.tgl_ed);
                         $('#pengingat_edit').val(response.data.pengingat);
                     }
-                    
+
                     // console.log(response.data.tgl_ed);
                 }
             });
@@ -334,7 +333,8 @@
                         $('#error_list_str_edit').removeClass("d-none")
 
                         $.each(response.error, function(key, error_value) {
-                            $('#error_list_str_edit').append('<li>' + error_value + '</li>');
+                            $('#error_list_str_edit').append('<li>' + error_value +
+                                '</li>');
                         });
                     } else {
                         $('#success_message').html("")
@@ -395,24 +395,25 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        //VIEW Bukti Verifikasi Ijazah
+    $(document).ready(function() {
+        //VIEW Bukti Verifikasi
         $(document).on('click', '#view-bukti-str', function(e) {
             e.preventDefault();
             var bukti = $(this).data('verifstr');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Dokumen/STR/Verifikasi/'+bukti, "#view-verstr-modal");
+            var url = '{{ route('login.index') }}';
+            PDFObject.embed(url + '/File/Pegawai/Dokumen/STR/Verifikasi/' + bukti,
+                "#view-verstr-modal");
 
             var keterangan = $(this).data('ket');
             $('#ket-verif-str').text(keterangan);
         });
 
         //View Modal ADD Bukti Verifikasi Ijazah
-        $('table').on('click','#add-bukti-str', function(e){
+        $('table').on('click', '#add-bukti-str', function(e) {
             e.preventDefault();
             var str = $(this).data('id');
             $('#id-str-bukti').val(str);
-            
+
         });
 
         $('#modal-add-bukti-str').on('hidden.bs.modal', function() {

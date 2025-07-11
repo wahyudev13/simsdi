@@ -8,35 +8,10 @@ use Yajra\DataTables\Facades\DataTables;
 use File;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityLogHelper;
 
 class VerifStrController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -49,17 +24,51 @@ class VerifStrController extends Controller
         if ($validated->passes()) {
             if ($request->hasFile('file')) {
 
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/STR/Verifikasi'), $filenameSimpan);
+                $file = $request->file('file');
+                $originalName = $file->getClientOriginalName(); // Nama file asli
+                $extension = $file->getClientOriginalExtension();
+                $fileSize = $file->getSize(); // Get file size before moving
+                
+                // Ambil data STR untuk mendapatkan nomor STR dan NIP pegawai
+                $str = \App\Models\FileSTR::find($request->str_id);
+                if ($str) {
+                    $pegawai = \App\Models\Pegawai::find($str->id_pegawai);
+                    $nip = $pegawai ? $pegawai->nik : $str->id_pegawai;
+                    
+                    // Bersihkan nomor STR dari karakter khusus
+                    $noRegStr = preg_replace('/[^A-Za-z0-9]/', '', $str->no_reg_str);
+                    
+                    // Format nama file baru: STR_VERIF_nomorSTR_nip_tanggal_hash
+                    $currentDate = date('Ymd');
+                    $hash = substr(md5($originalName . time()), 0, 6);
+                    $filenameSimpan = 'STR_VERIF_' . $noRegStr . '_' . $nip . '_' . $currentDate . '_' . $hash . '.' . $extension;
+                } else {
+                    // Fallback jika STR tidak ditemukan
+                    $currentDate = date('Ymd');
+                    $hash = substr(md5($originalName . time()), 0, 6);
+                    $filenameSimpan = 'STR_VERIF_' . $currentDate . '_' . $hash . '.' . $extension;
+                }
+                
+                $file->move(public_path('File/Pegawai/Dokumen/STR/Verifikasi'), $filenameSimpan);
     
                 $upload = VerifStr::create([
                     'str_id' => $request->str_id,
                     'file_verif' => $filenameSimpan,
                     'keterangan' => $request->ket_bukti
                 ]);
+
+                // Log activity for successful file upload
+                ActivityLogHelper::log('Uploaded STR verification file', [
+                    'str_id' => $request->str_id,
+                    'file_name' => $filenameSimpan,
+                    'original_file_name' => $originalName,
+                    'file_size' => $fileSize,
+                    'file_extension' => $extension,
+                    'keterangan' => $request->ket_bukti,
+                    'pegawai_nip' => $nip ?? null,
+                    'no_reg_str' => $noRegStr ?? null
+                ], 'verif_str');
+
                 return response()->json([
                     'status' => 200,
                     'message' => 'Bukti Verifikasi STR Berhasil Disimpan',
@@ -74,62 +83,38 @@ class VerifStrController extends Controller
             ]);
         }
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\VerifStr  $verifStr
-     * @return \Illuminate\Http\Response
-     */
-    public function show(VerifStr $verifStr)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\VerifStr  $verifStr
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(VerifStr $verifStr)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\VerifStr  $verifStr
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, VerifStr $verifStr)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\VerifStr  $verifStr
-     * @return \Illuminate\Http\Response
-     */
+   
     public function destroy(Request $request)
     {
         $dokumen = VerifStr::where('id', $request->id)->first();
     
-        $delete = VerifStr::where('id', $request->id)->delete();
-        if ($delete) {
-            File::delete('File/Pegawai/Dokumen/STR/Verifikasi/'.$dokumen->file_verif);
+        if ($dokumen) {
+            // Log activity before deletion
+            ActivityLogHelper::log('Deleted STR verification file', [
+                'verif_str_id' => $request->id,
+                'str_id' => $dokumen->str_id,
+                'file_name' => $dokumen->file_verif,
+                'keterangan' => $dokumen->keterangan,
+                'deleted_at' => now()->toISOString()
+            ], 'verif_str');
+
+            $delete = VerifStr::where('id', $request->id)->delete();
+            if ($delete) {
+                File::delete('File/Pegawai/Dokumen/STR/Verifikasi/'.$dokumen->file_verif);
+                return response()->json([
+                    'message' => 'Data Bukti Verifikasi STR Berhasil Dihapus',
+                    'code' => 200,
+                ]);
+            }else {
+                return response()->json([
+                    'message' => 'Internal Server Error',
+                    'code' => 500,
+                ]);
+            }
+        } else {
             return response()->json([
-                'message' => 'Data Bukti Verifikasi STR Berhasil Dihapus',
-                'code' => 200,
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'code' => 500,
+                'message' => 'Data tidak ditemukan',
+                'code' => 404,
             ]);
         }
     }

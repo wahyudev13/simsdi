@@ -35,7 +35,8 @@
                                 <th>Nama File</th>
                                 <th>Nomor REG</th>
                                 <th>Bidang Kesehatan</th>
-                                <th>Berlaku Sampai</th>
+                                <th>Masa Berlaku</th>
+                                <th>Verifikasi</th>
                                 <th>Update</th>
                                 @if (auth()->user()->can('user-str-view') ||
                                         auth()->user()->can('user-str-edit') ||
@@ -54,7 +55,7 @@
         </div>
     </div>
 
-    {{-- Transkrip --}}
+    {{-- SIP --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             @can('user-sip-create')
@@ -98,316 +99,15 @@
         </div>
     </div>
 
-    <!-- Modal Tambah STR -->
-    <div class="modal fade" id="modaladdSTR" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambah Surat Tanda Registrasi (STR)</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="error_list_str"></div>
-                    <form method="POST" id="form-tambah-str" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" class="id_pegawai_str" id="id_pegawai_str" value="{{ $pegawai->id }}"
-                            name="id_pegawai">
-                        {{-- <input type="hidden" class="nik_str" id="nik_str" value="{{ $pegawai->nik }}"
-                            name="nik_pegawai"> --}}
-                        <div class="form-group">
-                            <label for="nama_file_str_id" class="col-form-label">Nama Dokumen <label
-                                    class="text-danger">*</label></label>
-                            <select class="custom-select nama_file_str_id" id="nama_file_str_id" name="nama_file_str_id">
-                                <option value="" selected>Choose...</option>
-                                @foreach ($master_berkas_izin as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_reg_str" class="col-form-label">Nomor Reg STR <label
-                                    class="text-danger">*</label></label>
-                            <input type="text" class="form-control no_reg_str" id="no_reg_str" name="no_reg_str">
-                        </div>
-                        <div class="form-group">
-                            <label for="kompetensi" class="col-form-label">Kompetensi <label
-                                    class="text-danger">*</label></label>
-                            <input type="text" class="form-control kompetensi" id="kompetensi" name="kompetensi">
-                        </div>
-                        <div class="form-group">
-                            <label for="tgl_ed" class="col-form-label">Berkalu Sampai <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed" id="tgl_ed" name="tgl_ed">
-                        </div>
-                        <div class="form-group">
-                            <label for="pengingat" class="col-form-label">Pengingat <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat" id="pengingat" name="pengingat">
-                        </div>
-                        <div class="form-group">
-                            <label for="file" class="col-form-label">File <span
-                                    class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
-                            <input type="file" class="form-control file" id="file" name="file">
-                            <small>Ukuran maksimal 2MB</small>
-                        </div>
-                        <p class="text-danger">*Wajib Diisi</p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-warning" id="add_str">Simpan</button>
-                        </div>
-                    </form>
-                </div>
+    <!-- Modal STR -->
+    @include('components.modal-str')
+    @include('components.modal-sip')
+    @include('components.modal-verifikasi')
+    @include('components.modals.modal-str-view')
+    @include('components.modals.modal-sip-view')
+    @include('components.modals.modal-verifikasi-str-view')
+    @include('components.modal-bukti-str')
 
-            </div>
-        </div>
-    </div>
-    <!-- ./ end Modal Tambah STR -->
-
-    <!-- Modal Edit STR -->
-    <div class="modal fade" id="modaleditSTR" data-backdrop="static" data-keyboard="false" tabindex="-1"
-        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Surat Tanda Registrasi (STR)</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="error_list_str_edit"></div>
-                    <form method="POST" id="form-edit-str" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" class="form-control" id="id-str-edit" name="id">
-                        <input type="hidden" class="form-control" id="id-str-pegawai-edit" name="id_pegawai">
-                        {{-- <input type="hidden" class="form-control" id="nik-str-edit" name="nik_pegawai"> --}}
-
-                        <div class="form-group">
-                            <label for="nama_file_str_id_edit" class="col-form-label">Nama Dokumen <label
-                                    class="text-danger">*</label></label>
-                            <select class="custom-select nama_file_str_id_edit" id="nama_file_str_id_edit"
-                                name="nama_file_str_id">
-                                <option value="" selected>Choose...</option>
-                                @foreach ($master_berkas_izin as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_reg_str_edit" class="col-form-label">Nomor Reg STR <label
-                                    class="text-danger">*</label></label>
-                            <input type="text" class="form-control no_reg_str_edit" id="no_reg_str_edit"
-                                name="no_reg_str">
-                        </div>
-                        <div class="form-group">
-                            <label for="kompetensi_edit" class="col-form-label">Kompetensi <label
-                                    class="text-danger">*</label></label>
-                            <input type="text" class="form-control kompetensi" id="kompetensi_edit"
-                                name="kompetensi">
-                        </div>
-                        <div class="form-group">
-                            <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
-                        </div>
-                        <div class="form-group">
-                            <label for="pengingat_edit" class="col-form-label">Pengingat <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat_edit" id="pengingat_edit"
-                                name="pengingat">
-                        </div>
-                        <div class="form-group">
-                            <label for="file_edit" class="col-form-label">File <span
-                                    class="badge badge-secondary">.pdf</span> <label class="text-danger">*</label></label>
-                            <input type="file" class="form-control file" id="file_edit" name="file">
-                            <small>Ukuran maksimal 2MB</small>
-                        </div>
-                        <p class="text-danger">*Wajib Diisi</p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-warning" id="add_str">Update</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- ./ end Modal STR -->
-
-    <!-- Modal Tambah SIP -->
-    <div class="modal fade" id="modaladdSIP" data-backdrop="static" data-keyboard="false" tabindex="-1"
-        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambah Surat Izin Praktik (SIP)</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="error_list_sip"></div>
-                    <form method="POST" id="form-tambah-sip" enctype="multipart/form-data">
-                        @csrf
-
-                        <input type="hidden" class="id_pegawai_sip" id="id_pegawai_sip" value="{{ $pegawai->id }}"
-                            name="id_pegawai">
-                        {{-- <input type="hidden" class="nik_sip" id="nik_sip" value="{{ $pegawai->nik }}"
-                         name="nik_pegawai"> --}}
-
-                        <div class="form-group">
-                            <label for="nama_file_sip_id" class="col-form-label">Nama Dokumen<label
-                                    class="text-danger">*</label></label>
-                            <select class="custom-select nama_file_sip_id" id="nama_file_sip_id" name="nama_file_sip_id">
-                                <option value="" selected>Choose...</option>
-                                @foreach ($master_berkas_izin as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_sip" class="col-form-label">Nomor SIP<label
-                                    class="text-danger">*</label></label>
-                            <input type="text" class="form-control no_sip" id="no_sip" name="no_sip">
-                        </div>
-                        <div class="form-group">
-                            <label for="no_reg" class="col-form-label">Nomor Reg STR<label
-                                    class="text-danger">*</label></label>
-                            {{-- <select class="custom-select no_reg" id="no_reg" name="no_reg"> --}}
-                            {{-- <option value="" selected>Choose...</option> --}}
-                            <select class="form-select select-str" id="no_reg_sip" name="no_reg"></select>
-                            {{-- @foreach ($file_str as $item)
-                                    <option value="{{ $item->id }}">{{ $item->no_reg_str }}</option>
-                                @endforeach --}}
-                            {{-- </select> --}}
-                        </div>
-                        <div class="form-group">
-                            <label for="filesip" class="col-form-label">File <span
-                                    class="badge badge-secondary">.pdf</span><label class="text-danger">*</label></label>
-                            <input type="file" class="form-control filesip" id="filesip" name="file">
-                            <small>Ukuran maksimal 2MB</small>
-                        </div>
-                        <p class="text-danger">*Wajib Diisi</p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-warning" id="add_sip">Simpan</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- ./ end Modal Tambah STR -->
-
-    <!-- Modal Edit SIP -->
-    <div class="modal fade" id="modaleditSIP" data-backdrop="static" data-keyboard="false" tabindex="-1"
-        role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Surat Izin Praktik (SIP)</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="error_list_sip_edit"></div>
-                    <form method="POST" id="form-edit-sip" enctype="multipart/form-data">
-                        @csrf
-                        {{-- <input type="hidden" class="id_pegawai_sip" id="id_pegawai_sip_edit" value="{{ $pegawai->id }}"
-                      name="id_pegawai">
-                  <input type="hidden" class="nik_sip" id="nik_sip_edit" value="{{ $pegawai->nik }}"
-                      name="nik_pegawai"> --}}
-                        <input type="hidden" id="id-sip-edit" name="id">
-
-                        <div class="form-group">
-                            <label for="nama_file_sip_id_edit" class="col-form-label">Nama Dokumen<label
-                                    class="text-danger">*</label></label>
-                            <select class="custom-select nama_file_sip_id_edit" id="nama_file_sip_id_edit"
-                                name="nama_file_sip_id">
-                                <option value="" selected>Choose...</option>
-                                @foreach ($master_berkas_izin as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama_berkas }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_sip_edit" class="col-form-label">Nomor SIP<label
-                                    class="text-danger">*</label></label>
-                            <input type="text" class="form-control no_sip_edit" id="no_sip_edit" name="no_sip">
-                        </div>
-                        <div class="form-group">
-                            <label for="no_reg_sip_edit" class="col-form-label">Nomor Reg STR<label
-                                    class="text-danger">*</label></label>
-                            {{-- <select class="custom-select no_reg_sip_edit" id="no_reg_sip_edit" name="no_reg">
-                                <option value="" selected>Choose...</option>
-                                @foreach ($file_str as $item)
-                                    <option value="{{ $item->id }}">{{ $item->no_reg_str }}</option>
-                                @endforeach
-                            </select> --}}
-                            <select class="form-select select-str-edit" id="no_reg_sip_edit" name="no_reg"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="filesip" class="col-form-label">File <span
-                                    class="badge badge-secondary">.pdf</span><label class="text-danger">*</label></label>
-                            <input type="file" class="form-control filesip" id="filesip" name="file">
-                            <small>Ukuran maksimal 2MB</small>
-                        </div>
-                        <p class="text-danger">*Wajib Diisi</p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-warning" id="submit_edit_sip">Update</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- ./ end Modal Tambah SIP -->
-
-    <!-- Modal View STR PDF -->
-    <div class="modal fade " id="modalSTR" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Surat Tanda Registrasi (STR)</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="view-str-modal"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ./ end Modal -->
-
-    <!-- Modal View SIP PDF -->
-    <div class="modal fade " id="modalSIP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Surat Izin Praktik (SIP)</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="view-sip-modal"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ./ end Modal -->
 @endsection
 @push('custom-scripts')
     <!-- Page level plugins -->
@@ -475,6 +175,8 @@
             });
         });
     </script>
+
+    <!-- STR -->
     <script>
         var idpegawai = $('#id-pegawai').val();
         $(document).ready(function() {
@@ -526,12 +228,37 @@
                                 <span class="badge badge-secondary"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span><br>
                                 <small><i class="fas fa-info-circle"></i> Dokumen Sudah ada Yang Baru (Diperbaharui)</small>
                                 `;
+                            } else if (data.status === 'lifetime') {
+                                return `
+                            <span class="badge badge-success">STR Seumur Hidup</span>
+                                `;
                             } else {
                                 return `
                                 <span class="badge badge-success"><i class="fas fa-bell"></i> ${data.pengingat}</span>
                                 <span class="badge badge-info"><i class="fas fa-calendar-alt"></i> ${data.tgl_ed}</span>
                                 
                                 `;
+                            }
+                        }
+                    },
+                    {
+                        data: function(data, row, type) {
+                            if (data.id_verif_str === null) {
+                                return `
+                            <a class="badge badge-danger" href="#" data-id="${data.id}" title="Upload Bukti" data-toggle="modal" data-target="#modal-add-bukti-str" id="add-bukti-str">
+                               <i class="fas fa-times"></i> Belum Ada Bukti Verifikasi
+                            </a>
+                            `
+                            } else {
+                                return ` 
+                            <a class="badge badge-success" href="#" data-verifstr="${data.file_verif}" data-ket="${data.keterangan}" title="Lihat Bukti" data-toggle="modal" data-target="#modal-verstr" id="view-bukti-str">
+                               <i class="fas fa-check"></i> Sudah Ada Bukti Verifikasi
+                            </a><br>
+                            
+                            <a class="badge badge-danger" href="#" data-id="${data.id_verif_str}" title="Hapus Bukti" id="hapus-bukti-str">
+                               <i class="fas fa-trash"></i> Hapus
+                            </a>
+                            `
                             }
                         }
                     },
@@ -757,6 +484,118 @@
         });
     </script>
 
+    <!-- VERIF STR -->
+    <script>
+        $(document).ready(function() {
+            //VIEW Bukti Verifikasi
+            $(document).on('click', '#view-bukti-str', function(e) {
+                e.preventDefault();
+                var bukti = $(this).data('verifstr');
+                var url = '{{ route('login.index') }}';
+                PDFObject.embed(url + '/File/Pegawai/Dokumen/STR/Verifikasi/' + bukti,
+                    "#view-verstr-modal");
+
+                var keterangan = $(this).data('ket');
+                $('#ket-verif-str').text(keterangan);
+            });
+
+            //View Modal ADD Bukti Verifikasi Ijazah
+            $('table').on('click', '#add-bukti-str', function(e) {
+                e.preventDefault();
+                var str = $(this).data('id');
+                $('#id-str-bukti').val(str);
+
+            });
+
+            $('#modal-add-bukti-str').on('hidden.bs.modal', function() {
+                $('#modal-add-bukti-str').find('.form-control').val("");
+                $('#modal-add-bukti-str').find('.custom-file-input').val("");
+
+                $('.alert-danger').addClass('d-none');
+            });
+
+            $('#form-tambah-bukti-str').on('submit', function(e) {
+                e.preventDefault();
+                // var file = $('.file').val();
+                // var rename = file.replace("C:\\fakepath\\", "");
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                var form = $('#form-tambah-bukti-str')[0];
+                var formData = new FormData(form);
+
+                $.ajax({
+                    type: "POST",
+                    enctype: "multipart/form-data",
+                    url: "{{ route('pengguna.verif.str.store') }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    success: function(response) {
+                        if (response.status == 400) {
+                            $('#error_list_bukti_str').html("")
+                            $('#error_list_bukti_str').addClass("alert alert-danger")
+                            $('#error_list_bukti_str').removeClass("d-none")
+
+                            $.each(response.error, function(key, error_value) {
+                                $('#error_list_bukti_str').append('<li>' + error_value +
+                                    '</li>');
+                            });
+                        } else {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-primary")
+                            $('#success_message').removeClass("alert-warning")
+                            $('#success_message').addClass("alert alert-success")
+                            // $('#success_message').removeClass("d-none")
+                            $('#success_message').text(response.message)
+                            $('#modal-add-bukti-str').modal('hide')
+                            $('#modal-add-bukti-str').find('.form-control').val("");
+
+                            var tbSTR = $('#tbSTR').DataTable();
+                            tbSTR.ajax.reload();
+                        }
+                    }
+                });
+            });
+
+            //HAPUS Bukti Verifikasi STR
+            $(document).on('click', '#hapus-bukti-str', function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                if (confirm('Yakin Ingin Menghapus Bukti Verifikasi STR ?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('pengguna.verif.str.destroy') }}",
+                        data: {
+                            'id': $(this).data('id'),
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            $('#success_message').html("")
+                            $('#success_message').removeClass("alert-primary")
+                            $('#success_message').removeClass("alert-success")
+                            $('#success_message').addClass("alert alert-warning")
+                            $('#success_message').text(response.message)
+                            var tbSTR = $('#tbSTR').DataTable();
+                            tbSTR.ajax.reload();
+
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+    <!-- SIP -->
     <script>
         $(document).ready(function() {
             var tabelSTR = $('#tbSIP').DataTable({
@@ -1000,6 +839,50 @@
                     });
                 }
             });
+
+            // JavaScript for checkbox functionality
+            document.getElementById('enable_exp_str').onchange = function() {
+                if (this.checked) {
+                    document.getElementById('masa-berlaku').innerHTML = `
+                        <div class="form-group">
+                            <label for="tgl_ed" class="col-form-label">Berkalu Sampai <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control tgl_ed" id="tgl_ed" name="tgl_ed" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="pengingat" class="col-form-label">Tgl Pengingat <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control pengingat" id="pengingat" name="pengingat" disabled>
+                        </div>
+                    `
+                } else {
+                    document.getElementById('masa-berlaku').innerHTML = ``
+                }
+                document.getElementById('tgl_ed').disabled = !this.checked;
+                document.getElementById('pengingat').disabled = !this.checked;
+            };
+
+            document.getElementById('enable_exp_str_edit').onchange = function() {
+                if (this.checked) {
+                    document.getElementById('masa-berlaku-edit').innerHTML = `
+                        <div class="form-group">
+                            <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
+                        </div>
+                        <div class="form-group">
+                            <label for="pengingat_edit" class="col-form-label">Pengingat <label
+                                    class="text-danger">*</label></label>
+                            <input type="date" class="form-control pengingat_edit" id="pengingat_edit"
+                                name="pengingat">
+                        </div>
+                    `
+                } else {
+                    document.getElementById('masa-berlaku-edit').innerHTML = ``
+                }
+                document.getElementById('tgl_ed_edit').disabled = !this.checked;
+                document.getElementById('pengingat_edit').disabled = !this.checked;
+            };
         });
     </script>
 @endpush
@@ -1007,10 +890,8 @@
     <!-- Custom styles for this page -->
     <link href="{{ asset('/vendor/select2/select2.min.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.css') }}">
     <link rel="stylesheet"
         href="{{ asset('/vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.rtl.min.css') }}">
 
