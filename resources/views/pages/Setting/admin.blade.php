@@ -14,7 +14,8 @@
     <div id="success_message"></div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal" data-target="#modaladdAdmin">
+            <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal" data-target="#modaladdAdmin"
+                id="btn-add-admin">
                 <span class="icon text-white-50">
                     <i class="fas fa-plus"></i>
                 </span>
@@ -195,7 +196,7 @@
     <!-- Script Table Pengguna -->
     <script>
         $(document).ready(function() {
-            $('#tbAdmin').DataTable({
+            var table = $('#tbAdmin').DataTable({
                 // processing: true,
                 serverSide: true,
                 searching: false,
@@ -224,18 +225,25 @@
                                             <i class="fas fa-pen"></i>
                                         </span>
                                     </a>
-
-                                    <a href="#" data-id="${data.id}" class="btn btn-danger btn-hapus btn-icon-split btn-sm" id="hapus" title="Hapus Admin">
+                                    <a href="#" data-id="${data.id}" class="btn btn-danger btn-icon-split btn-sm"
+                                    id="hapus" title="Hapus Admin">
                                         <span class="icon text-white">
                                             <i class="fas fa-trash"></i>
                                         </span>
-                                    </a>
-                                    
-                                    `;
+                                    </a>`;
                         }
                     },
 
-                ]
+                ],
+                "drawCallback": function(settings) {
+                    // Check if admin exists and hide/show add button
+                    var data = settings.json;
+                    if (data && data.data && data.data.length > 0) {
+                        $('#btn-add-admin').hide();
+                    } else {
+                        $('#btn-add-admin').show();
+                    }
+                }
             });
 
             //STORE ADMIN
@@ -276,8 +284,7 @@
                             $('#modaladdAdmin').modal('hide');
                             $('#modaladdAdmin').find('.form-control').val("")
 
-                            var tbAdmin = $('#tbAdmin').DataTable();
-                            tbAdmin.ajax.reload();
+                            table.ajax.reload();
                         }
                     }
                 });
@@ -287,6 +294,18 @@
             $('#modaladdAdmin').on('hidden.bs.modal', function() {
                 $('#modaladdAdmin').find('.form-control').val("");
                 $('.alert-danger').addClass('d-none');
+            });
+
+            // Prevent modal from opening if admin already exists
+            $('#btn-add-admin').on('click', function(e) {
+                table.ajax.reload(function() {
+                    var data = table.ajax.json();
+                    if (data && data.data && data.data.length > 0) {
+                        e.preventDefault();
+                        alert('Hanya dapat menyimpan 1 administrator saja');
+                        return false;
+                    }
+                });
             });
 
 
@@ -348,8 +367,7 @@
                             $('#modaleditAdmin').modal('hide')
                             $('#modaleditAdmin').find('.form-control').val("");
 
-                            var tbAdmin = $('#tbAdmin').DataTable();
-                            tbAdmin.ajax.reload();
+                            table.ajax.reload();
 
 
                         }
@@ -363,7 +381,7 @@
                 $('#modaleditPengguna').find('.form-control').val("");
             });
 
-            //HAPUS PENGGUNA & Role User
+            //HAPUS ADMIN
             $(document).on('click', '#hapus', function() {
                 $.ajaxSetup({
                     headers: {
@@ -379,14 +397,22 @@
                         },
                         dataType: "json",
                         success: function(response) {
-                            $('#success_message').html("")
-                            $('#success_message').removeClass("alert-primary")
-                            $('#success_message').removeClass("alert-success")
-                            $('#success_message').addClass("alert alert-warning")
-                            $('#success_message').text(response.message)
+                            if (response.status == 400) {
+                                $('#success_message').html("")
+                                $('#success_message').removeClass("alert-primary")
+                                $('#success_message').removeClass("alert-success")
+                                $('#success_message').addClass("alert alert-danger")
+                                $('#success_message').text(response.error.admin_protection ||
+                                    'Terjadi kesalahan')
+                            } else {
+                                $('#success_message').html("")
+                                $('#success_message').removeClass("alert-primary")
+                                $('#success_message').removeClass("alert-success")
+                                $('#success_message').addClass("alert alert-warning")
+                                $('#success_message').text(response.message)
 
-                            var tbAdmin = $('#tbAdmin').DataTable();
-                            tbAdmin.ajax.reload();
+                                table.ajax.reload();
+                            }
                         }
                     });
                 }

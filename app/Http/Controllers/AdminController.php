@@ -51,6 +51,15 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if admin already exists
+        $existingAdmin = Admin::count();
+        if ($existingAdmin > 0) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['admin_limit' => 'Hanya dapat menyimpan 1 administrator saja']
+            ]);
+        }
+
         $validated = Validator::make($request->all(),[
             'username' => 'required|unique:admin',
             'password' => 'required'
@@ -169,6 +178,14 @@ class AdminController extends Controller
      */
     public function destroy(Request $request)
     {
+        // Check if this is the last admin
+        $adminCount = Admin::count();
+        if ($adminCount <= 1) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['admin_protection' => 'Tidak dapat menghapus admin terakhir. Minimal harus ada 1 administrator dalam sistem.']
+            ]);
+        }
 
         $admin = Admin::findOrFail($request->id);
         $role = $admin->getRoleNames();
@@ -200,7 +217,7 @@ class AdminController extends Controller
                     'status' => 500,
                 ]);
             }
-        }else {
+        
             $username = $admin->username;
             $deladmin = Admin::where('id', $request->id)->delete();
             if ($deladmin) {
