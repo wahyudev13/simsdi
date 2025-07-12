@@ -15,23 +15,22 @@ use Validator;
 use Yajra\DataTables\Facades\DataTables;
 use File;
 use Carbon\Carbon;
+use Auth;
+use App\Helpers\ActivityLogHelper;
 
 
 class FileSIPController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
+   
     public function getSIP(Request $request)
     {
-        $getsip = FileSIP::where('file_sip.id_pegawai', $request->id)
+        if (auth('admin')->check()) {
+            $auth = $request->id;
+        } else {
+            $auth = Auth::user()->id_pegawai;
+        }
+        
+        $getsip = FileSIP::where('file_sip.id_pegawai', $auth)
         ->join('master_berkas_pegawai', 'file_sip.nama_file_sip_id', '=', 'master_berkas_pegawai.id')
         ->join('file_str','file_sip.no_reg','=','file_str.id')
         ->leftjoin('masa_berlaku_sip','file_sip.id','=','masa_berlaku_sip.sip_id')
@@ -49,22 +48,6 @@ class FileSIPController extends Controller
         ->make(true);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -88,11 +71,18 @@ class FileSIPController extends Controller
         if ($validated->passes()) {
             if ($request->hasFile('file')) {
 
+                // Ambil NIP pegawai dari database
+                $pegawai = \App\Models\Pegawai::find($request->id_pegawai);
+                $nip = $pegawai ? $pegawai->nik : $request->id_pegawai;
+
+                // Bersihkan nomor SIP dari karakter khusus
+                $noSipBersih = preg_replace('/[^A-Za-z0-9]/', '', $request->no_sip);
+
                 $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
+                $currentDate = date('Ymd');
+                $hash = substr(md5($filenameWithExt . time()), 0, 6);
+                $filenameSimpan = 'SIP_' . $noSipBersih . '_' . $nip . '_' . $currentDate . '_' . $hash . '.' . $extension;
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/SIP'), $filenameSimpan);
     
                 $upload = FileSIP::create([
@@ -104,6 +94,13 @@ class FileSIPController extends Controller
                     // 'tgl_ed_str' => $request->tgl_ed_str,
                     // 'bikes' => $request->bikes,
                     'file' => $filenameSimpan
+                ]);
+                // Log aktivitas pembuatan SIP
+                ActivityLogHelper::logCrud('created', $upload, 'Membuat data SIP baru: ' . $upload->no_sip, [
+                    'nama_file' => $filenameSimpan,
+                    'id_pegawai' => $request->id_pegawai,
+                    'no_sip' => $request->no_sip,
+                    'no_reg_str' => $request->no_reg
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -120,31 +117,22 @@ class FileSIPController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\FileSIP  $fileSIP
-     * @return \Illuminate\Http\Response
-     */
-    public function show(FileSIP $fileSIP)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\FileSIP  $fileSIP
-     * @return \Illuminate\Http\Response
-     */
+   
     public function edit(Request $request)
     {
         $sip_edit = FileSIP::where('id', $request->id)->first();
         if ($sip_edit) {
+            // Get the associated STR data
+            $str_data = null;
+            if ($sip_edit->no_reg) {
+                $str_data = \App\Models\FileSTR::where('id', $sip_edit->no_reg)->first();
+            }
+            
             return response()->json([
                 'message' => 'Data SIP Ditemukan',
                 'code' => 200,
-                'data' => $sip_edit
+                'data' => $sip_edit,
+                'str_data' => $str_data
             ]);
         }else {
             return response()->json([
@@ -154,13 +142,7 @@ class FileSIPController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\FileSIP  $fileSIP
-     * @return \Illuminate\Http\Response
-     */
+   
     public function update(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -181,19 +163,34 @@ class FileSIPController extends Controller
 
                 $sip = FileSIP::where('id', $request->id)->first();
                 File::delete('File/Pegawai/Dokumen/SIP/'.$sip->file);
-                
+
+                // Ambil NIP pegawai dari database
+                $pegawai = \App\Models\Pegawai::find($request->id_pegawai);
+                $nip = $pegawai ? $pegawai->nik : $request->id_pegawai;
+
+                // Bersihkan nomor SIP dari karakter khusus
+                $noSipBersih = preg_replace('/[^A-Za-z0-9]/', '', $request->no_sip);
+
                 $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
+                $currentDate = date('Ymd');
+                $hash = substr(md5($filenameWithExt . time()), 0, 6);
+                $filenameSimpan = 'SIP_' . $noSipBersih . '_' . $nip . '_' . $currentDate . '_' . $hash . '.' . $extension;
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/SIP'), $filenameSimpan);
     
                 $upload = FileSIP::where('id', $request->id)->update([
                     'nama_file_sip_id' => $request->nama_file_sip_id,
                     'no_sip' => $request->no_sip,
                     'no_reg' => $request->no_reg,
-                    'file' => $filenameSimpan
+                    'file' => $filenameSimpan // pastikan nama file di database ikut berubah
+                ]);
+                // Log aktivitas update SIP (dengan file baru)
+                ActivityLogHelper::logCrud('updated', $sip, 'Mengubah data SIP: ' . $sip->no_sip, [
+                    'nama_file' => $filenameSimpan,
+                    'id_pegawai' => $sip->id_pegawai,
+                    'no_sip' => $request->no_sip,
+                    'no_reg_str' => $request->no_reg,
+                    'file_diubah' => true
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -201,10 +198,37 @@ class FileSIPController extends Controller
                     'data' => $upload
                 ]);
             }else {
+                // Jika tidak ada file baru, tetap update nama file jika ada perubahan data
+                $sip = FileSIP::where('id', $request->id)->first();
+                $pegawai = \App\Models\Pegawai::find($request->id_pegawai);
+                $nip = $pegawai ? $pegawai->nik : $request->id_pegawai;
+                $noSipBersih = preg_replace('/[^A-Za-z0-9]/', '', $request->no_sip);
+                $currentDate = date('Ymd');
+                $hash = substr(md5($sip->file . time()), 0, 6);
+                $newFilename = 'SIP_' . $noSipBersih . '_' . $nip . '_' . $currentDate . '_' . $hash . '.' . pathinfo($sip->file, PATHINFO_EXTENSION);
+                // Rename file lama ke nama baru setiap kali update
+                $oldPath = public_path('File/Pegawai/Dokumen/SIP/' . $sip->file);
+                $newPath = public_path('File/Pegawai/Dokumen/SIP/' . $newFilename);
+                if (file_exists($oldPath)) {
+                    rename($oldPath, $newPath);
+                    $filenameSimpan = $newFilename;
+                } else {
+                    $filenameSimpan = $sip->file;
+                }
                 $upload = FileSIP::where('id', $request->id)->update([
                     'nama_file_sip_id' => $request->nama_file_sip_id,
                     'no_sip' => $request->no_sip,
                     'no_reg' => $request->no_reg,
+                    'file' => $filenameSimpan // update nama file di database
+                ]);
+                // Log aktivitas update SIP (tanpa file baru)
+                $sip = FileSIP::where('id', $request->id)->first();
+                ActivityLogHelper::logCrud('updated', $sip, 'Mengubah data SIP: ' . $sip->no_sip, [
+                    'nama_file' => $sip->file,
+                    'id_pegawai' => $sip->id_pegawai,
+                    'no_sip' => $request->no_sip,
+                    'no_reg_str' => $request->no_reg,
+                    'file_diubah' => false
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -221,17 +245,19 @@ class FileSIPController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\FileSIP  $fileSIP
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         $sip = FileSIP::where('id', $request->id)->first();
         $delete = FileSIP::where('id', $request->id)->delete();
         if ($delete) {
+            // Log aktivitas hapus SIP
+            ActivityLogHelper::log('Menghapus data SIP: ' . $sip->no_sip, [
+                'id_sip' => $sip->id,
+                'nama_file' => $sip->file,
+                'id_pegawai' => $sip->id_pegawai,
+                'no_sip' => $sip->no_sip,
+                'no_reg_str' => $sip->no_reg
+            ]);
             File::delete('File/Pegawai/Dokumen/SIP/'.$sip->file);
             return response()->json([
                 'message' => 'Data SIP Berhasil Dihapus',
@@ -245,8 +271,14 @@ class FileSIPController extends Controller
         }
     }
 
+    //getSTR untuk SIP Modal tambah SIP
     public function strget(Request $request) {
-        $str = FileSTR::where('id_pegawai', $request->id)
+        if (auth('admin')->check()) {
+            $auth = $request->id;
+        } else {
+            $auth = Auth::user()->id_pegawai;
+        }
+        $str = FileSTR::where('id_pegawai', $auth)
         ->where(function($query){
             $query->where('status', 'active');
             $query->orWhere('status', 'lifetime');
@@ -265,56 +297,17 @@ class FileSIPController extends Controller
 
         return response()->json($response); 
     }
-    // public function strget($id) {
-    //     $str = FileSTR::where('id_pegawai', $id)
-    //     ->where(function($query){
-    //         $query->where('status', 'active');
-    //         $query->orWhere('status', 'proses');
-    //     })
-    //     ->select('file_str.id','file_str.no_reg_str')
-    //     ->get();
 
-    //     $response = array();
-    //     foreach($str as $item){
-    //         $response[] = array(
-    //             "id"=>$item->id,
-    //             "text"=>$item->no_reg_str
-    //         );
-    //     }
-
-    //     return response()->json($response); 
-    // }
-
-    // public function str_selected($idsip)  {
-    //     $nostr = FileSIP::where('id',$idsip)->first();
-        
-    //     $str = FileSTR::where('id_pegawai', $nostr->id_pegawai)
-    //     ->where(function($query){
-    //         $query->where('status', 'active');
-    //         $query->orWhere('status', 'proses');
-    //     })
-    //     ->select('file_str.id','file_str.no_reg_str')
-    //     ->get();
-
-    //     $response = array();
-    //     foreach($str as $item){
-    //         $response[] = array(
-    //             "id"=>$item->id,
-    //             "text"=>$item->no_reg_str,
-    //         );
-    //     }
-
-    //     return response()->json($response); 
-    // }
+    //getSTR untuk SIP Modal edit SIP
     public function str_selected(Request $request)  {
         $nostr = FileSIP::where('id',$request->id)->first();
         
         $str = FileSTR::where('id_pegawai', $nostr->id_pegawai)
-        ->where(function($query){
-            $query->where('status', 'active');
-            $query->orWhere('status', 'lifetime');
-            $query->orWhere('status', 'proses');
-        })
+        // ->where(function($query){
+        //     $query->where('status', 'active');
+        //     $query->orWhere('status', 'lifetime');
+        //     $query->orWhere('status', 'proses');
+        // })
         ->select('file_str.id','file_str.no_reg_str')
         ->get();
 
@@ -329,70 +322,97 @@ class FileSIPController extends Controller
         return response()->json($response); 
     }
 
-    public function exp(Request $request) {
-        $validated = Validator::make($request->all(),[
-            'tgl_ed_sip' => 'required',
-            'pengingat_sip' => 'required',
-            
-        ],[
-            'tgl_ed_sip.required' => 'Tgl Masa Berlaku Wajib diisi',
-            'pengingat_sip.required' => 'Tgl Pengingat Wajib diisi',
+    //Masa Berlaku SIP
+    public function exp(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'sip_id_masa_berlaku' => 'required|exists:file_sip,id',
+            'tgl_ed_sip' => 'required|date',
+            'pengingat_sip' => 'required|date',
+        ], [
+            'sip_id_masa_berlaku.required' => 'SIP wajib dipilih',
+            'sip_id_masa_berlaku.exists' => 'SIP tidak ditemukan',
+            'tgl_ed_sip.required' => 'Tanggal masa berlaku wajib diisi',
+            'tgl_ed_sip.date' => 'Format tanggal tidak valid',
+            'pengingat_sip.required' => 'Tanggal pengingat wajib diisi',
+            'pengingat_sip.date' => 'Format tanggal tidak valid',
         ]);
 
-        if ($validated->passes()) {
-            $date = Carbon::today()->toDateString();
-            if ($request->tgl_ed_sip != $date && $request->pengingat_sip != $date) {
-                $upload = MasaBerlakuSIP::create([
-                    'sip_id' => $request->sip_id_masa_berlaku,
-                    'tgl_ed' => $request->tgl_ed_sip,
-                    'pengingat' => $request->pengingat_sip,
-                    'status' => 'active'
-                   
-                ]);
-            }elseif ($request->tgl_ed_sip != $date && $request->pengingat_sip == $date) {
-                $upload = MasaBerlakuSIP::create([
-                    'sip_id' => $request->sip_id_masa_berlaku,
-                    'tgl_ed' => $request->tgl_ed_sip,
-                    'pengingat' => $request->pengingat_sip,
-                    'status' => 'proses'
-                   
-                ]);
-            }elseif ($request->tgl_ed_sip == $date && $request->pengingat_sip != $date) {
-                $upload = MasaBerlakuSIP::create([
-                    'sip_id' => $request->sip_id_masa_berlaku,
-                    'tgl_ed' => $request->tgl_ed_sip,
-                    'pengingat' => $request->pengingat_sip,
-                    'status' => 'nonactive'
-                   
-                ]);
-            }elseif ($request->tgl_ed_sip == $date && $request->pengingat_sip == $date) {
-                $upload = MasaBerlakuSIP::create([
-                    'sip_id' => $request->sip_id_masa_berlaku,
-                    'tgl_ed' => $request->tgl_ed_sip,
-                    'pengingat' => $request->pengingat_sip,
-                    'status' => 'nonactive'
-                ]);
-            }
-
-            
-            return response()->json([
-                'status' => 200,
-                'message' => 'Masa Berlaku SIP Berhasil Disimpan',
-                'data' => $upload
-            ]);
-           
-        }else {
+        if ($validated->fails()) {
             return response()->json([
                 'status' => 400,
                 'error' => $validated->messages()
             ]);
         }
+
+        // Cek duplikasi masa berlaku aktif/proses
+        $exists = MasaBerlakuSIP::where('sip_id', $request->sip_id_masa_berlaku)
+            ->whereIn('status', ['active', 'proses'])
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status' => 400,
+                'error' => ['Masa berlaku aktif/proses untuk SIP ini sudah ada.']
+            ]);
+        }
+
+        // Penentuan status sederhana
+        $today = now()->toDateString();
+        $status = 'active';
+        if ($request->tgl_ed_sip == $today) {
+            $status = 'nonactive';
+        } elseif ($request->pengingat_sip == $today) {
+            $status = 'proses';
+        }
+        // Jika ingin lifetime, bisa tambahkan:
+        // if (empty($request->tgl_ed_sip)) $status = 'lifetime';
+
+        $masaBerlaku = MasaBerlakuSIP::create([
+            'sip_id' => $request->sip_id_masa_berlaku,
+            'tgl_ed' => $request->tgl_ed_sip,
+            'pengingat' => $request->pengingat_sip,
+            'status' => $status
+        ]);
+
+        ActivityLogHelper::logCrud('created', $masaBerlaku, 'Menambah masa berlaku SIP', [
+            'sip_id' => $request->sip_id_masa_berlaku,
+            'tgl_ed' => $request->tgl_ed_sip,
+            'pengingat' => $request->pengingat_sip,
+            'status' => $status
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Masa Berlaku SIP Berhasil Disimpan',
+            'data' => $masaBerlaku
+        ]);
     }
 
-
-    public function desexp(Request $request) {
+    //Hapus Masa Berlaku SIP
+    public function destroyexp(Request $request) {
+        // Get the masa berlaku data before deletion for logging
+        $masaBerlaku = MasaBerlakuSIP::where('id', $request->id)->first();
+        
         $delete = MasaBerlakuSIP::where('id', $request->id)->delete();
         if ($delete) {
+            // Log aktivitas hapus masa berlaku SIP
+            if ($masaBerlaku) {
+                // Get SIP data for more detailed logging
+                $sip = FileSIP::where('id', $masaBerlaku->sip_id)->first();
+                $sipNumber = $sip ? $sip->no_sip : 'Unknown SIP';
+                
+                ActivityLogHelper::log('Menghapus masa berlaku SIP: ' . $sipNumber, [
+                    'id_masa_berlaku' => $masaBerlaku->id,
+                    'sip_id' => $masaBerlaku->sip_id,
+                    'no_sip' => $sipNumber,
+                    'tgl_ed' => $masaBerlaku->tgl_ed,
+                    'pengingat' => $masaBerlaku->pengingat,
+                    'status' => $masaBerlaku->status,
+                    'aksi' => 'hapus_masa_berlaku_sip'
+                ]);
+            }
+            
             return response()->json([
                 'message' => 'Masa berlaku SIP Berhasil Dihapus',
                 'code' => 200,
@@ -405,9 +425,17 @@ class FileSIPController extends Controller
         }
     }
 
+    //Ubah Status Masa Berlaku SIP
     public function status(Request $request) {
         $upload = MasaBerlakuSIP::where('id', $request->id)->update([
             'status' => $request->status
+        ]);
+
+        // Log aktivitas perubahan status masa berlaku SIP
+        ActivityLogHelper::log('Status masa berlaku SIP ' . ($request->nosip ?? '') . ' berhasil diubah', [
+            'id_masa_berlaku' => $request->id,
+            'status_baru' => $request->status,
+            'aksi' => 'perubahan_status'
         ]);
 
         return response()->json([

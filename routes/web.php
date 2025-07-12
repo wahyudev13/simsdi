@@ -193,9 +193,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::post('/karyawan/str/verif/destroy', [VerifStrController::class, 'destroy'])->name('verif.str.destroy');
         
         //JSON STR
-        // Route::get('/karyawan/str/get/{id}', [FileSIPController::class, 'strget'])->name('file.str.get');
         Route::get('/karyawan/str/get', [FileSIPController::class, 'strget'])->name('file.str.get');
-        // Route::get('/karyawan/str/selected/get/{idsip}', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
         Route::get('/karyawan/str/selected/get', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
 
         //Berkas SIP
@@ -205,7 +203,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('/karyawan/berkas/sip/edit', [FileSIPController::class, 'edit'])->name('berkas.sip.edit');
         Route::post('/karyawan/berkas/sip/update', [FileSIPController::class, 'update'])->name('berkas.sip.update');
         Route::post('/karyawan/berkas/sip/exp', [FileSIPController::class, 'exp'])->name('berkas.sip.exp');
-        Route::post('/karyawan/berkas/sip/desexp', [FileSIPController::class, 'desexp'])->name('berkas.sip.desexp');
+        Route::post('/karyawan/berkas/sip/desexp', [FileSIPController::class, 'destroyexp'])->name('berkas.sip.desexp');
         Route::post('/karyawan/berkas/sip/status', [FileSIPController::class, 'status'])->name('berkas.sip.status');
 
         //Berkas Riwayat kerja
@@ -348,13 +346,12 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('profile/pengguna', [PageuserController::class, 'profile'])->name('profile.index');
         Route::get('profile/ubah_password', [PageuserController::class, 'ubah_password'])->name('profile.ubah_password');
         Route::post('profile/ubah_password/update', [PageuserController::class, 'ganti_passowrd'])->name('profile.ganti_passowrd');
-        //getSTR untuk SIP
-        Route::get('pengguna/str/get', [PageuserController::class, 'getSTRPengguna'])->name('str.get');
+       
         //get Data
         Route::get('pengguna/getijazah', [PageuserController::class, 'getijazah'])->name('pengguna.getijazah');
         Route::get('pengguna/gettrans', [PageuserController::class, 'gettrans'])->name('pengguna.gettrans');
-        Route::get('pengguna/getSTR', [PageuserController::class, 'getSTR'])->name('pengguna.getSTR');
-        Route::get('pengguna/getSIP', [PageuserController::class, 'getSIP'])->name('pengguna.getSIP');
+       
+        
         Route::get('pengguna/getRiwayat', [PageuserController::class, 'getRiwayat'])->name('pengguna.getRiwayat');
         Route::get('pengguna/getKesehatan', [PageuserController::class, 'getKesehatan'])->name('pengguna.getKesehatan');
         Route::get('pengguna/getVaksin', [PageuserController::class, 'getVaksin'])->name('pengguna.getVaksin');
@@ -395,10 +392,35 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
             Route::post('pengguna/str/update', [FileSTRController::class, 'update'])->name('pengguna.str.update');
         });
         Route::group(['middleware' => ['permission:user-str-delete']], function () {
-            Route::post('pengguna/str/destroy', [FileSTRController::class, 'destroy'])->name('pengguna.str.destroy');   
+            Route::post('pengguna/str/destroy', [FileSTRController::class, 'destroy'])->name('pengguna.str.destroy');
+           
         });
 
+
+        //SIP
+        Route::get('pengguna/getSIP', [FileSIPController::class, 'getSIP'])->name('pengguna.getSIP');
+        Route::group(['middleware' => ['permission:user-sip-create']], function () {
+            Route::post('pengguna/sip/store', [FileSIPController::class, 'store'])->name('pengguna.sip.store');
+        });
+        Route::group(['middleware' => ['permission:user-sip-edit']], function () {
+            Route::get('pengguna/sip/edit', [FileSIPController::class, 'edit'])->name('pengguna.sip.edit');
+            Route::post('pengguna/sip/update', [FileSIPController::class, 'update'])->name('pengguna.sip.update');
+            Route::post('pengguna/sip/masaberlaku/add', [FileSIPController::class, 'exp'])->name('pengguna.sip.masaberlaku.add');
+            Route::post('pengguna/sip/status/update', [FileSIPController::class, 'status'])->name('pengguna.sip.status.update');            
+        });
+        Route::group(['middleware' => ['permission:user-sip-delete']], function () {
+            Route::post('pengguna/sip/destroy', [FileSIPController::class, 'destroy'])->name('pengguna.sip.destroy');
+            Route::post('pengguna/sip/masaberlaku/destroy', [FileSIPController::class, 'destroyexp'])->name('pengguna.sip.masaberlaku.destroy');      
+        });
+        //getSTR untuk SIP Modal tambah SIP
+        Route::get('pengguna/str/get', [FileSIPController::class, 'strget'])->name('pengguna.str.get');
+        //getSTR untuk SIP Modal edit SIP
+        Route::get('pengguna/str/selected/get', [FileSIPController::class, 'str_selected'])->name('pengguna.str.selected.get');
         
+
+
+
+
 
         //TAMBAH
         Route::group(['middleware' => ['permission:user-ijazah-create']], function () {
@@ -406,10 +428,6 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         });
         Route::group(['middleware' => ['permission:user-transkrip-create']], function () {
             Route::post('pengguna/transkrip/store', [PageuserController::class, 'storetrans'])->name('pengguna.trans.store');
-        });
-       
-        Route::group(['middleware' => ['permission:user-sip-create']], function () {
-            Route::post('pengguna/sip/store', [PageuserController::class, 'storesip'])->name('pengguna.sip.store');
         });
         Route::group(['middleware' => ['permission:user-riwayat-create']], function () {
             Route::post('pengguna/riwayat/store', [PageuserController::class, 'storeriwayat'])->name('pengguna.riwayat.store');
@@ -437,10 +455,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
             Route::post('pengguna/transkrip/update', [PageuserController::class, 'updatetrans'])->name('pengguna.trans.update');
         });
        
-        Route::group(['middleware' => ['permission:user-sip-edit']], function () {
-            Route::get('pengguna/sip/edit', [PageuserController::class, 'editsip'])->name('pengguna.sip.edit');
-            Route::post('pengguna/sip/update', [PageuserController::class, 'updatesip'])->name('pengguna.sip.update');
-        });
+       
         Route::group(['middleware' => ['permission:user-riwayat-edit']], function () {
             Route::get('pengguna/riwayat/edit', [PageuserController::class, 'editriwayat'])->name('pengguna.riwayat.edit');
             Route::post('pengguna/riwayat/update', [PageuserController::class, 'updateriwayat'])->name('pengguna.riwayat.update');
@@ -485,9 +500,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
             Route::post('pengguna/transkrip/destroy', [PageuserController::class, 'destroytrans'])->name('pengguna.transkrip.destroy');   
         });
       
-        Route::group(['middleware' => ['permission:user-sip-delete']], function () {
-            Route::post('pengguna/sip/destroy', [PageuserController::class, 'destroysip'])->name('pengguna.sip.destroy');   
-        });
+       
         Route::group(['middleware' => ['permission:user-riwayat-delete']], function () {
             Route::post('pengguna/riwayat/destroy', [PageuserController::class, 'destroyriwayat'])->name('pengguna.riwayat.destroy');
         });

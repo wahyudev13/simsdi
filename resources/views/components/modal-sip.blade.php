@@ -71,6 +71,8 @@
                 <div id="error_list_sip_edit"></div>
                 <form method="POST" id="form-edit-sip" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" class="id_pegawai_sip_edit" id="id_pegawai_sip_edit"
+                        value="{{ $pegawai->id }}" name="id_pegawai">
                     <input type="hidden" class="id-sip-edit" id="id-sip-edit" name="id">
                     <div class="form-group">
                         <label for="nama_file_sip_id_edit" class="col-form-label">Nama Dokumen<label
