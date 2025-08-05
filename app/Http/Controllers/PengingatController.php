@@ -44,7 +44,7 @@ class PengingatController extends Controller
     public function get() {
         $database_2 = config('database.connections.mysql2.database');
 
-        $getstr = FileSTR::where('status','nonactive')->orWhere('status','proses')
+        $getstr = FileSTR::where('status','nonactive')->orWhere('status','akan_berakhir')
         ->join("$database_2.pegawai as tbsik_pegawai",'file_str.id_pegawai','=','tbsik_pegawai.id')//join database simrs
         ->join('master_berkas_pegawai', 'file_str.nama_file_str_id', '=', 'master_berkas_pegawai.id')
         ->select('tbsik_pegawai.id AS id_pegawai','tbsik_pegawai.nama','tbsik_pegawai.nik','tbsik_pegawai.jbtn','master_berkas_pegawai.nama_berkas','file_str.id_pegawai',
@@ -82,7 +82,7 @@ class PengingatController extends Controller
 
     public function getkontrak() {
         $database_2 = config('database.connections.mysql2.database');
-        $getkontrak = FileRiwayatKerja::where('status','nonactive')->orWhere('status','proses')
+        $getkontrak = FileRiwayatKerja::where('status','nonactive')->orWhere('status','akan_berakhir')
         ->join( "$database_2.pegawai as tbsik_pegawai",'file_riwayat_pekerjaan.id_pegawai','=','tbsik_pegawai.id')//join database simrs
         ->join('master_berkas_pegawai', 'file_riwayat_pekerjaan.nama_file_riwayat_id', '=', 'master_berkas_pegawai.id')
         ->select('tbsik_pegawai.nama','master_berkas_pegawai.nama_berkas','file_riwayat_pekerjaan.id_pegawai','tbsik_pegawai.nik',
@@ -100,7 +100,7 @@ class PengingatController extends Controller
 
     public function getSip(){
         $database_2 = config('database.connections.mysql2.database');
-        $data = MasaBerlakuSIP::where('status','nonactive')->orWhere('status','proses')
+        $data = MasaBerlakuSIP::where('status','nonactive')->orWhere('status','akan_berakhir')
         ->join('file_sip','masa_berlaku_sip.sip_id','=','file_sip.id')
         ->join( "$database_2.pegawai as tbsik_pegawai",'file_sip.id_pegawai','=','tbsik_pegawai.id')//join database simrs
         ->join('master_berkas_pegawai', 'file_sip.nama_file_sip_id', '=', 'master_berkas_pegawai.id')
@@ -113,72 +113,4 @@ class PengingatController extends Controller
     }
 
 
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

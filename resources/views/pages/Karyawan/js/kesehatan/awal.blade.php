@@ -6,8 +6,11 @@
             scrollX: false,
             bInfo: false,
             searching: false,
-            processing: false,
             serverSide: true,
+            processing: true,
+            language: {
+                processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+            },
             ajax: {
                 url: '{{ route('kesehatan.awal.index') }}',
                 data: {
@@ -63,8 +66,9 @@
         $(document).on('click', '#view-kesehatan-awal', function(e) {
             e.preventDefault();
             var namafile = $(this).data('id');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Kesehatan/Kesehatan/' + namafile, "#view-kesehatan-awal-modal");
+            var url = '{{ url('/') }}';
+            PDFObject.embed(url + '/File/Pegawai/Kesehatan/Kesehatan/' + namafile,
+                "#view-kesehatan-awal-modal");
         });
         //ADD KESEHATAN AWAL
         $('#form-add-kesehatan-awal').on('submit', function(e) {

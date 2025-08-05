@@ -1,0 +1,15 @@
+@include('components.script-berkas-kepegawaian.identitas-script', [
+    'tableId' => 'tbIdentitas',
+    'getRoute' => 'berkas.identitas.getFile',
+    'storeRoute' => 'berkas.identitas.store',
+    'editRoute' => 'berkas.identitas.edit',
+    'updateRoute' => 'berkas.identitas.update',
+    'destroyRoute' => 'berkas.identitas.destroy',
+    'viewRoutePDF' => '/karyawan/berkas/identitas/view/',
+    'enablePaging' => false,
+    'enableSearch' => false,
+    'enableInfo' => false,
+    'showActions' => true,
+    'modalParent' => 'modaladd_Identitas',
+    'editModalParent' => 'modaledit_Identitas',
+])

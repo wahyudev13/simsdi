@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('nomor', 100);
             $table->string('file');
             $table->date('tgl_ed')->nullable();
-            $table->date('pengingat')->nullable();
             $table->enum('status', ['active', 'proses','nonactive','changed'])->default('active')->nullable();
             $table->timestamps();
 

@@ -1,29 +1,29 @@
 # Modal Components Documentation
 
-This directory contains reusable modal components that can be used across all blade files in the application.
+Direktori ini berisi komponen modal yang dapat digunakan kembali di seluruh file blade dalam aplikasi.
 
-## Available Components
+## Komponen yang Tersedia
 
 ### 1. Modal Bukti Verifikasi STR (`modal-bukti-str.blade.php`)
 
-A specific modal component for adding STR verification proof.
+Komponen modal khusus untuk menambahkan bukti verifikasi STR.
 
-**Usage:**
+**Penggunaan:**
 ```php
 @include('components.modal-bukti-str')
 ```
 
-**Features:**
-- File upload for PDF verification documents
-- Optional description field
-- Form validation
-- Bootstrap modal styling
+**Fitur:**
+- Upload file untuk dokumen verifikasi PDF
+- Field deskripsi opsional
+- Validasi form
+- Styling modal Bootstrap
 
-### 2. Generic Modal Bukti Verifikasi (`modal-bukti-verifikasi.blade.php`)
+### 2. Modal Bukti Verifikasi Generik (`modal-bukti-verifikasi.blade.php`)
 
-A flexible modal component that can be used for different types of verification with customizable parameters.
+Komponen modal fleksibel yang dapat digunakan untuk berbagai jenis verifikasi dengan parameter yang dapat disesuaikan.
 
-**Usage:**
+**Penggunaan:**
 ```php
 @include('components.modal-bukti-verifikasi', [
     'type' => 'str',
@@ -32,51 +32,76 @@ A flexible modal component that can be used for different types of verification 
 ])
 ```
 
-**Parameters:**
-- `type` (string): The type of verification (e.g., 'str', 'ijazah', 'sip')
-- `title` (string): The title to display in the modal header
-- `id_field` (string): The name of the hidden input field for the document ID
+**Parameter:**
+- `type` (string): Jenis verifikasi (misalnya 'str', 'ijazah', 'sip')
+- `title` (string): Judul yang ditampilkan di header modal
+- `id_field` (string): Nama field input tersembunyi untuk ID dokumen
 
-**Examples:**
+### 3. Modal Pendidikan (`modal-pendidikan.blade.php`)
 
-For STR verification:
+Komponen modal lengkap untuk mengelola dokumen pendidikan (ijazah dan transkrip).
+
+**Penggunaan:**
 ```php
-@include('components.modal-bukti-verifikasi', [
-    'type' => 'str',
-    'title' => 'STR',
-    'id_field' => 'str_id'
-])
+@include('components.modal-pendidikan')
 ```
 
-For Ijazah verification:
+**Fitur:**
+- Modal tambah ijazah (ID: `modal-add-ijazah`)
+- Modal edit ijazah (ID: `modal-edit-ijazah`)
+- Modal view ijazah PDF (ID: `modalIjazah`)
+- Modal tambah transkrip (ID: `modal-add-trans`)
+- Modal edit transkrip (ID: `modaleditTrans`)
+- Modal view transkrip PDF (ID: `modalTranskrip`)
+
+### 4. Modal Ijazah (`modal-ijazah.blade.php`)
+
+Komponen modal khusus untuk mengelola dokumen ijazah.
+
+**Penggunaan:**
 ```php
-@include('components.modal-bukti-verifikasi', [
-    'type' => 'ijazah',
-    'title' => 'Ijazah',
-    'id_field' => 'ijazah_id'
-])
+@include('components.modal-ijazah')
 ```
 
-For SIP verification:
+### 5. Modal Transkrip (`modal-transkrip.blade.php`)
+
+Komponen modal khusus untuk mengelola dokumen transkrip.
+
+**Penggunaan:**
 ```php
-@include('components.modal-bukti-verifikasi', [
-    'type' => 'sip',
-    'title' => 'SIP',
-    'id_field' => 'sip_id'
-])
+@include('components.modal-transkrip')
 ```
 
-## Benefits
+### 6. Modal View PDF (`modal-view-pdf.blade.php`)
 
-1. **Reusability**: Use the same modal across multiple pages
-2. **Maintainability**: Update the modal in one place
-3. **Consistency**: Ensure consistent UI/UX across the application
-4. **Flexibility**: The generic component allows customization for different use cases
+Modal generik untuk menampilkan dokumen PDF dengan parameter dinamis.
 
-## JavaScript Integration
+**Penggunaan:**
+```php
+@include('components.modal-view-pdf', ['title' => 'Judul Dokumen'])
+```
 
-When using these components, make sure to include the necessary JavaScript for form handling and modal functionality. The modal IDs and form IDs are automatically generated based on the component parameters.
+## Contoh Penggunaan
+
+Lihat file `example-usage.blade.php` untuk contoh lengkap penggunaan komponen modal pendidikan.
+
+## Variabel yang Diperlukan
+
+Pastikan variabel berikut tersedia di controller:
+- `$pegawai` - Data pegawai
+- `$master_berkas_pendidikan` - Daftar master berkas pendidikan
+
+## Manfaat
+
+1. **Dapat Digunakan Kembali**: Gunakan modal yang sama di berbagai halaman
+2. **Mudah Dipelihara**: Update modal di satu tempat
+3. **Konsistensi**: Memastikan UI/UX yang konsisten di seluruh aplikasi
+4. **Fleksibilitas**: Komponen generik memungkinkan kustomisasi untuk berbagai kasus penggunaan
+
+## Integrasi JavaScript
+
+Saat menggunakan komponen ini, pastikan untuk menyertakan JavaScript yang diperlukan untuk penanganan form dan fungsionalitas modal. ID modal dan ID form dihasilkan secara otomatis berdasarkan parameter komponen.
 
 ## Styling
 
-The components use Bootstrap classes and are compatible with the existing application styling. No additional CSS is required. 
+Komponen menggunakan kelas Bootstrap dan kompatibel dengan styling aplikasi yang ada. Tidak diperlukan CSS tambahan. 

@@ -202,6 +202,18 @@
                             <div class="small text-gray-500">Security alerts</div>
                         </div>
                     </a>
+                    <a class="dropdown-item d-flex align-items-center"
+                        href="{{ route('activity-log.index') }}?log_name=verifikasi_ijazah&date_from={{ now()->format('Y-m-d') }}">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-info">
+                                <i class="fas fa-file-check text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-weight-bold">Verifikasi Ijazah</div>
+                            <div class="small text-gray-500">Today's verification activities</div>
+                        </div>
+                    </a>
                     <a class="dropdown-item text-center small text-gray-500"
                         href="{{ route('activity-log.index') }}">View All Activities</a>
                 </div>

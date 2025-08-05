@@ -9,5 +9,5 @@ class SpkRkk extends Model
 {
     use HasFactory;
     protected $table = "spk_rkk";
-    protected $fillable = ['id','id_pegawai','nomor_spk','departemen_id','kualifikasi','file','created_at','updated_at'];
+    protected $fillable = ['id','id_pegawai','nomor_spk','departemen_id','nama_departemen','kualifikasi','file','created_at','updated_at'];
 }

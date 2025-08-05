@@ -383,8 +383,11 @@
                     // scrollX: false,
                     // bInfo: false,
                     // searching: false,
-                    // processing: true,
                     serverSide: true,
+                    processing: true,
+                    language: {
+                        processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+                    },
                     ajax: {
                         url: '{{ route('pegawai.presensi.rekap_presensi_admin') }}',
                         data: {

@@ -1,5 +1,5 @@
 <!-- Modal View Lain-lain PDF -->
-<div class="modal fade " id="modal-lainlain" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade " id="modal-view-lainlain" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">

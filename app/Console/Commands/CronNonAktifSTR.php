@@ -5,10 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Models\Pegawai;
-use App\Models\FileIjazah;
-use App\Models\FileTranskrip;
 use App\Models\FileSTR;
-use App\Models\MasterBerkas;
 use App\Models\setAplikasi;
 use Illuminate\Support\facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -38,30 +35,27 @@ class CronNonAktifSTR extends Command
      */
     public function handle()
     {
-        $database_2 = config('database.connections.mysql2.database');
-        $date_exp = Carbon::today()->toDateString();
-    
-        $data = FileSTR::where('tgl_ed', $date_exp)->where(function($query){
-            $query->where('status', 'active');
-            $query->orWhere('status', 'proses');
-        })
-        ->join("$database_2.pegawai as tbsik_pegawai",'file_str.id_pegawai','=','tbsik_pegawai.id')//join database simrs
-        ->join('master_berkas_pegawai', 'file_str.nama_file_str_id', '=', 'master_berkas_pegawai.id')
-        ->select('tbsik_pegawai.nama','master_berkas_pegawai.nama_berkas','file_str.id_pegawai','tbsik_pegawai.nik','file_str.no_reg_str','file_str.kompetensi',
-        'file_str.tgl_ed','tbsik_pegawai.jbtn')
-        ->get();
-        $count = $data->count();
+        $hariPeringatan = 7; // jumlah hari sebelum tgl_ed
+        $today = Carbon::today();
+        $peringatanDate = $today->copy()->addDays($hariPeringatan);
 
-        if ($count > 0) {
-            $update_status = FileSTR::where('tgl_ed', $date_exp)->where(function($query){
-                $query->where('status', 'active');
-                $query->orWhere('status', 'proses');
-            })->update([
-                'status' => 'nonactive'
-            ]);
-            \Log::info("[NON-AKTIF STR], Berhasil Di Non-Aktifkan.");
-        }else {
-            \Log::info("[NON-AKTIF STR], Data Tidak Ada");
-        }
+        // 1. Update status menjadi 'akan_berakhir' jika tgl_ed = hariPeringatan ke depan
+        $akanBerakhir = FileSTR::where('status', 'active')
+            ->whereDate('tgl_ed', '>', $today)
+            ->whereDate('tgl_ed', '<=', $today->copy()->addDays($hariPeringatan))
+            ->update(['status' => 'akan_berakhir']);
+
+        // 2. Kembalikan ke 'active' jika status 'akan_berakhir' tapi tgl_ed > hariPeringatan ke depan
+        $backToActive = FileSTR::where('status', 'akan_berakhir')
+            ->whereDate('tgl_ed', '>', $peringatanDate)
+            ->update(['status' => 'active']);
+
+        // 3. Update status menjadi 'nonactive' jika sudah lewat tgl_ed
+        $nonactive = FileSTR::whereIn('status', ['active', 'akan_berakhir'])
+            ->whereDate('tgl_ed', '<=', $today)
+            ->update(['status' => 'nonactive']);
+
+        $this->info("Status STR diupdate: $akanBerakhir akan_berakhir, $backToActive kembali active, $nonactive nonactive.");
+        return Command::SUCCESS;
     }
 }

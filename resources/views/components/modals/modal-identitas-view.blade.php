@@ -1,5 +1,6 @@
 <!-- Modal View Identitas PDF -->
-<div class="modal fade " id="modalLain" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade " id="modalIdentitas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +10,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="view-lain-modal"></div>
+                <div id="view-identitas-modal"></div>
             </div>
         </div>
     </div>

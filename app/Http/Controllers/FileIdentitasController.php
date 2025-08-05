@@ -12,23 +12,21 @@ use Validator;
 use Yajra\DataTables\Facades\DataTables;
 use File;
 use Carbon\Carbon;
-
+use Auth;
+use App\Helpers\ActivityLogHelper;
 
 class FileIdentitasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     public function getFile(Request $request)
     {
-        $getfile = FileIdentitas::where('id_pegawai', $request->id)
+        if (auth('admin')->check()) {
+            $auth = $request->id;
+        } else {
+            $auth = Auth::user()->id_pegawai;
+        }
+
+        $getfile = FileIdentitas::where('id_pegawai', $auth)
         ->join('master_berkas_pegawai', 'file_identitas.nama_file_lain_id', '=', 'master_berkas_pegawai.id')
         ->select('master_berkas_pegawai.nama_berkas','file_identitas.id','file_identitas.file')
         ->get();
@@ -38,22 +36,7 @@ class FileIdentitasController extends Controller
         ->make(true);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -68,19 +51,25 @@ class FileIdentitasController extends Controller
 
         if ($validated->passes()) {
             if ($request->hasFile('file')) {
-
+                $pegawai = Pegawai::find($request->id_pegawai);
+                $nip = $pegawai ? $pegawai->nik : $request->id_pegawai;
+                $masterBerkas = MasterBerkas::find($request->nama_file_lain_id);
+                $namaBerkas = $masterBerkas ? preg_replace('/[^A-Za-z0-9]/', '', $masterBerkas->nama_berkas) : 'DOKUMEN';
                 $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
+                $currentDate = date('Ymd');
+                $hash = substr(md5($filenameWithExt . time()), 0, 6);
+                $filenameSimpan = 'IDENTITAS_' . $namaBerkas . '_' . $nip . '_' . $currentDate . '_' . $hash . '.' . $extension;
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/Identitas'), $filenameSimpan);
     
                 $upload = FileIdentitas::create([
                     'id_pegawai' => $request->id_pegawai,
-                    // 'nik_pegawai' => $request->nik_pegawai,
                     'nama_file_lain_id' => $request->nama_file_lain_id,
                     'file' => $filenameSimpan
+                ]);
+                ActivityLogHelper::logCrud('created', $upload, 'Membuat data Identitas baru', [
+                    'nama_file' => $filenameSimpan,
+                    'id_pegawai' => $request->id_pegawai
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -97,23 +86,6 @@ class FileIdentitasController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\FileIdentitas  $FileIdentitas
-     * @return \Illuminate\Http\Response
-     */
-    public function show(FileIdentitas $FileIdentitas)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\FileIdentitas  $FileIdentitas
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Request $request)
     {
         $dokumen = FileIdentitas::where('id', $request->id)->first();
@@ -131,13 +103,6 @@ class FileIdentitasController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\FileIdentitas  $FileIdentitas
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -150,30 +115,50 @@ class FileIdentitasController extends Controller
         ]);
 
         if ($validated->passes()) {
+            $dokumen = FileIdentitas::where('id', $request->id)->first();
+            $pegawai = Pegawai::find($request->id_pegawai);
+            $nip = $pegawai ? $pegawai->nik : $request->id_pegawai;
+            $masterBerkas = MasterBerkas::find($request->nama_file_lain_id);
+            $namaBerkas = $masterBerkas ? preg_replace('/[^A-Za-z0-9]/', '', $masterBerkas->nama_berkas) : 'DOKUMEN';
+            $currentDate = date('Ymd');
+            $hash = substr(md5(($request->hasFile('file') ? $request->file('file')->getClientOriginalName() : $dokumen->file) . time()), 0, 6);
+            $extension = $request->hasFile('file') ? $request->file('file')->getClientOriginalExtension() : pathinfo($dokumen->file, PATHINFO_EXTENSION);
+            $filenameSimpan = 'IDENTITAS_' . $namaBerkas . '_' . $nip . '_' . $currentDate . '_' . $hash . '.' . $extension;
+
             if ($request->hasFile('file')) {
-
-                $delete_file = FileIdentitas::where('id', $request->id)->first();
-                File::delete('File/Pegawai/Dokumen/Identitas/'.$delete_file->file);
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
+                // Hapus file lama
+                File::delete('File/Pegawai/Dokumen/Identitas/'.$dokumen->file);
+                // Simpan file baru
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/Identitas'), $filenameSimpan);
-    
                 $upload = FileIdentitas::where('id', $request->id)->update([
                     'nama_file_lain_id' => $request->nama_file_lain_id,
                     'file' => $filenameSimpan
+                ]);
+                ActivityLogHelper::logCrud('updated', $dokumen, 'Mengubah data Identitas', [
+                    'nama_file' => $filenameSimpan,
+                    'id_pegawai' => $request->id_pegawai,
+                    'file_diubah' => true
                 ]);
                 return response()->json([
                     'status' => 200,
                     'message' => 'Berkas Berhasil Diupdate',
                     'data' => $upload
                 ]);
-            }else {
+            } else {
+                // Rename file lama ke nama baru
+                $oldPath = public_path('File/Pegawai/Dokumen/Identitas/' . $dokumen->file);
+                $newPath = public_path('File/Pegawai/Dokumen/Identitas/' . $filenameSimpan);
+                if (file_exists($oldPath)) {
+                    rename($oldPath, $newPath);
+                }
                 $upload = FileIdentitas::where('id', $request->id)->update([
                     'nama_file_lain_id' => $request->nama_file_lain_id,
+                    'file' => $filenameSimpan
+                ]);
+                ActivityLogHelper::logCrud('updated', $dokumen, 'Mengubah data Identitas', [
+                    'id_pegawai' => $request->id_pegawai,
+                    'file_diubah' => false,
+                    'nama_file' => $filenameSimpan
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -181,7 +166,6 @@ class FileIdentitasController extends Controller
                     'data' => $upload
                 ]);
             }
-           
         }else {
             return response()->json([
                 'status' => 400,
@@ -190,19 +174,17 @@ class FileIdentitasController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\FileIdentitas  $FileIdentitas
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         $dokumen = FileIdentitas::where('id', $request->id)->first();
-
         $delete = FileIdentitas::where('id', $request->id)->delete();
         if ($delete) {
             File::delete('File/Pegawai/Dokumen/Identitas/'.$dokumen->file);
+            ActivityLogHelper::log('Menghapus data Identitas', [
+                'id_identitas' => $dokumen->id ?? null,
+                'nama_file' => $dokumen->file ?? null,
+                'id_pegawai' => $dokumen->id_pegawai ?? null
+            ]);
             return response()->json([
                 'message' => 'Data Berhasil Dihapus',
                 'code' => 200,
@@ -213,5 +195,39 @@ class FileIdentitasController extends Controller
                 'code' => 500,
             ]);
         }
+    }
+
+    public function viewPdf($filename)
+    {
+        // Validasi nama file hanya karakter yang diizinkan
+        if (!preg_match('/^[A-Za-z0-9._-]+\.(pdf|jpg|jpeg|png)$/', $filename)) {
+            abort(404, 'File tidak valid');
+        }
+        $path = public_path('File/Pegawai/Dokumen/Identitas/' . $filename);
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+        
+        // Tentukan Content-Type berdasarkan ekstensi file
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $contentType = 'application/octet-stream';
+        
+        switch ($extension) {
+            case 'pdf':
+                $contentType = 'application/pdf';
+                break;
+            case 'jpg':
+            case 'jpeg':
+                $contentType = 'image/jpeg';
+                break;
+            case 'png':
+                $contentType = 'image/png';
+                break;
+        }
+        
+        return response()->file($path, [
+            'Content-Type' => $contentType,
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
     }
 }

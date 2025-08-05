@@ -7,8 +7,11 @@
             scrollX: false,
             bInfo: false,
             searching: false,
-            processing: false,
             serverSide: true,
+            processing: true,
+            language: {
+                processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+            },
             ajax: {
                 url: '{{ route('penilaian.mcu.get') }}',
                 data: {
@@ -65,7 +68,7 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" href="#" data-norw="${data.no_rawat}" title="Laboratorium" data-toggle="modal" data-target="#modalLab" id="lab-mcu">Laboratorium</a>
-                                        <a class="dropdown-item" href="{{url('/penilaian/kesehatan/mcu/${data.tgl_registrasi}/${data.no_rkm_medis}/${data.kd_poli}/${data.no_reg}')}}"  target="_blank" data-norw="${data.no_rawat}" title="Lihat Hasil" id="lihat-hasil">Lihat Hasil</a>
+                                        <a class="dropdown-item" href="{{ url('/penilaian/kesehatan/mcu/${data.tgl_registrasi}/${data.no_rkm_medis}/${data.kd_poli}/${data.no_reg}') }}"  target="_blank" data-norw="${data.no_rawat}" title="Lihat Hasil" id="lihat-hasil">Lihat Hasil</a>
                                     </div>
                                 </div>
                                 `;
@@ -205,7 +208,7 @@
                         'data': null,
                         render: function(data, row, type) {
                             return `
-                                <a href="{{url('/penilaian/kesehatan/mcu/laborat/${data.no_rkm_medis}/${data.kd_poli}/${data.tgl_registrasi}/${data.no_reg}/${data.kd_jenis_prw}')}}" target="_blank" class="btn btn-primary btn-icon-split btn-sm" title="Hasil Lab">
+                                <a href="{{ url('/penilaian/kesehatan/mcu/laborat/${data.no_rkm_medis}/${data.kd_poli}/${data.tgl_registrasi}/${data.no_reg}/${data.kd_jenis_prw}') }}" target="_blank" class="btn btn-primary btn-icon-split btn-sm" title="Hasil Lab">
                                         <span class="icon text-white">
                                             <i class="fas fa-print fa-xs"></i>
                                         </span>

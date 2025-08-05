@@ -47,14 +47,17 @@
     <script>
         $(document).ready(function() {
             $('#pengingat-kontrak').DataTable({
-                // processing: true,
                 serverSide: true,
+                processing: true,
+                language: {
+                    processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+                },
                 ajax: '{{ route('pengingat.kontrak.get') }}',
                 "createdRow": function(row, data, dataIndex) {
                     if (data.status == `nonactive`) {
                         $(row).addClass('bg-danger text-white font-weight-bold');
-                    } else if (data.status == "proses") {
-                        $(row).addClass('table-warning');
+                    } else if (data.status === 'akan_berakhir') {
+                        $(row).addClass('bg-warning text-white font-weight-bold');
                     }
                 },
                 columns: [{
@@ -87,8 +90,10 @@
                         data: function(data, row, type) {
                             if (data.status === 'nonactive') {
                                 return "Masa Berlaku Sudah Berakhir";
-                            } else {
+                            } else if (data.status === 'akan_berakhir') {
                                 return "Masa Berlaku Akan Berakhir";
+                            } else {
+                                return "Masa Berlaku Aktif";
                             }
                         }
                     },

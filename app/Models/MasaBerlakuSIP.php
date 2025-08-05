@@ -9,5 +9,5 @@ class MasaBerlakuSIP extends Model
 {
     use HasFactory;
     protected $table = "masa_berlaku_sip";
-    protected $fillable = ['id','sip_id','tgl_ed','pengingat','status','created_at','updated_at'];
+    protected $fillable = ['id','sip_id','tgl_ed','status','created_at','updated_at'];
 }

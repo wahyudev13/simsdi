@@ -48,7 +48,8 @@
                                 <i class="fa fa-spin fa-cog"></i>
                                 <a href="{{ route('pengingat.str.index') }}" class="alert-link">{{ $alert_pengingat }}
                                     Karyawan
-                                    yang Dokumen STR Dalam Masa Ingatkan.</a>
+                                    yang Dokumen STR Akan Berakhir
+                                    (Ingatkan).</a>
                             </li>
                         @endif
                         @if ($peringatan_sip > 0)
@@ -56,7 +57,7 @@
                                 <i class="fa fa-spin fa-cog"></i>
                                 <a href="{{ route('pengingat.sip.pengingatSip') }}" class="alert-link">{{ $peringatan_sip }}
                                     Karyawan
-                                    yang Dokumen SIP Dalam Masa Ingatkan.</a>
+                                    yang Dokumen SIP Akan Berakhir (Ingatkan).</a>
                             </li>
                         @endif
                         @if ($peringatan_nonaktif_sip > 0)
@@ -92,7 +93,7 @@
                 @endif
             @endif
             <div class="table-responsive">
-                <table class="table table-bordered " id="tbJenjang" width="100%" cellspacing="0">
+                <table class="table table-bordered " id="tbPegawai" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -128,9 +129,12 @@
     </script>
     <script>
         $(document).ready(function() {
-            var tbpegawai = $('#tbJenjang').DataTable({
-                // processing: true,
+            var tbpegawai = $('#tbPegawai').DataTable({
                 serverSide: true,
+                processing: true,
+                language: {
+                    processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+                },
                 ajax: '{{ route('karyawan.getPegawai') }}',
                 columns: [{
                         data: 'DT_RowIndex',
@@ -232,7 +236,7 @@
 
             $('.reset-dep').click(function(e) {
                 e.preventDefault();
-                $('#tbJenjang').DataTable().search('').columns().search('').draw();
+                $('#tbPegawai').DataTable().search('').columns().search('').draw();
                 $('.selectdep').val(null).trigger('change');
             });
         });

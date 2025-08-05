@@ -18,17 +18,6 @@ use Auth;
 use App\Helpers\ActivityLogHelper;
 class FileSTRController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        // $date = Carbon::today()->toDateString();
-        // dd($date);
-    }
-
     public function getSTR(Request $request)
     {
         if (auth('admin')->check()) {
@@ -41,7 +30,7 @@ class FileSTRController extends Controller
         ->join('master_berkas_pegawai', 'file_str.nama_file_str_id', '=', 'master_berkas_pegawai.id')
         ->leftjoin('verif_str','file_str.id','=','verif_str.str_id')
         ->select('file_str.id','file_str.no_reg_str','file_str.kompetensi','file_str.file','file_str.tgl_ed',
-        'file_str.pengingat','master_berkas_pegawai.nama_berkas','file_str.updated_at','file_str.status','verif_str.id AS id_verif_str',
+        'master_berkas_pegawai.nama_berkas','file_str.updated_at','file_str.status','verif_str.id AS id_verif_str',
         'verif_str.file_verif','verif_str.keterangan')
         ->orderBy('file_str.created_at','desc')
         ->get();
@@ -91,7 +80,6 @@ class FileSTRController extends Controller
         // Add date validation if expiration is enabled
         if ($request->enable_exp_str) {
             $baseRules['tgl_ed'] = 'required';
-            $baseRules['pengingat'] = 'required';
         }
 
         $validated = Validator::make($request->all(), $baseRules, [
@@ -99,7 +87,6 @@ class FileSTRController extends Controller
             'no_reg_str.required' => 'Nomor reg Wajib diisi',
             'kompetensi.required' => 'Kompetensi Wajib diisi',
             'tgl_ed.required' => 'Tanggal Berkahir Wajib diisi',
-            'pengingat.required' => 'Pengingat Wajib diisi',
             'file.required' => 'File Wajib diisi',
             'file.mimes' => 'Format File yang diizinkan: pdf',
             'file.max' => 'File Maksimal 2MB'
@@ -151,24 +138,21 @@ class FileSTRController extends Controller
         if ($request->enable_exp_str) {
             $today = Carbon::today()->toDateString();
             $tgl_ed = $request->tgl_ed;
-            $pengingat = $request->pengingat;
 
             // Determine status based on dates
             if ($tgl_ed == $today) {
                 $status = 'nonactive';
-            } elseif ($pengingat == $today) {
-                $status = 'proses';
+            } elseif ($tgl_ed < $today) {
+                $status = 'nonactive';
             } else {
                 $status = 'active';
             }
 
             $data['tgl_ed'] = $tgl_ed;
-            $data['pengingat'] = $pengingat;
             $data['status'] = $status;
         } else {
             // STR lifetime (no expiration)
             $data['tgl_ed'] = null;
-            $data['pengingat'] = null;
             $data['status'] = 'lifetime';
         }
 
@@ -267,7 +251,6 @@ class FileSTRController extends Controller
         // Add date validation if expiration is enabled
         if ($request->enable_exp_str_edit) {
             $baseRules['tgl_ed'] = 'required';
-            $baseRules['pengingat'] = 'required';
         }
 
         $validated = Validator::make($request->all(), $baseRules, [
@@ -275,7 +258,6 @@ class FileSTRController extends Controller
             'no_reg_str.required' => 'Nomor reg Wajib diisi',
             'kompetensi.required' => 'Kompetensi Wajib diisi',
             'tgl_ed.required' => 'Tanggal Berkahir Wajib diisi',
-            'pengingat.required' => 'Pengingat Wajib diisi',
             'file.mimes' => 'Format File yang diizinkan: pdf',
             'file.max' => 'File Maksimal 2MB'
         ]);
@@ -360,24 +342,21 @@ class FileSTRController extends Controller
         if ($request->enable_exp_str_edit) {
             $today = Carbon::today()->toDateString();
             $tgl_ed = $request->tgl_ed;
-            $pengingat = $request->pengingat;
 
             // Determine status based on dates
             if ($tgl_ed == $today) {
                 $status = 'nonactive';
-            } elseif ($pengingat == $today) {
-                $status = 'proses';
+            } elseif ($tgl_ed < $today) {
+                $status = 'nonactive';
             } else {
                 $status = 'active';
             }
-
+            
             $data['tgl_ed'] = $tgl_ed;
-            $data['pengingat'] = $pengingat;
             $data['status'] = $status;
         } else {
             // STR lifetime (no expiration)
             $data['tgl_ed'] = null;
-            $data['pengingat'] = null;
             $data['status'] = 'lifetime';
         }
 
@@ -468,6 +447,23 @@ class FileSTRController extends Controller
             'status' => 200,
             'message' => 'Status Dokumen STR '.$request->noreg.' Berhasil Diubah',
             'data' => $upload
+        ]);
+    }
+
+    public function viewPdf($filename)
+    {
+        // Validasi nama file hanya karakter yang diizinkan (alphanumeric, dash, underscore, dot)
+        if (!preg_match('/^[A-Za-z0-9._-]+\.pdf$/', $filename)) {
+            abort(404, 'File tidak valid');
+        }
+        $path = public_path('File/Pegawai/Dokumen/STR/' . $filename);
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+        // Opsi: tambahkan validasi hak akses user di sini
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
         ]);
     }
 }

@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('kompetensi', 100);
             $table->string('file');
             $table->date('tgl_ed');
-            $table->date('pengingat');
             $table->enum('status', ['active', 'proses','nonactive','changed'])->default('active');
             $table->timestamps();
 

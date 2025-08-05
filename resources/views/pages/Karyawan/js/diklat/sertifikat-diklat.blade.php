@@ -1,0 +1,15 @@
+@include('components.script-berkas-diklat.sertifikat-script', [
+    'tableId' => 'tb-sertifikat',
+    'getRoute' => 'karywan.diklat.sertif.get',
+    'storeRoute' => 'karywan.diklat.sertif.store',
+    'editRoute' => 'karywan.diklat.sertif.edit',
+    'updateRoute' => 'karywan.diklat.sertif.update',
+    'destroyRoute' => 'karywan.diklat.sertif.destroy',
+    'viewRoutePDF' => '/karyawan/berkas/diklat/sertif/viewFile/',
+    'enablePaging' => true,
+    'enableSearch' => true,
+    'enableInfo' => true,
+    'showActions' => true,
+    'modalParent' => 'modaladd_sertif',
+    'editModalParent' => 'editmodal_sertif',
+])

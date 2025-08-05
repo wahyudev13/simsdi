@@ -197,8 +197,11 @@
     <script>
         $(document).ready(function() {
             var table = $('#tbAdmin').DataTable({
-                // processing: true,
                 serverSide: true,
+                processing: true,
+                language: {
+                    processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+                },
                 searching: false,
                 lengthChange: false,
                 ordering: false,

@@ -86,6 +86,25 @@ class ActivityLogController extends Controller
                 ->whereDate('created_at', $today->toDateString())->count(),
             'admin_activities' => Activity::where('log_name', 'admin')
                 ->whereDate('created_at', $today->toDateString())->count(),
+            'file_ijazah_activities' => Activity::where('log_name', 'file_ijazah')
+                ->whereDate('created_at', $today->toDateString())->count(),
+            'file_ijazah_uploads' => Activity::where('log_name', 'file_ijazah')
+                ->where('description', 'like', '%menambahkan%')
+                ->whereDate('created_at', $today->toDateString())->count(),
+            'file_ijazah_updates' => Activity::where('log_name', 'file_ijazah')
+                ->where('description', 'like', '%mengubah%')
+                ->whereDate('created_at', $today->toDateString())->count(),
+            'file_ijazah_deletes' => Activity::where('log_name', 'file_ijazah')
+                ->where('description', 'like', '%menghapus%')
+                ->whereDate('created_at', $today->toDateString())->count(),
+            'verifikasi_ijazah_activities' => Activity::where('log_name', 'verifikasi_ijazah')
+                ->whereDate('created_at', $today->toDateString())->count(),
+            'verifikasi_ijazah_uploads' => Activity::where('log_name', 'verifikasi_ijazah')
+                ->where('description', 'like', '%menambahkan%')
+                ->whereDate('created_at', $today->toDateString())->count(),
+            'verifikasi_ijazah_deletes' => Activity::where('log_name', 'verifikasi_ijazah')
+                ->where('description', 'like', '%menghapus%')
+                ->whereDate('created_at', $today->toDateString())->count(),
         ];
 
         return response()->json($stats);

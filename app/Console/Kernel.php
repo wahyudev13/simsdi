@@ -16,12 +16,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
        
-        $schedule->command('notifikasi:sip')->everyMinute();
-        $schedule->command('notifikasi:str')->everyMinute();
-        $schedule->command('nonaktif:str')->everyMinute();
-        $schedule->command('notifikasi:kontrak')->everyMinute();
-        $schedule->command('nonaktif:kontrak')->everyMinute();
+        // $schedule->command('notifikasi:sip')->everyMinute();
+        // $schedule->command('notifikasi:str')->everyMinute();
+        // $schedule->command('nonaktif:str')->everyMinute();
+        // $schedule->command('notifikasi:kontrak')->everyMinute();
+        // $schedule->command('nonaktif:kontrak')->everyMinute();
         
+        // Update status masa berlaku SIP otomatis
+        $schedule->command('sip:update-akan-berakhir')->dailyAt('00:10');
         // Cleanup activity logs every week
         $schedule->command('activity:cleanup --days=90 --force')->weekly();
     

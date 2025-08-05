@@ -112,8 +112,11 @@
     <script>
         $(document).ready(function() {
             $('#tb-jenis-kegiatan').DataTable({
-                // processing: true,
                 serverSide: true,
+                processing: true,
+                language: {
+                    processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+                },
                 ajax: '{{ route('diklat.kegiatan.jenis.get') }}',
                 columns: [{
                         data: 'DT_RowIndex',

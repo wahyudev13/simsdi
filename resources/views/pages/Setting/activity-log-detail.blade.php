@@ -115,9 +115,142 @@
     @if ($activity->properties && count($activity->properties) > 0)
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Additional Properties</h6>
+                <h6 class="m-0 font-weight-bold text-primary">
+                    Additional Properties
+                    @if ($activity->log_name == 'file_ijazah')
+                        <span class="badge badge-info ml-2">File Ijazah Activity</span>
+                    @endif
+                </h6>
             </div>
             <div class="card-body">
+                {{-- FileIjazah specific information --}}
+                @if ($activity->log_name == 'file_ijazah')
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> File Ijazah Activity Details</h6>
+                        <div class="row">
+                            @if (isset($activity->properties['pegawai_id']))
+                                <div class="col-md-6">
+                                    <strong>Pegawai ID:</strong> {{ $activity->properties['pegawai_id'] }}
+                                </div>
+                            @endif
+                            @if (isset($activity->properties['nomor_ijazah']))
+                                <div class="col-md-6">
+                                    <strong>Nomor Ijazah:</strong> {{ $activity->properties['nomor_ijazah'] }}
+                                </div>
+                            @endif
+                            @if (isset($activity->properties['asal']))
+                                <div class="col-md-6">
+                                    <strong>Asal Sekolah/Universitas:</strong> {{ $activity->properties['asal'] }}
+                                </div>
+                            @endif
+                            @if (isset($activity->properties['tahun_lulus']))
+                                <div class="col-md-6">
+                                    <strong>Tahun Lulus:</strong> {{ $activity->properties['tahun_lulus'] }}
+                                </div>
+                            @endif
+                            @if (isset($activity->properties['file_name']))
+                                <div class="col-md-6">
+                                    <strong>File Name:</strong> {{ $activity->properties['file_name'] }}
+                                </div>
+                            @endif
+                            @if (isset($activity->properties['file_size_formatted']))
+                                <div class="col-md-6">
+                                    <strong>File Size:</strong> {{ $activity->properties['file_size_formatted'] }}
+                                </div>
+                            @elseif (isset($activity->properties['file_size']))
+                                <div class="col-md-6">
+                                    <strong>File Size:</strong>
+                                    {{ number_format($activity->properties['file_size'] / 1024, 2) }} KB
+                                </div>
+                            @endif
+                            @if (isset($activity->properties['action']))
+                                <div class="col-md-6">
+                                    <strong>Action Type:</strong>
+                                    <span class="badge badge-secondary">{{ $activity->properties['action'] }}</span>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Show old and new values for updates --}}
+                        @if (isset($activity->properties['old_nomor']) && isset($activity->properties['new_nomor']))
+                            <hr>
+                            <h6 class="text-warning"><i class="fas fa-edit"></i> Changes Made:</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Nomor Ijazah:</strong><br>
+                                    <span class="text-danger">{{ $activity->properties['old_nomor'] }}</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span class="text-success">{{ $activity->properties['new_nomor'] }}</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Asal:</strong><br>
+                                    <span class="text-danger">{{ $activity->properties['old_asal'] }}</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span class="text-success">{{ $activity->properties['new_asal'] }}</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Tahun Lulus:</strong><br>
+                                    <span class="text-danger">{{ $activity->properties['old_thn_lulus'] }}</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span class="text-success">{{ $activity->properties['new_thn_lulus'] }}</span>
+                                </div>
+                            </div>
+                            @if (isset($activity->properties['old_file']) && isset($activity->properties['new_file']))
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <strong>File:</strong><br>
+                                        <span class="text-danger">{{ $activity->properties['old_file'] }}</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span class="text-success">{{ $activity->properties['new_file'] }}</span>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+
+                        {{-- Show deletion details --}}
+                        @if (isset($activity->properties['file_deleted']))
+                            <hr>
+                            <h6 class="text-danger"><i class="fas fa-trash"></i> Deletion Details:</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>File Deleted:</strong> {{ $activity->properties['file_deleted'] }}
+                                </div>
+                                @if (isset($activity->properties['verifikasi_exists']))
+                                    <div class="col-md-6">
+                                        <strong>Verifikasi Exists:</strong>
+                                        <span
+                                            class="badge badge-{{ $activity->properties['verifikasi_exists'] ? 'warning' : 'info' }}">
+                                            {{ $activity->properties['verifikasi_exists'] ? 'Yes' : 'No' }}
+                                        </span>
+                                    </div>
+                                @endif
+                                @if (isset($activity->properties['verifikasi_file_deleted']))
+                                    <div class="col-md-6">
+                                        <strong>Verifikasi File Deleted:</strong>
+                                        {{ $activity->properties['verifikasi_file_deleted'] }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+
+                        {{-- Show validation errors --}}
+                        @if (isset($activity->properties['errors']))
+                            <hr>
+                            <h6 class="text-danger"><i class="fas fa-exclamation-triangle"></i> Validation Errors:</h6>
+                            <div class="alert alert-danger">
+                                @foreach ($activity->properties['errors'] as $field => $errors)
+                                    <strong>{{ ucfirst(str_replace('_', ' ', $field)) }}:</strong>
+                                    <ul>
+                                        @foreach ($errors as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>

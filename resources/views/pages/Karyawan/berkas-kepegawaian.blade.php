@@ -72,10 +72,11 @@
             </ul>
 
             <div class="tab-content" id="myTabContent">
+                <!-- Data Pendidikan -->
                 <div class="tab-pane fade show active" id="pendidikan" role="tabpanel" aria-labelledby="pendidikan-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
-                            data-target="#modalUpload">
+                            data-target="#modal-add-ijazah">
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus"></i>
                             </span>
@@ -84,7 +85,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered berkas-pendidikan" id="tbJenjang" width="100%"
+                        <table class="table table-bordered berkas-pendidikan" id="tb-ijazah" width="100%"
                             cellspacing="0">
                             <thead>
                                 <tr>
@@ -104,7 +105,7 @@
 
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
-                            data-target="#modaladdTrans">
+                            data-target="#modal-add-transkrip">
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus"></i>
                             </span>
@@ -113,7 +114,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered berkas-pendidikan" id="tableTrans" width="100%"
+                        <table class="table table-bordered berkas-pendidikan" id="tb-transkrip" width="100%"
                             cellspacing="0">
                             <thead>
                                 <tr>
@@ -129,6 +130,7 @@
 
 
                 </div>
+                <!-- Data Perizinan -->
                 <div class="tab-pane fade" id="izin" role="tabpanel" aria-labelledby="izin-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-warning btn-icon-split btn-sm" data-toggle="modal"
@@ -192,6 +194,7 @@
                         </table>
                     </div>
                 </div>
+                <!-- Data Riwayat Pekerjaan -->
                 <div class="tab-pane fade" id="riwayat" role="tabpanel" aria-labelledby="riwayat-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-info btn-icon-split btn-sm" data-toggle="modal"
@@ -223,6 +226,7 @@
                     <!--END-->
 
                 </div>
+                <!-- Data Diri Karyawan -->
                 <div class="tab-pane fade" id="identitas" role="tabpanel" aria-labelledby="identitas-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-success btn-icon-split btn-sm" data-toggle="modal"
@@ -235,7 +239,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered berkas-lain" id="tbLain" width="100%" cellspacing="0">
+                        <table class="table table-bordered berkas-lain" id="tbIdentitas" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -249,6 +253,7 @@
                         </table>
                     </div>
                 </div>
+                <!-- Data Orientasi -->
                 <div class="tab-pane fade" id="orientasi" role="tabpanel" aria-labelledby="orientasi-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-secondary btn-icon-split btn-sm" data-toggle="modal"
@@ -274,6 +279,7 @@
                         </table>
                     </div>
                 </div>
+                <!-- Data SPK & RKK -->
                 <div class="tab-pane fade" id="spk" role="tabpanel" aria-labelledby="spk-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-secondary btn-icon-split btn-sm" data-toggle="modal"
@@ -300,6 +306,7 @@
                         </table>
                     </div>
                 </div>
+                <!-- Data Uraian Tugas -->
                 <div class="tab-pane fade" id="uraian" role="tabpanel" aria-labelledby="uraian-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-secondary btn-icon-split btn-sm" data-toggle="modal"
@@ -325,6 +332,7 @@
                         </table>
                     </div>
                 </div>
+                <!-- Data Lain-Lain -->
                 <div class="tab-pane fade" id="lain" role="tabpanel" aria-labelledby="lain-tab">
                     <div class="button-add mb-4 mt-4">
                         <a href="#" class="btn btn-secondary btn-icon-split btn-sm" data-toggle="modal"
@@ -354,19 +362,17 @@
     <!-- /.container-fluid -->
 
     <!-- Include Modal Components -->
-    @include('components.modal-ijazah')
-    @include('components.modal-transkrip')
-    @include('components.modal-str')
-    @include('components.modal-sip')
-    @include('components.modal-riwayat')
-    @include('components.modal-identitas')
-    @include('components.modal-orientasi')
-    @include('components.modal-spk')
-    @include('components.modal-uraian')
-    @include('components.modal-lain')
-    @include('components.modal-verifikasi')
+    @include('components.modals-add-update.modal-kepegawaian.modal-pendidikan')
+    @include('components.modals-add-update.modal-kepegawaian.modal-str')
+    @include('components.modals-add-update.modal-kepegawaian.modal-sip')
+    @include('components.modals-add-update.modal-kepegawaian.modal-riwayat')
+    @include('components.modals-add-update.modal-kepegawaian.modal-identitas')
+    @include('components.modals-add-update.modal-kepegawaian.modal-orientasi')
+    @include('components.modals-add-update.modal-kepegawaian.modal-spk')
+    @include('components.modals-add-update.modal-kepegawaian.modal-uraian')
+    @include('components.modals-add-update.modal-kepegawaian.modal-lain')
+    @include('components.modals-add-update.modal-kepegawaian.modal-verifikasi')
     @include('components.modal-view')
-    @include('components.modal-bukti-str')
 
 @endsection
 @push('custom-scripts')
@@ -375,81 +381,185 @@
     <script src="{{ asset('/vendor/select2/select2.min.js') }}"></script>
 
     <script>
-        document.getElementById('enable_exp_str').onchange = function() {
-            if (this.checked) {
-                document.getElementById('masa-berlaku').innerHTML = `
-                        <div class="form-group">
-                            <label for="tgl_ed" class="col-form-label">Berkalu Sampai <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed" id="tgl_ed" name="tgl_ed" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="pengingat" class="col-form-label">Tgl Pengingat <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat" id="pengingat" name="pengingat" disabled>
-                        </div>
-                `
-            } else {
-                document.getElementById('masa-berlaku').innerHTML = ``
+        // Script untuk menyimpan dan memulihkan tab aktif
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variabel untuk melacak tab yang sudah di-load
+            const loadedTabs = new Set();
+
+            // Fungsi untuk menyimpan tab aktif ke localStorage
+            function saveActiveTab(tabId) {
+                localStorage.setItem('activeTabKepegawaian', tabId);
             }
-            document.getElementById('tgl_ed').disabled = !this.checked;
-            //document.getElementById("tgl_ed").required = this.checked;
-            document.getElementById('pengingat').disabled = !this.checked;
-            //document.getElementById("pengingat").required = this.checked;
-        };
-        document.getElementById('enable_exp_str_edit').onchange = function() {
-            if (this.checked) {
-                document.getElementById('masa-berlaku-edit').innerHTML = `
-                        <div class="form-group">
-                            <label for="tgl_ed_edit" class="col-form-label">Berkalu Sampai <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
-                        </div>
-                        <div class="form-group">
-                            <label for="pengingat_edit" class="col-form-label">Pengingat <label
-                                    class="text-danger">*</label></label>
-                            <input type="date" class="form-control pengingat_edit" id="pengingat_edit"
-                                name="pengingat">
-                        </div>
-                `
-            } else {
-                document.getElementById('masa-berlaku-edit').innerHTML = ``
+
+            // Fungsi untuk memulihkan tab aktif dari localStorage
+            function restoreActiveTab() {
+                const activeTabId = localStorage.getItem('activeTabKepegawaian');
+                console.log('Restoring tab from localStorage:', activeTabId);
+                if (activeTabId) {
+                    // Hapus kelas active dari semua tab dan content
+                    document.querySelectorAll('.nav-link').forEach(tab => {
+                        tab.classList.remove('active');
+                        tab.setAttribute('aria-selected', 'false');
+                    });
+                    document.querySelectorAll('.tab-pane').forEach(content => {
+                        content.classList.remove('show', 'active');
+                    });
+
+                    // Aktifkan tab yang tersimpan
+                    const targetTab = document.querySelector(`[data-target="${activeTabId}"]`);
+                    const targetContent = document.querySelector(activeTabId);
+
+                    if (targetTab && targetContent) {
+                        targetTab.classList.add('active');
+                        targetTab.setAttribute('aria-selected', 'true');
+                        targetContent.classList.add('show', 'active');
+
+                        // Simpan tab yang perlu di-load ulang setelah semua JS siap
+                        window.tabToReloadAfterReady = activeTabId;
+                    }
+                }
             }
-            document.getElementById('tgl_ed_edit').disabled = !this.checked;
-            //document.getElementById("tgl_ed").required = this.checked;
-            document.getElementById('pengingat_edit').disabled = !this.checked;
-            //document.getElementById("pengingat").required = this.checked;
-        };
+
+            // Fungsi untuk load data berdasarkan tab
+            function loadTabData(tabId) {
+                console.log('loadTabData called for:', tabId);
+                if (loadedTabs.has(tabId)) {
+                    console.log('Tab already loaded:', tabId);
+                    return; // Data sudah di-load
+                }
+
+                // Tambahkan ke set tab yang sudah di-load
+                loadedTabs.add(tabId);
+                console.log('Loading tab:', tabId);
+
+                // Trigger custom event untuk load data berdasarkan tab
+                const event = new CustomEvent('loadTabData', {
+                    detail: {
+                        tabId: tabId
+                    }
+                });
+                document.dispatchEvent(event);
+            }
+
+            // Event listener untuk setiap tab
+            document.querySelectorAll('.nav-link').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('data-target');
+                    saveActiveTab(targetId);
+
+                    // Load data untuk tab yang diklik
+                    loadTabData(targetId);
+                });
+            });
+
+            // Reset localStorage untuk pengujian (sementara)
+            // localStorage.removeItem('activeTabKepegawaian');
+
+            // Pulihkan tab aktif saat halaman dimuat
+            restoreActiveTab();
+
+            // Jika tidak ada tab yang tersimpan di localStorage, load tab pertama
+            if (!localStorage.getItem('activeTabKepegawaian')) {
+                // Tunggu sebentar untuk memastikan semua event listener sudah terpasang
+                setTimeout(() => {
+                    // Panggil loadTabData untuk tab pertama
+                    const firstTab = document.querySelector('.nav-link.active');
+                    console.log('First tab detected:', firstTab ? firstTab.getAttribute('data-target') :
+                        'none');
+                    if (firstTab) {
+                        const targetId = firstTab.getAttribute('data-target');
+                        // Pastikan tab pertama di-load
+                        loadTabData(targetId);
+                    }
+                }, 100);
+            }
+        });
+
+        // Script untuk STR masa berlaku
+        document.addEventListener('DOMContentLoaded', function() {
+            const enableExpStr = document.getElementById('enable_exp_str');
+            const enableExpStrEdit = document.getElementById('enable_exp_str_edit');
+
+            if (enableExpStr) {
+                enableExpStr.onchange = function() {
+                    if (this.checked) {
+                        document.getElementById('masa-berlaku').innerHTML = `
+                                <div class="form-group">
+                                    <label for="tgl_ed" class="col-form-label">Berlaku Sampai <label
+                                            class="text-danger">*</label></label>
+                                    <input type="date" class="form-control tgl_ed" id="tgl_ed" name="tgl_ed" disabled>
+                                </div>
+                                
+                        `
+                    } else {
+                        document.getElementById('masa-berlaku').innerHTML = ``
+                    }
+                    const tglEd = document.getElementById('tgl_ed');
+                    if (tglEd) tglEd.disabled = !this.checked;
+                };
+            }
+
+            if (enableExpStrEdit) {
+                enableExpStrEdit.onchange = function() {
+                    if (this.checked) {
+                        document.getElementById('masa-berlaku-edit').innerHTML = `
+                                <div class="form-group">
+                                    <label for="tgl_ed_edit" class="col-form-label">Berlaku Sampai <label
+                                            class="text-danger">*</label></label>
+                                    <input type="date" class="form-control tgl_ed_edit" id="tgl_ed_edit" name="tgl_ed">
+                                </div>
+                              
+                        `
+                    } else {
+                        document.getElementById('masa-berlaku-edit').innerHTML = ``
+                    }
+                    const tglEdEdit = document.getElementById('tgl_ed_edit');
+                    if (tglEdEdit) tglEdEdit.disabled = !this.checked;
+                };
+            }
+        });
     </script>
     <!-- Page level custom scripts -->
-    <!--Ijazah------------------->
-    @include('pages.Karyawan.js.ijazah')
-    <!--Transkrip------------------->
-    @include('pages.Karyawan.js.transkrip')
+    <!--Pendidikan (Ijazah & Transkrip)------------------->
+    @include('pages.Karyawan.js.kepegawaian.pendidikan')
 
     <!--str------------------->
-    @include('pages.Karyawan.js.str')
+    @include('pages.Karyawan.js.kepegawaian.str')
 
     <!--SIP------------------->
-    @include('pages.Karyawan.js.sip')
+    @include('pages.Karyawan.js.kepegawaian.sip')
 
     <!--Riwayat kerja------------------->
-    @include('pages.Karyawan.js.riwayatkerja')
+    @include('pages.Karyawan.js.kepegawaian.riwayat-kerja')
 
     <!--Identitas------------------->
-    @include('pages.Karyawan.js.identitas')
+    @include('pages.Karyawan.js.kepegawaian.identitas')
 
     <!--Orientasi------------------->
-    @include('pages.Karyawan.js.orientasi')
-
-    <!--Lain-Lain------------------->
-    @include('pages.Karyawan.js.lain-lain')
+    @include('pages.Karyawan.js.kepegawaian.orientasi')
 
     <!--SPK RKK ------------------>
-    @include('pages.Karyawan.js.spk-rkk')
+    @include('pages.Karyawan.js.kepegawaian.spk-rkk')
 
     <!--Uraian ------------------>
-    @include('pages.Karyawan.js.uraian')
+    @include('pages.Karyawan.js.kepegawaian.uraian')
+
+    <!--Lain-Lain------------------->
+    @include('pages.Karyawan.js.kepegawaian.lain-lain')
+
+
+    <script>
+        // Tambahan agar event loadTabData dipanggil ulang setelah semua JS siap
+        $(document).ready(function() {
+            if (window.tabToReloadAfterReady) {
+                setTimeout(function() {
+                    if (typeof window.loadTabData === 'function') {
+                        window.loadTabData(window.tabToReloadAfterReady);
+                    }
+                }, 100);
+            }
+        });
+    </script>
 @endpush
 @push('custom-css')
     <!-- Custom styles for this page -->

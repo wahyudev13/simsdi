@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_pegawai');
             $table->string('departemen_id');
+            $table->string('nama_departemen')->nullable();
             $table->string('jabatan',100);
             $table->string('file');
             $table->timestamps();

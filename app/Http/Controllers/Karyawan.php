@@ -32,16 +32,16 @@ class Karyawan extends Controller
 
         $deparetemen = Departemen::get();
 
-        $alert_pengingat = FileSTR::where('status','proses')->count();
-        $alert_exp = FileSTR::where('status','nonactive')->count();
-        $peringatan_kontrak_kerja = FileRiwayatKerja::where('status','proses')->count();
+        $peringatan_str = FileSTR::where('status','akan_berakhir')->count();
+        $peringatan_nonaktif_str = FileSTR::where('status','nonactive')->count();
+        $peringatan_kontrak_kerja = FileRiwayatKerja::where('status','akan_berakhir')->count();
         $peringatan_nonaktif_kontrak_kerja = FileRiwayatKerja::where('status','nonactive')->count();
-        $peringatan_sip = MasaBerlakuSIP::where('status','proses')->count();
+        $peringatan_sip = MasaBerlakuSIP::where('status','akan_berakhir')->count();
         $peringatan_nonaktif_sip = MasaBerlakuSIP::where('status','nonactive')->count();
 
         $data = [
-            'alert_pengingat' => $alert_pengingat,
-            'alert_exp' => $alert_exp,
+            'alert_pengingat' => $peringatan_str,
+            'alert_exp' => $peringatan_nonaktif_str,
             'peringatan_kontrak_kerja' => $peringatan_kontrak_kerja,
             'peringatan_nonaktif_kontrak_kerja' => $peringatan_nonaktif_kontrak_kerja,
             'peringatan_sip' => $peringatan_sip,

@@ -35,6 +35,77 @@ use Validator;
 class PageuserController extends Controller
 {
 
+    //Dokumen Kepegawaian
+    public function pendidikan() {
+        $auth = Auth::user()->id_pegawai;
+
+        $pegawai = Pegawai::where('id', $auth)->first();
+        $pengguna = User::where('id_pegawai',$auth)->first();
+        $master_berkas_pendidikan = MasterBerkas::where('kategori','pendidikan')->get();
+
+        $data = [
+            'pengguna' => $pengguna,
+            'pegawai' => $pegawai,
+            'master_berkas_pendidikan' => $master_berkas_pendidikan
+        ];
+        return view('pages.Pengguna.kepegawaian.page-pendidikan',$data);
+    }
+
+    public function izin() {
+        $auth = Auth::user()->id_pegawai;
+
+        $pegawai = Pegawai::where('id', $auth)->first();
+        $pengguna = User::where('id_pegawai',$auth)->first();
+        $master_berkas_izin = MasterBerkas::where('kategori','ijin')->get();
+
+        $str = FileSTR::where('id_pegawai', $auth)->where(function($query){
+            $query->where('status', 'active');
+            $query->orWhere('status', 'proses');
+        })->get();
+
+        $data = [
+            'pengguna' => $pengguna,
+            'pegawai' => $pegawai,
+            'master_berkas_izin' => $master_berkas_izin,
+            'file_str' => $str
+        ];
+        return view('pages.Pengguna.kepegawaian.page-izin',$data);
+    }
+
+    public function riwayat() {
+        $auth = Auth::user()->id_pegawai;
+
+        $pegawai = Pegawai::where('id', $auth)->first();
+        $pengguna = User::where('id_pegawai',$auth)->first();
+        $master_berkas_perjanjian = MasterBerkas::where('kategori','perjanjian')->get();
+
+        $str = FileSTR::where('id_pegawai', $auth)->where(function($query){
+            $query->where('status', 'active');
+            $query->orWhere('status', 'proses');
+        })->get();
+
+        $data = [
+            'pengguna' => $pengguna,
+            'pegawai' => $pegawai,
+            'master_berkas_perjanjian' => $master_berkas_perjanjian
+          
+        ];
+        return view('pages.Pengguna.kepegawaian.page-riwayat',$data);
+    }
+
+    public function orientasi() {
+        $auth = Auth::user()->id_pegawai;
+        $pegawai = Pegawai::where('id', $auth)->first();
+        $master_berkas_orientasi = MasterBerkas::where('kategori','orientasi')->get();
+
+        $data = [
+            'pegawai' => $pegawai,
+            'master_berkas_orientasi' => $master_berkas_orientasi,
+        ];
+        return view('pages.Pengguna.kepegawaian.page-orientasi',$data);
+    }
+    //End Dokumen Kepegawaian
+    
     public function mcu() {
         $auth = Auth::user()->id_pegawai;
         $pengguna = User::where('id_pegawai',$auth)->first();
@@ -223,397 +294,6 @@ class PageuserController extends Controller
                 'code' => 500,
             ]);
         }
-    }
-
-    public function pendidikan() {
-        $auth = Auth::user()->id_pegawai;
-
-        $pegawai = Pegawai::where('id', $auth)->first();
-        $pengguna = User::where('id_pegawai',$auth)->first();
-        $master_berkas_pendidikan = MasterBerkas::where('kategori','pendidikan')->get();
-
-        $data = [
-            'pengguna' => $pengguna,
-            'pegawai' => $pegawai,
-            'master_berkas_pendidikan' => $master_berkas_pendidikan
-        ];
-        return view('pages.Pengguna.page-pendidikan',$data);
-    }
-
-    public function getijazah() {
-        $auth = Auth::user()->id_pegawai;
-
-        $berkas = FileIjazah::where('id_pegawai', $auth)
-        ->join('master_berkas_pegawai', 'file_ijazah.nama_file_id', '=', 'master_berkas_pegawai.id')
-        ->select('file_ijazah.id','master_berkas_pegawai.nama_berkas','file_ijazah.nomor','file_ijazah.asal',
-        'file_ijazah.thn_lulus','file_ijazah.file','file_ijazah.updated_at')
-        ->get();
-
-        return DataTables::of($berkas)
-        ->editColumn('updated_at',function($berkas) {
-            return $berkas->updated_at->format('j F Y h:i:s A');
-        })
-        ->addIndexColumn()
-        ->make(true);
-    }
-
-    public function storeijazah(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nama_file_id' => 'required',
-            'nomor' => 'required',
-            'asal' => 'required',
-            'thn_lulus' => 'required',
-            'file' => 'required|mimes:pdf|max:2048',
-        ],[
-            'nama_file_id.required' => 'Nama File Wajib diisi',
-            'nomor.required' => 'Nomor Ijazah Wajib diisi',
-            'asal.required' => 'Asal Sekolah / Universitas Wajib diisi',
-            'thn_lulus.required' => 'Tahun Lulus Wajib diisi',
-            'file.required' => 'File Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan: pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/Ijazah'), $filenameSimpan);
-    
-                $upload = FileIjazah::create([
-                    'id_pegawai' => $request->id_pegawai,
-                    // 'nik_pegawai' => $request->nik_pegawai,
-                    'nama_file_id' => $request->nama_file_id,
-                    'nomor' => $request->nomor,
-                    'asal' => $request->asal,
-                    'thn_lulus' => $request->thn_lulus,
-                    'file' => $filenameSimpan
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Berkas Ijazah Berhasil Disimpan',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-        
-    }
-
-    public function editijazah(Request $request)
-    {
-        // /$pegawai = Pegawai::where('id', $id)->first();
-        $dokumen = FileIjazah::where('id', $request->id)->first();
-        if ($dokumen) {
-            return response()->json([
-                'message' => 'Data Ditemukan',
-                'code' => 200,
-                'data' => $dokumen
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'code' => 500,
-            ]);
-        }
-
-    }
-
-    public function updateijazah(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nama_file_id' => 'required',
-            'nomor' => 'required',
-            'asal' => 'required',
-            'thn_lulus' => 'required',
-            'file' => 'mimes:pdf|max:2048',
-        ],[
-            'nama_file_id.required' => 'Nama File Wajib diisi',
-            'nomor.required' => 'Nomor Ijazah Wajib diisi',
-            'asal.required' => 'Asal Sekolah / Universitas Wajib diisi',
-            'thn_lulus.required' => 'Tahun Lulus Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan:pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $delete_file = FileIjazah::where('id', $request->id)->first();
-                File::delete('File/Pegawai/Dokumen/Ijazah/'.$delete_file->file);
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/Ijazah'), $filenameSimpan);
-    
-                $upload = FileIjazah::where('id',$request->id)->update([
-                    'id_pegawai' => $request->id_pegawai,
-                    // 'nik_pegawai' => $request->nik_pegawai,
-                    'nama_file_id' => $request->nama_file_id,
-                    'nomor' => $request->nomor,
-                    'asal' => $request->asal,
-                    'thn_lulus' => $request->thn_lulus,
-                    'file' => $filenameSimpan
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Berkas Ijazah Berhasil Diubah',
-                    'data' => $upload
-                ]);
-            }else {
-                $upload = FileIjazah::where('id',$request->id)->update([
-                    'id_pegawai' => $request->id_pegawai,
-                    // 'nik_pegawai' => $request->nik_pegawai,
-                    'nama_file_id' => $request->nama_file_id,
-                    'nomor' => $request->nomor,
-                    'asal' => $request->asal,
-                    'thn_lulus' => $request->thn_lulus,
-                  
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Berkas Ijazah Berhasil Diubah',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function destroyijazah(Request $request)
-    {
-        $dokumen = FileIjazah::where('id', $request->id)->first();
-      
-
-        $delete = FileIjazah::where('id', $request->id)->delete();
-        if ($delete) {
-            File::delete('File/Pegawai/Dokumen/Ijazah/'.$dokumen->file);
-            return response()->json([
-                'message' => 'Data Ijazah Berhasil Dihapus',
-                'code' => 200,
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Gagal Hapus data, data Masih digunakan',
-                'code' => 500,
-            ]);
-        }
-    }
-
-    public function gettrans() {
-        $auth = Auth::user()->id_pegawai;
-
-        $gettranskrip = FileTranskrip::where('id_pegawai', $auth)
-        ->join('master_berkas_pegawai', 'file_transkrip.nama_file_trans_id', '=', 'master_berkas_pegawai.id')
-        ->select('file_transkrip.id','file_transkrip.nomor_transkrip','file_transkrip.file','master_berkas_pegawai.nama_berkas',
-        'file_transkrip.updated_at')
-        ->get();
-        return DataTables::of($gettranskrip)
-        ->editColumn('updated_at',function($gettranskrip) {
-            return $gettranskrip->updated_at->format('j F Y h:i:s A');
-        })
-        ->addIndexColumn()
-        ->make(true);
-    }
-
-    public function storetrans(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nama_file_trans_id' => 'required',
-            'nomor_transkrip' => 'required',
-            'file' => 'required|mimes:pdf|max:2048',
-        ],[
-            'nama_file_trans_id.required' => 'Nama File Wajib diisi',
-            'nomor_transkrip.required' => 'Nomor Transkrip Wajib diisi',
-            'file.required' => 'File Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan:pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/Transkrip'), $filenameSimpan);
-    
-                $upload = FileTranskrip::create([
-                    'id_pegawai' => $request->id_pegawai,
-                    //'nik_pegawai' => $request->nik_pegawai,
-                    'nama_file_trans_id' => $request->nama_file_trans_id,
-                    'nomor_transkrip' => $request->nomor_transkrip,
-                    'file' => $filenameSimpan
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Berkas Transkrip Berhasil Disimpan',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function edittrans(Request $request)
-    {
-        $trans_edit = FileTranskrip::where('id', $request->id)->first();
-        if ($trans_edit) {
-            return response()->json([
-                'message' => 'Data Transkrip Ditemukan',
-                'code' => 200,
-                'data' => $trans_edit
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'code' => 500,
-            ]);
-        }
-    }
-
-    public function updatetrans(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nama_file_trans_id' => 'required',
-            'nomor_transkrip' => 'required',
-            'file' => 'mimes:pdf|max:2048',
-        ],[
-            'nama_file_trans_id.required' => 'Nama File Wajib diisi',
-            'nomor_transkrip.required' => 'Nomor Transkrip Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan:pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $delete_file = FileTranskrip::where('id', $request->id)->first();
-                File::delete('File/Pegawai/Dokumen/Transkrip/'.$delete_file->file);
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/Transkrip'), $filenameSimpan);
-    
-                $upload = FileTranskrip::where('id', $request->id)->update([
-                    'id_pegawai' => $request->id_pegawai,
-                    // 'nik_pegawai' => $request->nik_pegawai,
-                    'nama_file_trans_id' => $request->nama_file_trans_id,
-                    'nomor_transkrip' => $request->nomor_transkrip,
-                    'file' => $filenameSimpan
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Berkas Transkrip Berhasil Diubah',
-                    'data' => $upload
-                ]);
-            }else {
-                $upload = FileTranskrip::where('id', $request->id)->update([
-                    'id_pegawai' => $request->id_pegawai,
-                    // 'nik_pegawai' => $request->nik_pegawai,
-                    'nama_file_trans_id' => $request->nama_file_trans_id,
-                    'nomor_transkrip' => $request->nomor_transkrip,
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Berkas Transkrip Berhasil Diubah',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function destroytrans(Request $request)
-    {
-        $transkrip = FileTranskrip::where('id', $request->id)->first();
-        $delete = FileTranskrip::where('id', $request->id)->delete();
-        if ($delete) {
-            File::delete('File/Pegawai/Dokumen/Transkrip/'.$transkrip->file);
-            return response()->json([
-                'message' => 'Data Transkrip Berhasil Dihapus',
-                'code' => 200,
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Gagal Hapus data, data Masih digunakan',
-                'code' => 500,
-            ]);
-        }
-    }
-
-
-    public function izin() {
-        $auth = Auth::user()->id_pegawai;
-
-        $pegawai = Pegawai::where('id', $auth)->first();
-        $pengguna = User::where('id_pegawai',$auth)->first();
-        $master_berkas_izin = MasterBerkas::where('kategori','ijin')->get();
-
-        $str = FileSTR::where('id_pegawai', $auth)->where(function($query){
-            $query->where('status', 'active');
-            $query->orWhere('status', 'proses');
-        })->get();
-
-        $data = [
-            'pengguna' => $pengguna,
-            'pegawai' => $pegawai,
-            'master_berkas_izin' => $master_berkas_izin,
-            'file_str' => $str
-        ];
-        return view('pages.Pengguna.page-izin',$data);
-    }
-
-   
-
-    public function getRiwayat()
-    {
-        $auth = Auth::user()->id_pegawai;
-        $get_riwayat_kerja = FileRiwayatKerja::where('file_riwayat_pekerjaan.id_pegawai', $auth)
-        ->join('master_berkas_pegawai', 'file_riwayat_pekerjaan.nama_file_riwayat_id', '=', 'master_berkas_pegawai.id')
-        ->select('file_riwayat_pekerjaan.id','file_riwayat_pekerjaan.id_pegawai','file_riwayat_pekerjaan.nomor','file_riwayat_pekerjaan.file','master_berkas_pegawai.nama_berkas',
-        'file_riwayat_pekerjaan.tgl_ed','file_riwayat_pekerjaan.pengingat','file_riwayat_pekerjaan.updated_at','file_riwayat_pekerjaan.status',
-        )
-        ->get();
-
-        return DataTables::of($get_riwayat_kerja)
-        ->editColumn('updated_at',function($get_riwayat_kerja) {
-            return $get_riwayat_kerja->updated_at->format('j F Y h:i:s A');
-        })
-        ->addIndexColumn()
-        ->make(true);
     }
 
     public function getKesehatan()
@@ -808,277 +488,7 @@ class PageuserController extends Controller
         ->make(true);
     }
     
-    public function riwayat() {
-        $auth = Auth::user()->id_pegawai;
-
-        $pegawai = Pegawai::where('id', $auth)->first();
-        $pengguna = User::where('id_pegawai',$auth)->first();
-        $master_berkas_perjanjian = MasterBerkas::where('kategori','perjanjian')->get();
-
-        $str = FileSTR::where('id_pegawai', $auth)->where(function($query){
-            $query->where('status', 'active');
-            $query->orWhere('status', 'proses');
-        })->get();
-
-        $data = [
-            'pengguna' => $pengguna,
-            'pegawai' => $pegawai,
-            'master_berkas_perjanjian' => $master_berkas_perjanjian
-          
-        ];
-        return view('pages.Pengguna.page-riwayat',$data);
-    }
-
-    public function storeriwayat(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nama_file_riwayat_id' => 'required',
-            'nomor' => 'required',
-            'file' => 'required|mimes:pdf|max:2048',
-        ],[
-            'nama_file_riwayat_id.required' => 'Nama File Wajib diisi',
-            'nomor.required' => 'Nomor Wajib diisi',
-            'file.required' => 'File Wajib Diisi',
-            'file.mimes' => 'Format File yang diizinkan: pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/RiwayatKerja'), $filenameSimpan);
-
-                $date = Carbon::today()->toDateString();
-
-                if ($request->tgl_ed != $date && $request->pengingat != $date) {
-                    $upload = FileRiwayatKerja::create([
-                        'id_pegawai' => $request->id_pegawai,
-                        // 'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'active',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
-                    $upload = FileRiwayatKerja::create([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'proses',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
-                    $upload = FileRiwayatKerja::create([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
-                    $upload = FileRiwayatKerja::create([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                        'file' => $filenameSimpan
-                    ]);
-                }
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Dokumen Riwayat Pekerjaan Berhasil Disimpan',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function editriwayat(Request $request)
-    {
-        $riwayat = FileRiwayatKerja::where('id', $request->id)->first();
-        if ($riwayat) {
-            return response()->json([
-                'message' => 'Data Riwayat Pekerjaan Ditemukan',
-                'code' => 200,
-                'data' => $riwayat
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'code' => 500,
-            ]);
-        }
-    }
-
-    public function updateriwayat(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nama_file_riwayat_id' => 'required',
-            'nomor' => 'required',
-            'file' => 'mimes:pdf|max:2048',
-        ],[
-            'nama_file_riwayat_id.required' => 'Nama File Wajib diisi',
-            'nomor.required' => 'Nomor Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan: pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-                
-                $delete_file = FileRiwayatKerja::where('id', $request->id)->first();
-                File::delete('File/Pegawai/Dokumen/RiwayatKerja/'.$delete_file->file);
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/RiwayatKerja'), $filenameSimpan);
-
-                $date = Carbon::today()->toDateString();
-
-                if ($request->tgl_ed != $date && $request->pengingat != $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'active',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'proses',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                        'file' => $filenameSimpan
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                        'file' => $filenameSimpan
-                    ]);
-                }
-            }else {
-                $date = Carbon::today()->toDateString();
-                if ($request->tgl_ed != $date && $request->pengingat != $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'active',
-                       
-                    ]);
-                }elseif ($request->tgl_ed != $date && $request->pengingat == $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'proses',
-                       
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat != $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                       
-                    ]);
-                }elseif ($request->tgl_ed == $date && $request->pengingat == $date) {
-                    $upload = FileRiwayatKerja::where('id',$request->id)->update([
-                        'id_pegawai' => $request->id_pegawai,
-                      //'nik_pegawai' => $request->nik_pegawai,
-                        'nama_file_riwayat_id' => $request->nama_file_riwayat_id,
-                        'nomor' => $request->nomor,
-                        'tgl_ed' => $request->tgl_ed,
-                        'pengingat' => $request->pengingat,
-                        'status' => 'nonactive',
-                       
-                    ]);
-                }
-            }
-            return response()->json([
-                'status' => 200,
-                'message' => 'Dokumen Riwayat Pekerjaan Berhasil Diubah',
-                'data' => $upload
-            ]);
-
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function destroyriwayat(Request $request)
-    {
-        $delete_riwayat = FileRiwayatKerja::where('id', $request->id)->first();
-            $delete = FileRiwayatKerja::where('id', $request->id)->delete();
-            if ($delete) {
-                File::delete('File/Pegawai/Dokumen/RiwayatKerja/'.$delete_riwayat->file);
-                return response()->json([
-                    'message' => 'Data Riwayat Kerja Berhasil Dihapus',
-                    'code' => 200,
-                ]);
-            }
-    }
+   
 
     public function storevaksin(Request $request)
     {
@@ -1477,170 +887,7 @@ class PageuserController extends Controller
         
     }
 
-    public function orientasi() {
-        $auth = Auth::user()->id_pegawai;
-        $pegawai = Pegawai::where('id', $auth)->first();
-        $data = [
-            'pegawai' => $pegawai
-        ];
-        return view('pages.Pengguna.page-orientasi',$data);
-    }
-
-    public function getOrientasi(Request $request)
-    {
-        $auth = Auth::user()->id_pegawai;
-        $getfile = FileOrientasi::where('id_pegawai', $auth)->get();
-
-        return DataTables::of($getfile)
-        ->addIndexColumn()
-        ->make(true);
-    }
-
-    public function storeOrientasi(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nomor_orientasi' => 'required',
-            'tgl_mulai' => 'required',
-            'tgl_selesai' => 'required',
-            'file' => 'required|mimes:pdf|max:2048',
-        ],[
-            'nomor_orientasi.required' => 'Nomor Sertifikat Wajib diisi',
-            'tgl_mulai.required' => 'Tanggal Mulai Wajib diisi',
-            'tgl_selesai.required' => 'Tanggal Selesai Wajib diisi',
-            'file.required' => 'File Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan: pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/Orientasi'), $filenameSimpan);
     
-                $upload = FileOrientasi::create([
-                    'id_pegawai' => $request->id_pegawai,
-                    'nomor' => $request->nomor_orientasi,
-                    'tgl_mulai' => $request->tgl_mulai,
-                    'tgl_selesai' => $request->tgl_selesai,
-                    'file' => $filenameSimpan
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Sertifikat Oriantasi '.$request->nomor_orientasi.' Berhasil Disimpan',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function editOrientasi(Request $request)
-    {
-        $dokumen = FileOrientasi::where('id', $request->id)->first();
-        if ($dokumen) {
-            return response()->json([
-                'message' => 'Data Ditemukan',
-                'code' => 200,
-                'data' => $dokumen
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'code' => 500,
-            ]);
-        }
-    }
-
-    public function updateOrientasi(Request $request)
-    {
-        $validated = Validator::make($request->all(),[
-            'nomor_orientasi' => 'required',
-            'tgl_mulai' => 'required',
-            'tgl_selesai' => 'required',
-            'file' => 'mimes:pdf|max:2048',
-        ],[
-            'nomor_orientasi.required' => 'Nomor Sertifikat Wajib diisi',
-            'tgl_mulai.required' => 'Tanggal Mulai Wajib diisi',
-            'tgl_selesai.required' => 'Tanggal Selesai Wajib diisi',
-            'file.mimes' => 'Format File yang diizinkan: pdf',
-            'file.max' => 'File Maksimal 2MB'
-        ]);
-
-        if ($validated->passes()) {
-            if ($request->hasFile('file')) {
-
-                $delete_file = FileOrientasi::where('id', $request->id_orientasi)->first();
-                File::delete('File/Pegawai/Dokumen/Orientasi/'.$delete_file->file);
-
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
-                // $filename = time().'.'.$request->file('berkas')->extension();
-                $request->file('file')->move(public_path('File/Pegawai/Dokumen/Orientasi'), $filenameSimpan);
-    
-                $upload = FileOrientasi::where('id', $request->id_orientasi)->update([
-                    'id_pegawai' => $request->id_pegawai,
-                    'nomor' => $request->nomor_orientasi,
-                    'tgl_mulai' => $request->tgl_mulai,
-                    'tgl_selesai' => $request->tgl_selesai,
-                    'file' => $filenameSimpan
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Sertifikat Oriantasi '.$request->nomor_orientasi.' Berhasil Diupdate',
-                    'data' => $upload
-                ]);
-            }else {
-                $upload = FileOrientasi::where('id', $request->id_orientasi)->update([
-                    'id_pegawai' => $request->id_pegawai,
-                    'nomor' => $request->nomor_orientasi,
-                    'tgl_mulai' => $request->tgl_mulai,
-                    'tgl_selesai' => $request->tgl_selesai,
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Sertifikat Oriantasi '.$request->nomor_orientasi.' Berhasil Diupdate',
-                    'data' => $upload
-                ]);
-            }
-           
-        }else {
-            return response()->json([
-                'status' => 400,
-                'error' => $validated->messages()
-            ]);
-        }
-    }
-
-    public function destroyOrientasi(Request $request)
-    {
-        $delete_file = FileOrientasi::where('id', $request->id_orientasi)->first();
-
-        $delete = FileOrientasi::where('id', $request->id_orientasi)->delete();
-        if ($delete) {
-            File::delete('File/Pegawai/Dokumen/Orientasi/'.$delete_file->file);
-            return response()->json([
-                'message' => 'Data Sertifikat '.$request->nomor.' Berhasil Dihapus',
-                'code' => 200,
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'code' => 500,
-            ]);
-        }
-    }
 
     public function getPresensiPengguna(Request $request) {
         $auth = Auth::user()->id_pegawai;

@@ -6,8 +6,11 @@
             scrollX: false,
             bInfo: false,
             searching: false,
-            processing: false,
             serverSide: true,
+            processing: true,
+            language: {
+                processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+            },
             ajax: {
                 url: '{{ route('kesehatan.vaksin.index') }}',
                 data: {
@@ -63,8 +66,8 @@
         $(document).on('click', '#view-vaksin', function(e) {
             e.preventDefault();
             var namafile = $(this).data('id');
-            var url = '{{route('login.index')}}';
-            PDFObject.embed(url+'/File/Pegawai/Kesehatan/Vaksin/'+namafile, "#view-vaksin-modal");
+            var url = '{{ url('/') }}';
+            PDFObject.embed(url + '/File/Pegawai/Kesehatan/Vaksin/' + namafile, "#view-vaksin-modal");
         });
         //ADD VAKSIN
         $('#form-add-vaksin').on('submit', function(e) {
@@ -109,7 +112,7 @@
                         $('#modaladdVaksin').find('.form-control').val("");
 
                         var vaksin = $('#tbVaksin').DataTable().ajax.reload();
-                       
+
                     }
                 }
             });
@@ -179,7 +182,8 @@
                         $('#error_list_vaksin_edit').removeClass("d-none")
 
                         $.each(response.error, function(key, error_value) {
-                            $('#error_list_vaksin_edit').append('<li>' + error_value +
+                            $('#error_list_vaksin_edit').append('<li>' +
+                                error_value +
                                 '</li>');
                         });
                     } else {

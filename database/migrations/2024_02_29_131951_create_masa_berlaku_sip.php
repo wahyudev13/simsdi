@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('sip_id');
             $table->date('tgl_ed');
-            $table->date('pengingat');
             $table->enum('status', ['active', 'proses','nonactive','changed','lifetime'])->default('active');
             $table->timestamps();
 

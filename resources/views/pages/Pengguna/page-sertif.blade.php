@@ -289,13 +289,13 @@
             });
 
             //VIEW Berkas Ijazah
-            $(document).on('click', '#view-sertif', function(e) {
-                e.preventDefault();
-                var sertif = $(this).data('file');
-                var url = '{{ route('login.index') }}';
-                PDFObject.embed(url + '/File/Pegawai/Diklat/Sertifikat-Pelatihan/' + sertif,
-                    "#view-sertif-modal");
-            });
+            // $(document).on('click', '#view-sertif', function(e) {
+            //     e.preventDefault();
+            //     var sertif = $(this).data('file');
+            //     var url = '{{ route('login.index') }}';
+            //     PDFObject.embed(url + '/File/Pegawai/Diklat/Sertifikat-Pelatihan/' + sertif,
+            //         "#view-sertif-modal");
+            // });
 
             $('#form-add-sertif').on('submit', function(e) {
                 e.preventDefault();

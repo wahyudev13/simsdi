@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pegawai');
             $table->string('nomor_spk');
             $table->string('departemen_id');
+            $table->string('nama_departemen')->after('departemen_id');
             $table->string('kualifikasi',100);
             $table->string('file');
             $table->timestamps();

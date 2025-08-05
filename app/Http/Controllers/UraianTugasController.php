@@ -7,24 +7,22 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Validator;
 use File;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\Departemen;
+use App\Helpers\ActivityLogHelper;
+use App\Models\Pegawai;
 class UraianTugasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    
+
+    public function get(Request $request) 
     {
-        //
-    }
-
-    public function get(Request $request) {
-
-        $database_2 = config('database.connections.mysql2.database');
-        $uraian_tugas = UraianTugas::where('uraian_tugas.id_pegawai',$request->id)
-        ->join("$database_2.departemen as departemen",'uraian_tugas.departemen_id','=','departemen.dep_id')
+        if (auth('admin')->check()) {
+            $auth = $request->id;
+        } else {
+            $auth = Auth::user()->id_pegawai;
+        }
+        $uraian_tugas = UraianTugas::where('uraian_tugas.id_pegawai',$auth)
         ->orderBy('uraian_tugas.created_at','desc')
         ->get();
 
@@ -36,22 +34,6 @@ class UraianTugasController extends Controller
         ->make(true);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -69,16 +51,30 @@ class UraianTugasController extends Controller
 
         if ($validated->passes()) {
             if ($request->hasFile('file')) {
-
+                $departemen = Departemen::where('dep_id', $request->dep_uraian)->first();
+                $nama_departemen = $departemen ? $departemen->nama : null;
+                $namaDepartemenBersih = $departemen ? preg_replace('/[^A-Za-z0-9]/', '', $departemen->nama) : 'DEPARTEMEN';
+                $jabatanBersih = preg_replace('/[^A-Za-z0-9]/', '', $request->jabatan);
+                $pegawai = Pegawai::where('id', $request->id_pegawai)->first();
+                $nipPegawai = $pegawai ? $pegawai->nik : $request->id_pegawai;
+                $currentDate = date('Ymd');
                 $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
+                $hash = substr(md5($filenameWithExt . time()), 0, 6);
+                $filenameSimpan = 'URAIANTUGAS_' . $namaDepartemenBersih . '_' . $jabatanBersih . '_' . $nipPegawai . '_' . $currentDate . '_' . $hash . '.' . $extension;
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/Uraian-Tugas'), $filenameSimpan);
     
                 $upload = UraianTugas::create([
                     'id_pegawai' => $request->id_pegawai,
                     'departemen_id' => $request->dep_uraian,
+                    'nama_departemen' => $nama_departemen,
+                    'jabatan' => $request->jabatan,
+                    'file' => $filenameSimpan
+                ]);
+                ActivityLogHelper::logCrud('created', $upload, 'Membuat data Uraian Tugas baru: '.$request->jabatan, [
+                    'id_pegawai' => $request->id_pegawai,
+                    'departemen_id' => $request->dep_uraian,
+                    'nama_departemen' => $nama_departemen,
                     'jabatan' => $request->jabatan,
                     'file' => $filenameSimpan
                 ]);
@@ -97,23 +93,6 @@ class UraianTugasController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\UraianTugas  $uraianTugas
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UraianTugas $uraianTugas)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\UraianTugas  $uraianTugas
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Request $request)
     {
         
@@ -132,13 +111,6 @@ class UraianTugasController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UraianTugas  $uraianTugas
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -154,20 +126,33 @@ class UraianTugasController extends Controller
         ]);
 
         if ($validated->passes()) {
+            $departemen = Departemen::where('dep_id', $request->dep_uraian)->first();
+            $nama_departemen = $departemen ? $departemen->nama : null;
+            $namaDepartemenBersih = $departemen ? preg_replace('/[^A-Za-z0-9]/', '', $departemen->nama) : 'DEPARTEMEN';
+            $jabatanBersih = preg_replace('/[^A-Za-z0-9]/', '', $request->jabatan);
+            $pegawai = Pegawai::where('id', $request->id_pegawai)->first();
+            $nipPegawai = $pegawai ? $pegawai->nik : $request->id_pegawai;
+            $currentDate = date('Ymd');
             if ($request->hasFile('file')) {
-
                 $delete_file = UraianTugas::where('id', $request->id)->first();
                 File::delete('File/Pegawai/Dokumen/Uraian-Tugas/'.$delete_file->file);
-
                 $filenameWithExt = $request->file('file')->getClientOriginalName();
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('file')->getClientOriginalExtension();
-                $filenameSimpan = $filename.'_'.time().'.'.$extension;
+                $hash = substr(md5($filenameWithExt . time()), 0, 6);
+                $filenameSimpan = 'URAIANTUGAS_' . $namaDepartemenBersih . '_' . $jabatanBersih . '_' . $nipPegawai . '_' . $currentDate . '_' . $hash . '.' . $extension;
                 $request->file('file')->move(public_path('File/Pegawai/Dokumen/Uraian-Tugas'), $filenameSimpan);
     
                 $update = UraianTugas::where('id', $request->id)->update([
                     'id_pegawai' => $request->id_pegawai,
                     'departemen_id' => $request->dep_uraian,
+                    'nama_departemen' => $nama_departemen,
+                    'jabatan' => $request->jabatan,
+                    'file' => $filenameSimpan
+                ]);
+                ActivityLogHelper::logCrud('updated', $delete_file, 'Mengubah data Uraian Tugas: '.$request->jabatan, [
+                    'id_pegawai' => $request->id_pegawai,
+                    'departemen_id' => $request->dep_uraian,
+                    'nama_departemen' => $nama_departemen,
                     'jabatan' => $request->jabatan,
                     'file' => $filenameSimpan
                 ]);
@@ -177,10 +162,34 @@ class UraianTugasController extends Controller
                     'data' => $update
                 ]);
             }else {
+                // Rename file lama sesuai format baru meskipun file tidak diupload
+                $dokumen = UraianTugas::where('id', $request->id)->first();
+                $oldFile = $dokumen->file;
+                $extension = pathinfo($oldFile, PATHINFO_EXTENSION);
+                $hash = substr(md5($oldFile . time()), 0, 6);
+                $filenameSimpan = 'URAIANTUGAS_' . $namaDepartemenBersih . '_' . $jabatanBersih . '_' . $nipPegawai . '_' . $currentDate . '_' . $hash . '.' . $extension;
+                $oldPath = public_path('File/Pegawai/Dokumen/Uraian-Tugas/'.$oldFile);
+                $newPath = public_path('File/Pegawai/Dokumen/Uraian-Tugas/'.$filenameSimpan);
+                if (file_exists($oldPath)) {
+                    rename($oldPath, $newPath);
+                }
                 $update = UraianTugas::where('id', $request->id)->update([
                     'id_pegawai' => $request->id_pegawai,
                     'departemen_id' => $request->dep_uraian,
+                    'nama_departemen' => $nama_departemen,
                     'jabatan' => $request->jabatan,
+                    'file' => $filenameSimpan
+                ]);
+                $dokumen = UraianTugas::where('id', $request->id)->first();
+                ActivityLogHelper::logCrud('updated', $dokumen, 'Mengubah data Uraian Tugas: '.$request->jabatan, [
+                    'id_pegawai' => $request->id_pegawai,
+                    'departemen_id' => $request->dep_uraian,
+                    'nama_departemen' => $nama_departemen,
+                    'jabatan' => $request->jabatan,
+                    'file' => $filenameSimpan,
+                    'file_diubah' => false,
+                    'nama_file_baru' => $filenameSimpan,
+                    'nama_file_lama' => $oldFile
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -197,12 +206,6 @@ class UraianTugasController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\UraianTugas  $uraianTugas
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         $dokumen = UraianTugas::where('id', $request->id)->first();
@@ -210,6 +213,13 @@ class UraianTugasController extends Controller
         $delete = UraianTugas::where('id', $request->id)->delete();
         if ($delete) {
             File::delete('File/Pegawai/Dokumen/Uraian-Tugas/'.$dokumen->file);
+            ActivityLogHelper::log('Menghapus data Uraian Tugas: ' . ($dokumen->jabatan ?? ''), [
+                'id_pegawai' => $dokumen->id_pegawai ?? null,
+                'departemen_id' => $dokumen->departemen_id ?? null,
+                'nama_departemen' => $dokumen->nama_departemen ?? null,
+                'jabatan' => $dokumen->jabatan ?? null,
+                'file' => $dokumen->file ?? null
+            ]);
             return response()->json([
                 'message' => 'Data Uraian-Tugas Berhasil Dihapus',
                 'code' => 200,
@@ -220,5 +230,22 @@ class UraianTugasController extends Controller
                 'code' => 500,
             ]);
         }
+    }
+
+    public function viewPdf($filename)
+    {
+        // Validasi nama file hanya karakter yang diizinkan (alphanumeric, dash, underscore, dot)
+        if (!preg_match('/^[A-Za-z0-9._-]+\.pdf$/', $filename)) {
+            abort(404, 'File tidak valid');
+        }
+        $path = public_path('File/Pegawai/Dokumen/Uraian-Tugas/' . $filename);
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+        // Opsi: tambahkan validasi hak akses user di sini
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
     }
 }

@@ -27,6 +27,18 @@
                     <i class="fas fa-users text-success"></i> User Activities
                 </a>
                 <a class="dropdown-item"
+                    href="{{ route('activity-log.index') }}?log_name=verifikasi_ijazah&date_from={{ now()->format('Y-m-d') }}">
+                    <i class="fas fa-file-check text-info"></i> Verifikasi Ijazah Activities
+                </a>
+                <a class="dropdown-item"
+                    href="{{ route('activity-log.index') }}?log_name=file_ijazah&date_from={{ now()->subDay()->format('Y-m-d') }}">
+                    <i class="fas fa-file-alt text-info"></i> File Ijazah Activities
+                </a>
+                <a class="dropdown-item"
+                    href="{{ route('activity-log.index') }}?log_name=file_ijazah&event=created&date_from={{ now()->subWeek()->format('Y-m-d') }}">
+                    <i class="fas fa-plus-circle text-success"></i> New Ijazah Uploads
+                </a>
+                <a class="dropdown-item"
                     href="{{ route('activity-log.index') }}?log_name=admin&date_from={{ now()->format('Y-m-d') }}">
                     <i class="fas fa-user-shield text-primary"></i> Admin Activities
                 </a>

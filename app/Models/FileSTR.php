@@ -13,12 +13,12 @@ class FileSTR extends Model
     use HasFactory, LogsActivity;
 
     protected $table = 'file_str';
-    protected $fillable = ['id','id_pegawai','nama_file_str_id','no_reg_str','kompetensi','file','tgl_ed','pengingat','status','created_at','updated_at'];
+    protected $fillable = ['id','id_pegawai','nama_file_str_id','no_reg_str','kompetensi','file','tgl_ed','status','created_at','updated_at'];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['no_reg_str', 'kompetensi', 'file', 'tgl_ed', 'pengingat', 'status'])
+            ->logOnly(['no_reg_str', 'kompetensi', 'file', 'tgl_ed', 'status'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn(string $eventName) => "STR file {$eventName}")

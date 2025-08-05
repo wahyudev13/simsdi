@@ -36,7 +36,7 @@ class FileSIPController extends Controller
         ->leftjoin('masa_berlaku_sip','file_sip.id','=','masa_berlaku_sip.sip_id')
         ->select('file_sip.id','file_sip.id_pegawai','file_sip.no_sip','file_sip.file','master_berkas_pegawai.nama_berkas',
         'file_str.no_reg_str','file_str.kompetensi','file_str.tgl_ed','file_sip.updated_at','masa_berlaku_sip.id AS id_masa_berlaku',
-        'masa_berlaku_sip.tgl_ed AS tgl_ed_sip','masa_berlaku_sip.pengingat','masa_berlaku_sip.status AS status_sip')
+        'masa_berlaku_sip.tgl_ed AS tgl_ed_sip','masa_berlaku_sip.status AS status_sip')
         ->orderBy('file_sip.created_at','desc')
         ->get();
 
@@ -282,7 +282,6 @@ class FileSIPController extends Controller
         ->where(function($query){
             $query->where('status', 'active');
             $query->orWhere('status', 'lifetime');
-            $query->orWhere('status', 'proses');
         })
         ->select('file_str.id','file_str.no_reg_str')
         ->get();
@@ -306,7 +305,6 @@ class FileSIPController extends Controller
         // ->where(function($query){
         //     $query->where('status', 'active');
         //     $query->orWhere('status', 'lifetime');
-        //     $query->orWhere('status', 'proses');
         // })
         ->select('file_str.id','file_str.no_reg_str')
         ->get();
@@ -328,14 +326,11 @@ class FileSIPController extends Controller
         $validated = Validator::make($request->all(), [
             'sip_id_masa_berlaku' => 'required|exists:file_sip,id',
             'tgl_ed_sip' => 'required|date',
-            'pengingat_sip' => 'required|date',
         ], [
             'sip_id_masa_berlaku.required' => 'SIP wajib dipilih',
             'sip_id_masa_berlaku.exists' => 'SIP tidak ditemukan',
             'tgl_ed_sip.required' => 'Tanggal masa berlaku wajib diisi',
             'tgl_ed_sip.date' => 'Format tanggal tidak valid',
-            'pengingat_sip.required' => 'Tanggal pengingat wajib diisi',
-            'pengingat_sip.date' => 'Format tanggal tidak valid',
         ]);
 
         if ($validated->fails()) {
@@ -345,15 +340,15 @@ class FileSIPController extends Controller
             ]);
         }
 
-        // Cek duplikasi masa berlaku aktif/proses
+        // Cek duplikasi masa berlaku aktif
         $exists = MasaBerlakuSIP::where('sip_id', $request->sip_id_masa_berlaku)
-            ->whereIn('status', ['active', 'proses'])
+            ->where('status', 'active')
             ->exists();
 
         if ($exists) {
             return response()->json([
                 'status' => 400,
-                'error' => ['Masa berlaku aktif/proses untuk SIP ini sudah ada.']
+                'error' => ['Masa berlaku aktif untuk SIP ini sudah ada.']
             ]);
         }
 
@@ -362,8 +357,8 @@ class FileSIPController extends Controller
         $status = 'active';
         if ($request->tgl_ed_sip == $today) {
             $status = 'nonactive';
-        } elseif ($request->pengingat_sip == $today) {
-            $status = 'proses';
+        }elseif ($request->tgl_ed_sip < $today) {
+            $status = 'nonactive';
         }
         // Jika ingin lifetime, bisa tambahkan:
         // if (empty($request->tgl_ed_sip)) $status = 'lifetime';
@@ -371,14 +366,12 @@ class FileSIPController extends Controller
         $masaBerlaku = MasaBerlakuSIP::create([
             'sip_id' => $request->sip_id_masa_berlaku,
             'tgl_ed' => $request->tgl_ed_sip,
-            'pengingat' => $request->pengingat_sip,
             'status' => $status
         ]);
 
         ActivityLogHelper::logCrud('created', $masaBerlaku, 'Menambah masa berlaku SIP', [
             'sip_id' => $request->sip_id_masa_berlaku,
             'tgl_ed' => $request->tgl_ed_sip,
-            'pengingat' => $request->pengingat_sip,
             'status' => $status
         ]);
 
@@ -407,7 +400,6 @@ class FileSIPController extends Controller
                     'sip_id' => $masaBerlaku->sip_id,
                     'no_sip' => $sipNumber,
                     'tgl_ed' => $masaBerlaku->tgl_ed,
-                    'pengingat' => $masaBerlaku->pengingat,
                     'status' => $masaBerlaku->status,
                     'aksi' => 'hapus_masa_berlaku_sip'
                 ]);
@@ -431,6 +423,14 @@ class FileSIPController extends Controller
             'status' => $request->status
         ]);
 
+        // Update updated_at pada file_sip
+        $masaBerlaku = MasaBerlakuSIP::where('id', $request->id)->first();
+        if ($masaBerlaku) {
+            \App\Models\FileSIP::where('id', $masaBerlaku->sip_id)->update([
+                'updated_at' => now()
+            ]);
+        }
+
         // Log aktivitas perubahan status masa berlaku SIP
         ActivityLogHelper::log('Status masa berlaku SIP ' . ($request->nosip ?? '') . ' berhasil diubah', [
             'id_masa_berlaku' => $request->id,
@@ -442,6 +442,27 @@ class FileSIPController extends Controller
             'status' => 200,
             'message' => 'Status Masa Berlaku SIP '.$request->nosip.' Berhasil Diubah',
             'data' => $upload
+        ]);
+    }
+
+
+    public function viewPdf($filename)
+    {
+        // Validasi nama file hanya karakter yang diizinkan
+        if (!preg_match('/^[A-Za-z0-9._-]+\.pdf$/', $filename)) {
+            abort(404, 'File tidak valid');
+        }
+        
+        // Validasi file exists
+        $path = public_path('File/Pegawai/Dokumen/SIP/' . $filename);
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+      
+        // Return file PDF
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
         ]);
     }
 }

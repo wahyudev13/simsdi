@@ -118,4 +118,23 @@ class VerifStrController extends Controller
             ]);
         }
     }
+
+    public function viewPdf($filename)
+    {
+        // Validasi nama file hanya karakter yang diizinkan (alphanumeric, dash, underscore, dot)
+        if (!preg_match('/^[A-Za-z0-9._-]+\.pdf$/', $filename)) {
+            abort(404, 'File tidak valid');
+        }
+        
+        $path = public_path('File/Pegawai/Dokumen/STR/Verifikasi/'.$filename);
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+        
+        // Opsi: tambahkan validasi hak akses user di sini
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
+    }
 }

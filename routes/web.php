@@ -164,14 +164,17 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         //Berkas Ijazah
         Route::get('/karyawan/berkas/ijazah/get', [FileIjazahController::class, 'getIjazah'])->name('berkas.getIjazah');
         Route::get('/karyawan/berkas/kepeg/{id}', [FileIjazahController::class, 'index'])->name('berkas.index');
-        Route::post('/karyawan/berkas/store', [FileIjazahController::class, 'store'])->name('berkas.store');
-        Route::post('/karyawan/berkas/delete', [FileIjazahController::class, 'destroy'])->name('berkas.destroy');
-        Route::get('/karyawan/edit/berkas', [FileIjazahController::class, 'edit'])->name('berkas.edit');
-        Route::post('/karyawan/update/berkas', [FileIjazahController::class, 'update'])->name('berkas.update');
-        
+        Route::post('/karyawan/berkas/store', [FileIjazahController::class, 'store'])->name('berkas.ijazah.store');
+        Route::post('/karyawan/berkas/delete', [FileIjazahController::class, 'destroy'])->name('berkas.ijazah.destroy');
+        Route::get('/karyawan/edit/berkas', [FileIjazahController::class, 'edit'])->name('berkas.ijazah.edit');
+        Route::post('/karyawan/update/berkas', [FileIjazahController::class, 'update'])->name('berkas.ijazah.update');
+        //View PDF Ijazah
+        Route::get('/karyawan/ijazah/view/{filename}', [FileIjazahController::class, 'viewPdf'])->name('ijazah.view');
         //Verifikasi Ijazah
         Route::post('/karyawan/ijazah/verif/store', [VerifIjazahController::class, 'store'])->name('verif.ijazah.store');
         Route::post('/karyawan/ijazah/verif/destroy', [VerifIjazahController::class, 'destroy'])->name('verif.ijazah.destroy');
+        //View PDF Verifikasi Ijazah
+        Route::get('/karyawan/ijazah/verif/view/{filename}', [VerifIjazahController::class, 'viewPdf'])->name('verif.ijazah.view');
 
         //Berkas Transkrip
         Route::get('/karyawan/berkas/traskrip/get', [FileTranskripController::class, 'getTranskrip'])->name('berkas.getTranskrip');
@@ -179,6 +182,8 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('/karyawan/edit/berkas/traskrip', [FileTranskripController::class, 'edit'])->name('berkas.transkrip.edit');
         Route::post('/karyawan/update/berkas/traskrip', [FileTranskripController::class, 'update'])->name('berkas.transkrip.update');
         Route::post('/karyawan/berkas/traskrip/destroy', [FileTranskripController::class, 'destroy'])->name('berkas.transkrip.destroy');
+        //View PDF Transkrip
+        Route::get('/karyawan/transkrip/view/{filename}', [FileTranskripController::class, 'viewPdf'])->name('transkrip.view');
 
         //Berkas STR
         Route::get('/karyawan/berkas/str/get', [FileSTRController::class, 'getSTR'])->name('berkas.getSTR');
@@ -187,11 +192,14 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('/karyawan/berkas/str/edit', [FileSTRController::class, 'edit'])->name('berkas.str.edit');
         Route::post('/karyawan/berkas/str/update', [FileSTRController::class, 'update'])->name('berkas.str.update');
         Route::post('/karyawan/berkas/str/status', [FileSTRController::class, 'status'])->name('berkas.str.status');
-        
+        //View PDF STR
+        Route::get('/karyawan/str/view/{filename}', [FileSTRController::class, 'viewPdf'])->name('str.view');
         //Verifikasi STR
         Route::post('/karyawan/str/verif/store', [VerifStrController::class, 'store'])->name('verif.str.store');
         Route::post('/karyawan/str/verif/destroy', [VerifStrController::class, 'destroy'])->name('verif.str.destroy');
-        
+        //View PDF Verifikasi STR
+        Route::get('/karyawan/str/verif/view/{filename}', [VerifStrController::class, 'viewPdf'])->name('verif.str.view');
+    
         //JSON STR
         Route::get('/karyawan/str/get', [FileSIPController::class, 'strget'])->name('file.str.get');
         Route::get('/karyawan/str/selected/get', [FileSIPController::class, 'str_selected'])->name('selected.str.get');
@@ -205,46 +213,66 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::post('/karyawan/berkas/sip/exp', [FileSIPController::class, 'exp'])->name('berkas.sip.exp');
         Route::post('/karyawan/berkas/sip/desexp', [FileSIPController::class, 'destroyexp'])->name('berkas.sip.desexp');
         Route::post('/karyawan/berkas/sip/status', [FileSIPController::class, 'status'])->name('berkas.sip.status');
+        //View PDF SIP
+        Route::get('/karyawan/sip/view/{filename}', [FileSIPController::class, 'viewPdf'])->name('berkas.sip.view');
 
         //Berkas Riwayat kerja
-        Route::get('/karyawan/berkas/riwayat/get', [FileRiwayatKerjaController::class, 'getRiwayat'])->name('berkas.riwayat.getRiwayat');
-        Route::post('/karyawan/berkas/riwayat/store', [FileRiwayatKerjaController::class, 'store'])->name('berkas.riwayat.store');
-        Route::get('/karyawan/berkas/riwayat/edit', [FileRiwayatKerjaController::class, 'edit'])->name('berkas.riwayat.edit');
-        Route::post('/karyawan/berkas/riwayat/update', [FileRiwayatKerjaController::class, 'update'])->name('berkas.riwayat.update');
-        Route::post('/karyawan/berkas/riwayat/destroy', [FileRiwayatKerjaController::class, 'destroy'])->name('berkas.riwayat.destroy');
-        Route::post('/karyawan/berkas/riwayat/updatestatus', [FileRiwayatKerjaController::class, 'updatestatus'])->name('berkas.riwayat.update.status');
-
+        Route::get('karyawan/berkas/riwayat/get', [FileRiwayatKerjaController::class, 'getRiwayat'])->name('berkas.riwayat.getRiwayat');
+        Route::post('karyawan/berkas/riwayat/store', [FileRiwayatKerjaController::class, 'store'])->name('berkas.riwayat.store');
+        Route::get('karyawan/berkas/riwayat/edit', [FileRiwayatKerjaController::class, 'edit'])->name('berkas.riwayat.edit');
+        Route::post('karyawan/berkas/riwayat/update', [FileRiwayatKerjaController::class, 'update'])->name('berkas.riwayat.update');
+        Route::post('karyawan/berkas/riwayat/destroy', [FileRiwayatKerjaController::class, 'destroy'])->name('berkas.riwayat.destroy');
+        Route::post('karyawan/berkas/riwayat/updatestatus', [FileRiwayatKerjaController::class, 'updatestatus'])->name('berkas.riwayat.update.status');
+        //View PDF Riwayat
+        Route::get('karyawan/berkas/riwayat/view/{filename}', [FileRiwayatKerjaController::class, 'viewPdf'])->name('berkas.riwayat.view');
+        
+        //Berkas data Diri
+        Route::get('karyawan/berkas/identitas/get', [FileIdentitasController::class, 'getFile'])->name('berkas.identitas.getFile');
+        Route::post('karyawan/berkas/identitas/store', [FileIdentitasController::class, 'store'])->name('berkas.identitas.store');
+        Route::post('karyawan/berkas/identitas/destroy', [FileIdentitasController::class, 'destroy'])->name('berkas.identitas.destroy');
+        Route::get('karyawan/berkas/identitas/edit', [FileIdentitasController::class, 'edit'])->name('berkas.identitas.edit');
+        Route::post('karyawan/berkas/identitas/update', [FileIdentitasController::class, 'update'])->name('berkas.identitas.update');
+        //View PDF data Diri karyawan
+        Route::get('karyawan/berkas/identitas/view/{filename}', [FileIdentitasController::class, 'viewPdf'])->name('berkas.identitas.view');
+        
         //Berkas Orientasi
         Route::get('karyawan/berkas/orientasi', [FileOrientasiController::class, 'getOrientasi'])->name('berkas.orientasi.get');
         Route::post('karyawan/berkas/orientasi/store', [FileOrientasiController::class, 'store'])->name('berkas.orientasi.store');
         Route::get('karyawan/berkas/orientasi/edit', [FileOrientasiController::class, 'edit'])->name('berkas.orientasi.edit');
         Route::post('karyawan/berkas/orientasi/update', [FileOrientasiController::class, 'update'])->name('berkas.orientasi.update');
         Route::post('karyawan/berkas/orientasi/destroy', [FileOrientasiController::class, 'destroy'])->name('berkas.orientasi.destroy');
-        //Berkas Lain-lain
-        Route::get('karyawan/berkas/lain-lain', [FileLainController::class, 'get'])->name('berkas.lainlain.get');
-        Route::post('karyawan/berkas/lain-lain/store', [FileLainController::class, 'store'])->name('berkas.lainlain.store');
-        Route::get('karyawan/berkas/lain-lain/edit', [FileLainController::class, 'edit'])->name('berkas.lainlain.edit');
-        Route::post('karyawan/berkas/lain-lain/updated', [FileLainController::class, 'update'])->name('berkas.lainlain.update');
-        Route::post('karyawan/berkas/lain-lain/destroy', [FileLainController::class, 'destroy'])->name('berkas.lainlain.destroy');
+        //View PDF Orientasi
+        Route::get('karyawan/berkas/orientasi/view/{filename}', [FileOrientasiController::class, 'viewPdf'])->name('berkas.orientasi.view');
+
         //SPK
         Route::get('karyawan/berkas/spk/get', [SpkRkkController::class, 'get'])->name('berkas.spk.get');
         Route::post('karyawan/berkas/spk/store', [SpkRkkController::class, 'store'])->name('berkas.spk.store');
         Route::get('karyawan/berkas/spk/edit', [SpkRkkController::class, 'edit'])->name('berkas.spk.edit');
         Route::post('karyawan/berkas/spk/update', [SpkRkkController::class, 'update'])->name('berkas.spk.update');
         Route::post('karyawan/berkas/spk/destroy', [SpkRkkController::class, 'destroy'])->name('berkas.spk.destroy');
+        //View PDF SPK
+        Route::get('karyawan/berkas/spk/view/{filename}', [SpkRkkController::class, 'viewPdf'])->name('berkas.spk.view');
+
         //Uraian Tugas
         Route::get('karyawan/berkas/uraian-tugas/get', [UraianTugasController::class, 'get'])->name('berkas.uraian.get');
         Route::post('karyawan/berkas/uraian-tugas/store', [UraianTugasController::class, 'store'])->name('berkas.uraian.store');
         Route::get('karyawan/berkas/uraian-tugas/edit', [UraianTugasController::class, 'edit'])->name('berkas.uraian.edit');
         Route::post('karyawan/berkas/uraian-tugas/update', [UraianTugasController::class, 'update'])->name('berkas.uraian.update');
         Route::post('karyawan/berkas/uraian-tugas/destroy', [UraianTugasController::class, 'destroy'])->name('berkas.uraian.destroy');
+        //View PDF Uraian Tugas
+        Route::get('karyawan/berkas/uraian-tugas/view/{filename}', [UraianTugasController::class, 'viewPdf'])->name('berkas.uraian.view');
+        
+        //Berkas Lain-lain
+        Route::get('karyawan/berkas/lain-lain', [FileLainController::class, 'get'])->name('berkas.lainlain.get');
+        Route::post('karyawan/berkas/lain-lain/store', [FileLainController::class, 'store'])->name('berkas.lainlain.store');
+        Route::get('karyawan/berkas/lain-lain/edit', [FileLainController::class, 'edit'])->name('berkas.lainlain.edit');
+        Route::post('karyawan/berkas/lain-lain/updated', [FileLainController::class, 'update'])->name('berkas.lainlain.update');
+        Route::post('karyawan/berkas/lain-lain/destroy', [FileLainController::class, 'destroy'])->name('berkas.lainlain.destroy');
+        //View PDF Lain-lain
+        Route::get('karyawan/berkas/lain-lain/view/{filename}', [FileLainController::class, 'viewPdf'])->name('berkas.lainlain.view');
+
+
        
-        //FileIdentitas (lain lain)
-        Route::get('karyawan/berkas/lain/get', [FileIdentitasController::class, 'getFile'])->name('berkas.lain.getFile');
-        Route::post('karyawan/berkas/lain/store', [FileIdentitasController::class, 'store'])->name('berkas.lain.store');
-        Route::post('karyawan/berkas/lain/destroy', [FileIdentitasController::class, 'destroy'])->name('berkas.lain.destroy');
-        Route::get('karyawan/berkas/lain/edit', [FileIdentitasController::class, 'edit'])->name('berkas.lain.edit');
-        Route::post('karyawan/berkas/lain/update', [FileIdentitasController::class, 'update'])->name('berkas.lain.update');
 
     });
 
@@ -303,6 +331,9 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('karyawan/berkas/diklat/sertif/edit', [FileSertifPelatihanController::class, 'edit'])->name('karywan.diklat.sertif.edit');
         Route::post('karyawan/berkas/diklat/sertif/update', [FileSertifPelatihanController::class, 'update'])->name('karywan.diklat.sertif.update');
         Route::post('karyawan/berkas/diklat/sertif/destroy', [FileSertifPelatihanController::class, 'destroy'])->name('karywan.diklat.sertif.destroy');
+        Route::get('karyawan/berkas/diklat/sertif/viewFile/{filename}', [FileSertifPelatihanController::class, 'viewFile'])->name('karywan.diklat.sertif.viewFile');
+        
+        
         //load pegawai
         Route::get('/pengguna/maping/load', [MapingNormController::class, 'load'])->name('master.maping.load');
         
@@ -336,7 +367,7 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
 
         Route::get('diklat/absensi/rekab/{id}', [AbsensiController::class, 'rekap'])->name('absensi.diklat.rekap');
 
-        Route::get('karyawan/diklat/iht', [DiklatController::class, 'absen_iht'])->name('karywan.diklat.absen_iht');
+        Route::get('karyawan/diklat/iht', [DiklatController::class, 'absen_iht'])->name('karyawan.diklat.absen_iht');
     });
 
     Route::group(['middleware' => ['permission:user-menu-access']], function () { 
@@ -348,17 +379,13 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::post('profile/ubah_password/update', [PageuserController::class, 'ganti_passowrd'])->name('profile.ganti_passowrd');
        
         //get Data
-        Route::get('pengguna/getijazah', [PageuserController::class, 'getijazah'])->name('pengguna.getijazah');
-        Route::get('pengguna/gettrans', [PageuserController::class, 'gettrans'])->name('pengguna.gettrans');
        
-        
-        Route::get('pengguna/getRiwayat', [PageuserController::class, 'getRiwayat'])->name('pengguna.getRiwayat');
         Route::get('pengguna/getKesehatan', [PageuserController::class, 'getKesehatan'])->name('pengguna.getKesehatan');
         Route::get('pengguna/getVaksin', [PageuserController::class, 'getVaksin'])->name('pengguna.getVaksin');
         Route::get('pengguna/getMCU', [PageuserController::class, 'getMCU'])->name('pengguna.getMCU');
         Route::get('pengguna/getFileId', [PageuserController::class, 'getFileId'])->name('pengguna.getFileId');
         Route::get('pengguna/getSertif', [PageuserController::class, 'getSertif'])->name('pengguna.getSertif');
-        Route::get('pengguna/getOrientasi', [PageuserController::class, 'getOrientasi'])->name('pengguna.getOrientasi');
+      
         //halaman
         Route::get('pengguna/pendidikan', [PageuserController::class, 'pendidikan'])->name('pengguna.pendidikan');
         Route::get('pengguna/izin', [PageuserController::class, 'izin'])->name('pengguna.izin');
@@ -379,8 +406,45 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('pengguna/mcu/report/{tglreg}/{norm}/{kdpoli}/{noreg}', [PageuserController::class, 'reportMCUPengguna'])->name('pengguna.mcu.report');
         Route::get('pengguna/mcu/report/laborat/{norm}/{kdpoli}/{tglreg}/{noreg}/{kdprw}', [PageuserController::class, 'reportLabPengguna'])->name('pengguna.mcu.report.laborat');
 
+        //Ijazah
+        Route::group(['middleware' => ['permission:user-ijazah-view']], function () {
+            Route::get('pengguna/ijazah/get', [FileIjazahController::class, 'getIjazah'])->name('pengguna.getijazah');
+            Route::get('/pengguna/ijazah/view/{filename}', [FileIjazahController::class, 'viewPdf'])->name('pengguna.ijazah.view');
+        });
+        Route::group(['middleware' => ['permission:user-ijazah-create']], function () {
+            Route::post('pengguna/ijazah/store', [FileIjazahController::class, 'store'])->name('pengguna.ijazah.store');
+            Route::post('pengguna/ijazah/verif/store', [VerifIjazahController::class, 'store'])->name('pengguna.verif.ijazah.store');
+        });
+        Route::group(['middleware' => ['permission:user-ijazah-edit']], function () {
+            Route::get('pengguna/ijazah/edit', [FileIjazahController::class, 'edit'])->name('pengguna.ijazah.edit');
+            Route::post('pengguna/ijazah/update', [FileIjazahController::class, 'update'])->name('pengguna.ijazah.update');
+        });
+        Route::group(['middleware' => ['permission:user-ijazah-delete']], function () {
+            Route::post('pengguna/ijazah/delete', [FileIjazahController::class, 'destroy'])->name('pengguna.ijazah.destroy');
+            Route::post('pengguna/ijazah/verif/destroy', [VerifIjazahController::class, 'destroy'])->name('pengguna.verif.ijazah.destroy');
+        });
+
+        //Transkrip
+        Route::group(['middleware' => ['permission:user-transkrip-view']], function () {
+            Route::get('pengguna/gettrans', [FileTranskripController::class, 'getTranskrip'])->name('pengguna.gettrans');
+            Route::get('/pengguna/transkrip/view/{filename}', [FileTranskripController::class, 'viewPdf'])->name('pengguna.transkrip.view');
+        });
+        Route::group(['middleware' => ['permission:user-transkrip-create']], function () {
+            Route::post('pengguna/transkrip/store', [FileTranskripController::class, 'store'])->name('pengguna.trans.store');
+        });
+        Route::group(['middleware' => ['permission:user-transkrip-edit']], function () {
+            Route::get('pengguna/transkrip/edit', [FileTranskripController::class, 'edit'])->name('pengguna.trans.edit');
+            Route::post('pengguna/transkrip/update', [FileTranskripController::class, 'update'])->name('pengguna.trans.update');
+        });
+        Route::group(['middleware' => ['permission:user-transkrip-delete']], function () {
+            Route::post('pengguna/transkrip/destroy', [FileTranskripController::class, 'destroy'])->name('pengguna.trans.destroy');   
+        });
+
         //STR
-        Route::get('pengguna/getSTR', [FileSTRController::class, 'getSTR'])->name('pengguna.getSTR');
+        Route::group(['middleware' => ['permission:user-str-view']], function () {
+            Route::get('pengguna/getSTR', [FileSTRController::class, 'getSTR'])->name('pengguna.getSTR');
+            Route::get('/pengguna/str/view/{filename}', [FileSTRController::class, 'viewPdf'])->name('pengguna.str.view');
+        });
         Route::group(['middleware' => ['permission:user-str-create']], function () {
             Route::post('pengguna/str/store', [FileSTRController::class, 'store'])->name('pengguna.str.store');
              //Verifikasi STR
@@ -396,9 +460,11 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
            
         });
 
-
         //SIP
-        Route::get('pengguna/getSIP', [FileSIPController::class, 'getSIP'])->name('pengguna.getSIP');
+        Route::group(['middleware' => ['permission:user-sip-view']], function () {
+            Route::get('pengguna/getSIP', [FileSIPController::class, 'getSIP'])->name('pengguna.getSIP');
+            Route::get('/pengguna/sip/view/{filename}', [FileSIPController::class, 'viewPdf'])->name('pengguna.berkas.sip.view');
+        });
         Route::group(['middleware' => ['permission:user-sip-create']], function () {
             Route::post('pengguna/sip/store', [FileSIPController::class, 'store'])->name('pengguna.sip.store');
         });
@@ -416,6 +482,63 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::get('pengguna/str/get', [FileSIPController::class, 'strget'])->name('pengguna.str.get');
         //getSTR untuk SIP Modal edit SIP
         Route::get('pengguna/str/selected/get', [FileSIPController::class, 'str_selected'])->name('pengguna.str.selected.get');
+
+        // View SIP Document
+        Route::group(['middleware' => ['permission:user-sip-view']], function () {
+            Route::get('pengguna/sip/view/{id}', [FileSIPController::class, 'viewSIP'])->name('pengguna.sip.view');
+        });
+
+        //Riwayat kerja
+        Route::group(['middleware' => ['permission:user-riwayat-view']], function () {
+            Route::get('pengguna/riwayat/get', [FileRiwayatKerjaController::class, 'getRiwayat'])->name('pengguna.getRiwayat');
+            Route::get('pengguna/riwayat/view/{filename}', [FileRiwayatKerjaController::class, 'viewPdf'])->name('pengguna.berkas.riwayat.view');
+        });
+        
+        Route::group(['middleware' => ['permission:user-riwayat-create']], function () {
+            Route::post('pengguna/riwayat/store', [FileRiwayatKerjaController::class, 'store'])->name('pengguna.riwayat.store');
+        });
+        Route::group(['middleware' => ['permission:user-riwayat-edit']], function () {
+            Route::get('pengguna/riwayat/edit', [FileRiwayatKerjaController::class, 'edit'])->name('pengguna.riwayat.edit');
+            Route::post('pengguna/riwayat/update', [FileRiwayatKerjaController::class, 'update'])->name('pengguna.riwayat.update');
+            Route::post('pengguna/riwayat/updatestatus', [FileRiwayatKerjaController::class, 'updatestatus'])->name('pengguna.riwayat.update.status');    
+        });
+        Route::group(['middleware' => ['permission:user-riwayat-delete']], function () {
+            Route::post('pengguna/riwayat/destroy', [FileRiwayatKerjaController::class, 'destroy'])->name('pengguna.riwayat.destroy');
+        });
+
+        //Data identitas
+        Route::group(['middleware' => ['permission:user-identitas-view']], function () {
+            Route::get('pengguna/identitas/get', [FileIdentitasController::class, 'getFile'])->name('pengguna.berkas.lain.getFile');
+        });
+        Route::group(['middleware' => ['permission:user-identitas-create']], function () {
+            Route::post('pengguna/identitas/store', [FileIdentitasController::class, 'store'])->name('pengguna.berkas.lain.store');
+        });
+        Route::group(['middleware' => ['permission:user-identitas-edit']], function () {
+            Route::get('pengguna/identitas/edit', [FileIdentitasController::class, 'edit'])->name('pengguna.berkas.lain.edit');
+            Route::post('pengguna/identitas/update', [FileIdentitasController::class, 'update'])->name('pengguna.berkas.lain.update');
+        });
+        Route::group(['middleware' => ['permission:user-identitas-delete']], function () {
+            Route::post('pengguna/identitas/destroy', [FileIdentitasController::class, 'destroy'])->name('pengguna.berkas.lain.destroy');
+        });
+
+        //Data orientasi
+        Route::group(['middleware' => ['permission:user-orientasi-view']], function () {
+            Route::get('pengguna/orientasi/get', [FileOrientasiController::class, 'getOrientasi'])->name('pengguna.getOrientasi');
+            Route::get('pengguna/orientasi/view/{filename}', [FileOrientasiController::class, 'viewPdf'])->name('pengguna.berkas.orientasi.view');
+        });
+        Route::group(['middleware' => ['permission:user-orientasi-create']], function () {
+            Route::post('pengguna/berkas/orientasi/store', [FileOrientasiController::class, 'store'])->name('pengguna.orientasi.store');
+        });
+        Route::group(['middleware' => ['permission:user-orientasi-edit']], function () {
+            Route::get('pengguna/orientasi/edit', [FileOrientasiController::class, 'edit'])->name('pengguna.orientasi.edit');
+            Route::post('pengguna/orientasi/update', [FileOrientasiController::class, 'update'])->name('pengguna.orientasi.update');
+        });
+        Route::group(['middleware' => ['permission:user-orientasi-delete']], function () {
+            Route::post('pengguna/orientasi/destroy', [FileOrientasiController::class, 'destroy'])->name('pengguna.orientasi.destroy');
+        });
+        
+       
+       
         
 
 
@@ -423,15 +546,6 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
 
 
         //TAMBAH
-        Route::group(['middleware' => ['permission:user-ijazah-create']], function () {
-            Route::post('pengguna/ijazah/store', [PageuserController::class, 'storeijazah'])->name('pengguna.ijazah.store');
-        });
-        Route::group(['middleware' => ['permission:user-transkrip-create']], function () {
-            Route::post('pengguna/transkrip/store', [PageuserController::class, 'storetrans'])->name('pengguna.trans.store');
-        });
-        Route::group(['middleware' => ['permission:user-riwayat-create']], function () {
-            Route::post('pengguna/riwayat/store', [PageuserController::class, 'storeriwayat'])->name('pengguna.riwayat.store');
-        });
         Route::group(['middleware' => ['permission:user-kesehatan-create']], function () {
             Route::post('pengguna/kesehatan/store', [PageuserController::class, 'storekes'])->name('pengguna.kesehatan.store');
         });
@@ -441,25 +555,9 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         Route::group(['middleware' => ['permission:user-setif-create']], function () {
             Route::post('pengguna/sertifikat/store', [PageuserController::class, 'storeSertif'])->name('pengguna.sertifikat.store');
         });
-        Route::group(['middleware' => ['permission:user-orientasi-create']], function () {
-            Route::post('pengguna/orientasi/store', [PageuserController::class, 'storeOrientasi'])->name('pengguna.orientasi.store');
-        });
+       
 
         //EDIT
-        Route::group(['middleware' => ['permission:user-ijazah-edit']], function () {
-            Route::get('pengguna/ijazah/edit', [PageuserController::class, 'editijazah'])->name('pengguna.ijazah.edit');
-            Route::post('pengguna/ijazah/update', [PageuserController::class, 'updateijazah'])->name('pengguna.ijazah.update');
-        });
-        Route::group(['middleware' => ['permission:user-transkrip-edit']], function () {
-            Route::get('pengguna/transkrip/edit', [PageuserController::class, 'edittrans'])->name('pengguna.trans.edit');
-            Route::post('pengguna/transkrip/update', [PageuserController::class, 'updatetrans'])->name('pengguna.trans.update');
-        });
-       
-       
-        Route::group(['middleware' => ['permission:user-riwayat-edit']], function () {
-            Route::get('pengguna/riwayat/edit', [PageuserController::class, 'editriwayat'])->name('pengguna.riwayat.edit');
-            Route::post('pengguna/riwayat/update', [PageuserController::class, 'updateriwayat'])->name('pengguna.riwayat.update');
-        });
         Route::group(['middleware' => ['permission:user-kesehatan-edit']], function () {
             Route::get('pengguna/kesehatan/edit', [PageuserController::class, 'editkes'])->name('pengguna.kesehatan.edit');
             Route::post('pengguna/kesehatan/update', [PageuserController::class, 'updatekes'])->name('pengguna.kesehatan.update');
@@ -472,38 +570,13 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
             Route::get('pengguna/sertifikat/edit', [PageuserController::class, 'editSertif'])->name('pengguna.sertifikat.edit');
             Route::post('pengguna/sertifikat/update', [PageuserController::class, 'updateSertif'])->name('pengguna.sertifikat.update');
         });
-        Route::group(['middleware' => ['permission:user-orientasi-edit']], function () {
-            Route::get('pengguna/orientasi/edit', [PageuserController::class, 'editOrientasi'])->name('pengguna.orientasi.edit');
-            Route::post('pengguna/orientasi/update', [PageuserController::class, 'updateOrientasi'])->name('pengguna.orientasi.update');
-        });
-
-        //FileIdentitas (lain lain) - Untuk Pengguna
-        Route::group(['middleware' => ['permission:user-identitas-view']], function () {
-            Route::get('pengguna/berkas/lain/get', [FileIdentitasController::class, 'getFile'])->name('pengguna.berkas.lain.getFile');
-        });
-        Route::group(['middleware' => ['permission:user-identitas-create']], function () {
-            Route::post('pengguna/berkas/lain/store', [FileIdentitasController::class, 'store'])->name('pengguna.berkas.lain.store');
-        });
-        Route::group(['middleware' => ['permission:user-identitas-edit']], function () {
-            Route::get('pengguna/berkas/lain/edit', [FileIdentitasController::class, 'edit'])->name('pengguna.berkas.lain.edit');
-            Route::post('pengguna/berkas/lain/update', [FileIdentitasController::class, 'update'])->name('pengguna.berkas.lain.update');
-        });
-        Route::group(['middleware' => ['permission:user-identitas-delete']], function () {
-            Route::post('pengguna/berkas/lain/destroy', [FileIdentitasController::class, 'destroy'])->name('pengguna.berkas.lain.destroy');
-        });
 
         //HAPUS
-        Route::group(['middleware' => ['permission:user-ijazah-delete']], function () {
-            Route::post('pengguna/ijazah/destroy', [PageuserController::class, 'destroyijazah'])->name('pengguna.ijazah.destroy');
-        });
-        Route::group(['middleware' => ['permission:user-transkrip-delete']], function () {
-            Route::post('pengguna/transkrip/destroy', [PageuserController::class, 'destroytrans'])->name('pengguna.transkrip.destroy');   
-        });
       
        
-        Route::group(['middleware' => ['permission:user-riwayat-delete']], function () {
-            Route::post('pengguna/riwayat/destroy', [PageuserController::class, 'destroyriwayat'])->name('pengguna.riwayat.destroy');
-        });
+      
+       
+       
         Route::group(['middleware' => ['permission:user-kesehatan-delete']], function () {
             Route::post('pengguna/kesehatan/destroy', [PageuserController::class, 'destroykes'])->name('pengguna.kesehatan.destroy');
         });
@@ -512,9 +585,6 @@ Route::group(['middleware' => ['auth:admin,web']], function(){
         });
         Route::group(['middleware' => ['permission:user-setif-delete']], function () {
             Route::post('pengguna/sertifikat/destroy', [PageuserController::class, 'destroySertif'])->name('pengguna.sertifikat.destroy');
-        });
-        Route::group(['middleware' => ['permission:user-orientasi-delete']], function () {
-            Route::post('pengguna/orientasi/destroy', [PageuserController::class, 'destroyOrientasi'])->name('pengguna.orientasi.destroy');
         });
     }); 
 });

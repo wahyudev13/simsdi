@@ -1,0 +1,22 @@
+@include('components.script-berkas-kepegawaian.str-script', [
+    'config' => [
+        'tableId' => 'tbSTR',
+        'getRoute' => 'berkas.getSTR',
+        'storeRoute' => 'berkas.str.store',
+        'editRoute' => 'berkas.str.edit',
+        'updateRoute' => 'berkas.str.update',
+        'destroyRoute' => 'berkas.str.destroy',
+        'statusRoute' => 'berkas.str.status',
+        'verifStoreRoute' => 'verif.str.store',
+        'verifDestroyRoute' => 'verif.str.destroy',
+        'enableStatusControl' => true,
+        'enablePaging' => false,
+        'enableSearch' => false,
+        'enableInfo' => false,
+        'serverSide' => true,
+        'idPegawai' => 'idpegawai',
+        'showActions' => true,
+        'routePDF' => '/karyawan/str/view/',
+        'routeVerifPDF' => '/karyawan/str/verif/view/',
+    ],
+])

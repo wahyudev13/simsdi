@@ -1,0 +1,17 @@
+@include('components.script-berkas-kepegawaian.riwayat-script', [
+    'tableId' => 'tbRiwayat',
+    'riwayatRoute' => 'berkas.riwayat.getRiwayat',
+    'riwayatStoreRoute' => 'berkas.riwayat.store',
+    'riwayatEditRoute' => 'berkas.riwayat.edit',
+    'riwayatUpdateRoute' => 'berkas.riwayat.update',
+    'riwayatDestroyRoute' => 'berkas.riwayat.destroy',
+    'riwayatStatusRoute' => 'berkas.riwayat.update.status',
+    'enablePaging' => false,
+    'enableSearch' => false,
+    'enableInfo' => false,
+    'showActions' => true,
+    'showStatusActions' => true,
+    'modalParent' => 'modaladdRiwayat',
+    'editModalParent' => 'modaleditRiwayat',
+    'routePDF' => '/karyawan/berkas/riwayat/view/',
+])

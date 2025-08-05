@@ -68,7 +68,7 @@ class Dashboard extends Controller
         $count_str = FileSTR::where('id_pegawai',$auth)
         ->join('master_berkas_pegawai', 'file_str.nama_file_str_id', '=', 'master_berkas_pegawai.id')
         ->select('file_str.id','file_str.no_reg_str','file_str.kompetensi','file_str.file','file_str.tgl_ed',
-        'file_str.pengingat','master_berkas_pegawai.nama_berkas','file_str.updated_at','file_str.status')
+        'master_berkas_pegawai.nama_berkas','file_str.updated_at','file_str.status')
         ->count();
 
         $count_sip = FileSIP::where('file_sip.id_pegawai', $auth)

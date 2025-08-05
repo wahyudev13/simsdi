@@ -141,8 +141,11 @@
     <script>
         $(document).ready(function() {
             $('#tbJenjang').DataTable({
-                // processing: true,
                 serverSide: true,
+                processing: true,
+                language: {
+                    processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div> Memuat data...'
+                },
                 ajax: '{{ route('master.get') }}',
                 columns: [{
                         data: 'DT_RowIndex',
@@ -303,7 +306,8 @@
                             $('#error_list_edit').removeClass("d-none")
 
                             $.each(response.error, function(key, error_value) {
-                                $('#error_list_edit').append('<li>' + error_value + '</li>');
+                                $('#error_list_edit').append('<li>' + error_value +
+                                    '</li>');
                             });
                         } else {
                             $('#success_message').html("")
@@ -358,6 +362,5 @@
             });
         });
         //END DOCUMENT READY FUNCTION
- 
     </script>
 @endpush
